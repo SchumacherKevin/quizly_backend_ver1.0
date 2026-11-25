@@ -19,8 +19,9 @@ DRF authentifiziert Requests über das HttpOnly-Cookie `access_token`. Cookie-He
   - Assert: `is None`
 - **Erwartetes Rot:** `ModuleNotFoundError: auth_app.authentication`
 - **Green:** `class CookieJWTAuthentication(JWTAuthentication)` mit `authenticate(self, request)`, das `request.COOKIES.get(ACCESS_COOKIE)` liest; ohne Cookie gibt es `None` zurück
+- **Hinweis:** Cookie-Konstanten `ACCESS_COOKIE` und `REFRESH_COOKIE` liegen schon ab hier in `auth_app/utils.py`
 - **Commit:** `feat(auth): add cookie based JWT authentication class`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 2: Gültiges Cookie liefert den User
 - **Test:** `test_authenticate_with_valid_cookie_returns_user`
