@@ -48,7 +48,7 @@ DRF authentifiziert Requests über das HttpOnly-Cookie `access_token`. Cookie-He
   - Act: `set_auth_cookies(response, refresh)`
   - Assert für beide Cookies: `cookie["httponly"] is True`, `cookie["samesite"] == "Lax"`, `cookie["path"] == "/"`
   - Access: `cookie["max-age"] == 300`; Refresh: `cookie["max-age"] == 86400`
-  - `response.cookies["access_token"].value == str(refresh.access_token)`
+  - `AccessToken(response.cookies["access_token"].value)["user_id"] == str(user.id)`. Achtung: `refresh.access_token` erzeugt bei **jedem** Zugriff ein neues Token mit neuer `jti`, deshalb ist ein direkter String-Vergleich nicht möglich.
 - **Test:** `test_set_access_cookie_only_sets_access`: `set_access_cookie(response, "abc")` setzt nur `access_token`
 - **Erwartetes Rot:** `ImportError` aus `auth_app.utils`
 - **Green:** In `auth_app/utils.py`:
@@ -57,7 +57,7 @@ DRF authentifiziert Requests über das HttpOnly-Cookie `access_token`. Cookie-He
   - `set_refresh_cookie(response, token)`
   - `set_auth_cookies(response, refresh)` setzt beide
 - **Commit:** `feat(auth): add helpers to set auth cookies`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 5: Cookies löschen
 - **Test:** `test_delete_auth_cookies_expires_both`: Nach `delete_auth_cookies(response)` gilt für beide Cookies `value == ""` und `max-age == 0`
