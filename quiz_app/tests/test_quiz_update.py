@@ -69,3 +69,32 @@ def test_put_not_allowed(auth_client, user, quiz_factory):
     )
 
     assert response.status_code == 405
+
+
+def test_patch_other_users_quiz_returns_403(
+    auth_client, other_user, quiz_factory
+):
+    """Patching someone else's quiz is forbidden and changes nothing."""
+    quiz = quiz_factory(other_user, title="Foreign")
+
+    response = _patch(auth_client, quiz.id, {"title": "Hacked"})
+
+    assert response.status_code == 403
+    quiz.refresh_from_db()
+    assert quiz.title == "Foreign"
+
+
+def test_patch_missing_quiz_returns_404(auth_client):
+    """Patching a quiz that does not exist returns 404."""
+    response = _patch(auth_client, 9999, {"title": "New"})
+
+    assert response.status_code == 404
+
+
+def test_patch_requires_auth(api_client, user, quiz_factory):
+    """Anonymous users get 401 when patching a quiz."""
+    quiz = quiz_factory(user)
+
+    response = _patch(api_client, quiz.id, {"title": "New"})
+
+    assert response.status_code == 401

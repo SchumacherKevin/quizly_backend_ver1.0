@@ -90,7 +90,7 @@ Nur für den Owner (User Stories 5–7).
 - **Test:** `test_patch_other_users_quiz_returns_403`, `test_patch_missing_quiz_returns_404`, `test_patch_requires_auth` (401); beim 403-Fall bleibt die DB unverändert
 - **Erwartetes Rot:** vermutlich grün durch Zyklus 5; als Absicherung committen
 - **Commit:** `test(quiz): cover patch permissions`
-- [ ] erledigt
+- [x] erledigt (wie erwartet sofort grün, Absicherungstests)
 
 ## Zyklen – Delete
 
