@@ -2,6 +2,10 @@
 
 from django.conf import settings
 from django.contrib.auth import authenticate
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from auth_app.api.serializers import UserSerializer
 
 ACCESS_COOKIE = "access_token"
 REFRESH_COOKIE = "refresh_token"
@@ -41,6 +45,15 @@ def set_auth_cookies(response, refresh):
 def authenticate_credentials(data):
     """Return the user for ``username`` and ``password`` or ``None``."""
     return authenticate(username=data["username"], password=data["password"])
+
+
+def build_login_response(user):
+    """Return the login response for ``user`` with fresh JWT cookies."""
+    response = Response(
+        {"detail": "Login successfully!", "user": UserSerializer(user).data}
+    )
+    set_auth_cookies(response, RefreshToken.for_user(user))
+    return response
 
 
 def delete_auth_cookies(response):

@@ -5,12 +5,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from auth_app.api.serializers import (
-    LoginSerializer,
-    RegistrationSerializer,
-    UserSerializer,
-)
-from auth_app.utils import authenticate_credentials
+from auth_app.api.serializers import LoginSerializer, RegistrationSerializer
+from auth_app.utils import authenticate_credentials, build_login_response
 
 
 class RegistrationView(APIView):
@@ -41,9 +37,4 @@ class LoginView(APIView):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = authenticate_credentials(serializer.validated_data)
-        return Response(
-            {
-                "detail": "Login successfully!",
-                "user": UserSerializer(user).data,
-            }
-        )
+        return build_login_response(user)

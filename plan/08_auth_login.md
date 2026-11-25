@@ -38,7 +38,7 @@ Login mit Username und Passwort setzt `access_token` und `refresh_token` als Htt
 - **Erwartetes Rot:** `KeyError: 'access_token'`
 - **Green:** `refresh = RefreshToken.for_user(user)` und `set_auth_cookies(response, refresh)` in der View bzw. in einem Helper `build_login_response(user)` in `utils.py`
 - **Commit:** `feat(auth): set JWT cookies on login`
-- [ ] erledigt
+- [x] erledigt (umgesetzt als `build_login_response(user)` in `auth_app/utils.py`)
 
 ### Zyklus 3: Falsche Zugangsdaten ergeben 401 mit allgemeiner Meldung
 - **Test:** `test_login_rejects_invalid_credentials` (parametrisiert: falsches Passwort für `testuser`; unbekannter User `ghost`)
