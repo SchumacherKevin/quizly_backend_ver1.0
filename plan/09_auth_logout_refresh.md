@@ -51,9 +51,10 @@
 - **Test:** `test_logout_succeeds_with_invalid_refresh_cookie`: Mit `auth_client.cookies["refresh_token"] = "garbage"` ergibt sich trotzdem 200, und die Cookies sind gelöscht
 - **Test:** `test_logout_succeeds_without_refresh_cookie`: Das Refresh-Cookie wird entfernt, das Ergebnis ist trotzdem 200
 - **Erwartetes Rot:** möglicherweise eine Exception bei fehlendem Cookie
-- **Green:** `blacklist_refresh_token(None)` macht nichts
+- **Green:** `blacklist_refresh_token(None)` macht nichts; `TokenError` wird abgefangen
+- **Falle:** `RefreshToken(None)` erzeugt einen **neuen** Token, statt einen Fehler zu werfen. Ohne die `None`-Prüfung würde dieser Token auf die Blacklist gesetzt. Der Test prüft deshalb zusätzlich `not BlacklistedToken.objects.exists()`.
 - **Commit:** `feat(auth): handle missing or invalid refresh token on logout`
-- [ ] erledigt
+- [x] erledigt
 
 ## Zyklen – Refresh
 

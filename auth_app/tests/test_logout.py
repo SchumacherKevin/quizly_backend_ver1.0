@@ -37,3 +37,31 @@ def test_logout_blacklists_refresh_token(auth_client):
     auth_client.post(reverse("logout"))
 
     assert BlacklistedToken.objects.filter(token__jti=token_id).exists()
+
+
+def test_logout_requires_authentication(api_client):
+    """Logout without an access cookie is rejected with 401."""
+    response = api_client.post(reverse("logout"))
+
+    assert response.status_code == 401
+
+
+def test_logout_succeeds_with_invalid_refresh_cookie(auth_client):
+    """A broken refresh cookie does not block the logout."""
+    auth_client.cookies["refresh_token"] = "garbage"
+
+    response = auth_client.post(reverse("logout"))
+
+    assert response.status_code == 200
+    assert response.cookies["refresh_token"].value == ""
+
+
+def test_logout_succeeds_without_refresh_cookie(auth_client):
+    """A missing refresh cookie does not block the logout."""
+    del auth_client.cookies["refresh_token"]
+
+    response = auth_client.post(reverse("logout"))
+
+    assert response.status_code == 200
+    assert response.cookies["access_token"].value == ""
+    assert not BlacklistedToken.objects.exists()

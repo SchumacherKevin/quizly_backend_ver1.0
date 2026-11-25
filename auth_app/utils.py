@@ -3,6 +3,7 @@
 from django.conf import settings
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from auth_app.api.serializers import UserSerializer
@@ -57,8 +58,17 @@ def build_login_response(user):
 
 
 def blacklist_refresh_token(raw_token):
-    """Blacklist the refresh token ``raw_token`` so it cannot be reused."""
-    RefreshToken(raw_token).blacklist()
+    """Blacklist ``raw_token``; missing or invalid tokens are ignored.
+
+    ``RefreshToken(None)`` would create a brand new token, so ``None``
+    has to be handled explicitly.
+    """
+    if raw_token is None:
+        return
+    try:
+        RefreshToken(raw_token).blacklist()
+    except TokenError:
+        pass
 
 
 def delete_auth_cookies(response):
