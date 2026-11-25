@@ -58,9 +58,9 @@ Login mit Username und Passwort setzt `access_token` und `refresh_token` als Htt
 - **Test:** `test_login_rejects_inactive_user`: `user.is_active = False` ergibt 401 mit derselben allgemeinen Meldung
 - **Erwartetes Rot:** vermutlich grün (`ModelBackend` lehnt inaktive User ab); als Absicherung committen
 - **Commit:** `test(auth): reject inactive users on login`
-- [ ] erledigt
+- [x] erledigt (wie erwartet sofort grün durch `ModelBackend`)
 
 ## Abschluss-Check
-- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
-- [ ] Status von Schritt 08 auf `[x]` gesetzt (Commit `docs: mark step 08 done`)
-- [ ] Stopp → Review
+- [x] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
+- [x] Status von Schritt 08 auf `[x]` gesetzt (Commit `docs: mark step 08 done`)
+- [x] Stopp → Review

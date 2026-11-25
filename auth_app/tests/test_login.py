@@ -79,3 +79,15 @@ def test_login_requires_username_and_password(api_client, payload, missing):
 
     assert response.status_code == 400
     assert sorted(response.json()) == missing
+
+
+def test_login_rejects_inactive_user(api_client, user):
+    """Inactive users get the same generic 401 as wrong credentials."""
+    user.is_active = False
+    user.save()
+
+    response = _login(api_client, username="testuser", password=TEST_PASSWORD)
+
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Invalid username or password."}
+    assert "access_token" not in response.cookies
