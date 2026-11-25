@@ -30,7 +30,7 @@ DRF authentifiziert Requests über das HttpOnly-Cookie `access_token`. Cookie-He
 - **Erwartetes Rot:** `None` statt eines Tupels
 - **Green:** `validated = self.get_validated_token(raw)`; Rückgabe `(self.get_user(validated), validated)`
 - **Commit:** `feat(auth): authenticate user from access_token cookie`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 3: Ungültiges oder abgelaufenes Token
 - **Test:** `test_authenticate_with_invalid_cookie_raises` (parametrisiert):
