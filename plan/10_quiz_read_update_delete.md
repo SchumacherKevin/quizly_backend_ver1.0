@@ -73,8 +73,9 @@ Nur für den Owner (User Stories 5–7).
   - Assert: 200, die Response enthält die neuen Werte und **das vollständige Quiz** (inklusive `questions`); in der DB ist der Wert aktualisiert, und `updated_at` ist größer als vorher
 - **Erwartetes Rot:** 405 bzw. kein Update
 - **Green:** `QuizUpdateSerializer` (Felder `title`, `description`); in `update` validieren, speichern und mit `QuizSerializer` antworten; `http_method_names = ["get", "patch", "delete"]`
+- **Hinweis:** `QuizDetailView` erbt jetzt von `RetrieveUpdateAPIView` mit `http_method_names = ["get", "patch"]`; `"delete"` kommt in Zyklus 9 dazu.
 - **Commit:** `feat(quiz): allow patching quiz title and description`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 7: Nur erlaubte Felder, leerer Titel, PUT
 - **Test:** `test_patch_ignores_read_only_fields`: Mit `{"video_url": "https://example.com", "questions": []}` bleiben `video_url` und die Fragen unverändert

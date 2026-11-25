@@ -33,3 +33,13 @@ class QuizSerializer(serializers.ModelSerializer):
             "video_url",
             "questions",
         ]
+
+
+class QuizUpdateSerializer(serializers.ModelSerializer):
+    """Validate PATCH input; only title and description are editable."""
+
+    class Meta:
+        """Restrict writable fields to title and description."""
+
+        model = Quiz
+        fields = ["title", "description"]
