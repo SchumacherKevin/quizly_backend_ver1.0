@@ -35,7 +35,7 @@ Nur für den Owner (User Stories 5–7).
 - **Erwartetes Rot:** `len == 3`
 - **Green:** `get_queryset` filtert `owner=self.request.user` mit `.prefetch_related("questions")`
 - **Commit:** `feat(quiz): restrict quiz list to owner`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 3: Struktur des Quiz-Objekts
 - **Test:** `test_quiz_list_item_shape`
