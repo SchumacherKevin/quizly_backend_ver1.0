@@ -3,6 +3,8 @@
 from django.conf import settings
 from django.db import models
 
+from quiz_app.utils import validate_answer, validate_options
+
 
 class Quiz(models.Model):
     """A quiz generated from a YouTube video and owned by a user."""
@@ -51,3 +53,8 @@ class Question(models.Model):
     def __str__(self):
         """Return the question title."""
         return self.question_title
+
+    def clean(self):
+        """Validate the options and that the answer is one of them."""
+        validate_options(self.question_options)
+        validate_answer(self.answer, self.question_options)

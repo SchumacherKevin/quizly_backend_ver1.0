@@ -51,10 +51,11 @@ Datenmodell für Quizze und Fragen inklusive Validierung und der Fixture `quiz_f
   - Optionen kein Array (`"A,B,C,D"`)
   - `answer` nicht in den Optionen
   - doppelte Optionen
+  - Option ist kein String (`["A", "B", "C", 4]`), zusätzlich ergänzt
 - **Erwartetes Rot:** Es wird kein `ValidationError` geworfen
 - **Green:** `Question.clean()` delegiert an kleine Helper in `quiz_app/utils.py` (z. B. `validate_options(options)`, `validate_answer(answer, options)`), jeweils ≤ 14 Zeilen
 - **Commit:** `feat(quiz): validate question options and answer`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 5: Fixture `quiz_factory`
 - **Test:** `test_quiz_factory_creates_quiz_with_questions`: `quiz_factory(user, questions=3)` ergibt `quiz.owner == user` und `quiz.questions.count() == 3`; jede Frage besteht `full_clean()`

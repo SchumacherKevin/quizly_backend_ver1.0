@@ -1,6 +1,7 @@
 """Tests for the quiz_app models."""
 
 import pytest
+from django.core.exceptions import ValidationError
 
 from quiz_app.models import Question, Quiz
 
@@ -72,3 +73,38 @@ def test_deleting_user_deletes_quizzes(user, quiz):
     user.delete()
 
     assert Quiz.objects.count() == 0
+
+
+@pytest.mark.django_db
+def test_question_clean_accepts_valid_data(question):
+    """Four distinct string options containing the answer are valid."""
+    question.full_clean()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    ("options", "answer"),
+    [
+        (["A", "B", "C"], "A"),
+        (["A", "B", "C", "D", "E"], "A"),
+        ("A,B,C,D", "A"),
+        (["A", "B", "C", 4], "A"),
+        (["A", "B", "C", "D"], "E"),
+        (["A", "A", "B", "C"], "A"),
+    ],
+    ids=[
+        "three-options",
+        "five-options",
+        "not-a-list",
+        "non-string-option",
+        "answer-not-in-options",
+        "duplicate-options",
+    ],
+)
+def test_question_clean_rejects_invalid(question, options, answer):
+    """Invalid options or an answer outside the options are rejected."""
+    question.question_options = options
+    question.answer = answer
+
+    with pytest.raises(ValidationError):
+        question.full_clean()
