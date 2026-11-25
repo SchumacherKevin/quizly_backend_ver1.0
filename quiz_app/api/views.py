@@ -1,6 +1,6 @@
 """API views for quiz_app."""
 
-from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -21,8 +21,8 @@ class QuizListCreateView(ListAPIView):
         )
 
 
-class QuizDetailView(RetrieveUpdateAPIView):
-    """Retrieve or patch a single quiz (delete follows in a later cycle).
+class QuizDetailView(RetrieveUpdateDestroyAPIView):
+    """Retrieve, patch or delete a single quiz of the current user.
 
     The queryset is not filtered by owner on purpose: foreign quizzes
     must return 403 via ``IsOwner`` instead of 404.
@@ -31,7 +31,7 @@ class QuizDetailView(RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated, IsOwner]
     serializer_class = QuizSerializer
     queryset = Quiz.objects.prefetch_related("questions")
-    http_method_names = ["get", "patch"]
+    http_method_names = ["get", "patch", "delete"]
 
     def update(self, request, *args, **kwargs):
         """Patch title and description, then return the full quiz."""

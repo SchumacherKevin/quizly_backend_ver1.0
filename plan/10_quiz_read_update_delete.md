@@ -98,10 +98,11 @@ Nur für den Owner (User Stories 5–7).
 - **Test:** `test_delete_removes_quiz_and_questions`: 204, `response.content == b""`, `Quiz.objects.count() == 0` und `Question.objects.count() == 0`
 - **Test:** `test_delete_other_users_quiz_returns_403` (das Quiz existiert danach noch), `test_delete_missing_quiz_returns_404`, `test_delete_requires_auth` (401)
 - **Erwartetes Rot:** vermutlich nur der Happy Path, falls DELETE nicht erlaubt ist
+- **Green:** `QuizDetailView(RetrieveUpdateDestroyAPIView)`, `http_method_names = ["get", "patch", "delete"]`
 - **Commit:** `feat(quiz): allow owners to delete quizzes`
-- [ ] erledigt
+- [x] erledigt (rot waren 204, 403 und 404 mit 405; 401 war schon grün)
 
 ## Abschluss-Check
-- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
-- [ ] Status von Schritt 10 auf `[x]` gesetzt (Commit `docs: mark step 10 done`)
-- [ ] Stopp → Review
+- [x] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
+- [x] Status von Schritt 10 auf `[x]` gesetzt (Commit `docs: mark step 10 done`)
+- [x] Stopp → Review
