@@ -107,7 +107,7 @@ Ein Zyklus wird nie mit roten Tests committet.
 | 07 | Cookie-Authentifizierung | [07_auth_cookie_authentication.md](07_auth_cookie_authentication.md) | [x] |
 | 08 | Login | [08_auth_login.md](08_auth_login.md) | [x] |
 | 09 | Logout und Refresh | [09_auth_logout_refresh.md](09_auth_logout_refresh.md) | [x] |
-| 10 | Quiz lesen, ändern, löschen | [10_quiz_read_update_delete.md](10_quiz_read_update_delete.md) | [ ] |
+| 10 | Quiz lesen, ändern, löschen | [10_quiz_read_update_delete.md](10_quiz_read_update_delete.md) | [x] |
 | 11 | YouTube-Service | [11_youtube_download.md](11_youtube_download.md) | [ ] |
 | 12 | Whisper-Service | [12_whisper_transcription.md](12_whisper_transcription.md) | [ ] |
 | 13 | Gemini-Service | [13_gemini_quiz_generation.md](13_gemini_quiz_generation.md) | [ ] |
