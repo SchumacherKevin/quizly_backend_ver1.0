@@ -38,12 +38,13 @@
 
 ### Zyklus 3: Logout blacklistet den Refresh-Token
 - **Test:** `test_logout_blacklists_refresh_token`
-  - Arrange: `jti = RefreshToken(auth_client.cookies["refresh_token"].value)["jti"]`
-  - Assert nach dem Logout: `BlacklistedToken.objects.filter(token__jti=jti).exists()`
+  - Arrange: `token_id = RefreshToken(refresh_cookie)["jti"]` (`jti` = JWT ID, die eindeutige Kennung des Tokens)
+  - Assert nach dem Logout: `BlacklistedToken.objects.filter(token__jti=token_id).exists()`
 - **Erwartetes Rot:** `False`
 - **Green:** `blacklist_refresh_token(raw)` in `utils.py` mit `RefreshToken(raw).blacklist()`; `TokenError` wird abgefangen und ignoriert
+- **Hinweis:** Hier nur `RefreshToken(raw).blacklist()`. Das Abfangen von `TokenError` und `None` kommt erst in Zyklus 4, dort wird es auch getestet.
 - **Commit:** `feat(auth): blacklist refresh token on logout`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 4: Randfälle beim Logout
 - **Test:** `test_logout_requires_authentication`: `api_client.post(reverse("logout"))` ohne Cookies ergibt **401**

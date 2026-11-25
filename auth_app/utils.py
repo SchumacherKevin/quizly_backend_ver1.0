@@ -56,6 +56,11 @@ def build_login_response(user):
     return response
 
 
+def blacklist_refresh_token(raw_token):
+    """Blacklist the refresh token ``raw_token`` so it cannot be reused."""
+    RefreshToken(raw_token).blacklist()
+
+
 def delete_auth_cookies(response):
     """Expire both JWT cookies on the client."""
     for name in (ACCESS_COOKIE, REFRESH_COOKIE):

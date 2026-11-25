@@ -7,7 +7,9 @@ from rest_framework.views import APIView
 
 from auth_app.api.serializers import LoginSerializer, RegistrationSerializer
 from auth_app.utils import (
+    REFRESH_COOKIE,
     authenticate_credentials,
+    blacklist_refresh_token,
     build_login_response,
     delete_auth_cookies,
 )
@@ -64,7 +66,8 @@ class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        """Delete the auth cookies and confirm the logout."""
+        """Blacklist the refresh token and delete the auth cookies."""
+        blacklist_refresh_token(request.COOKIES.get(REFRESH_COOKIE))
         response = Response({"detail": LOGOUT_DETAIL})
         delete_auth_cookies(response)
         return response
