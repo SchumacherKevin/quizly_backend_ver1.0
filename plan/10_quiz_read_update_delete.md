@@ -63,7 +63,7 @@ Nur für den Owner (User Stories 5–7).
 - **Erwartetes Rot:** 200 statt 403
 - **Green:** `IsOwner(BasePermission).has_object_permission` gibt `obj.owner == request.user` zurück; `permission_classes = [IsAuthenticated, IsOwner]`
 - **Commit:** `feat(quiz): restrict quiz detail to owner with 403`
-- [ ] erledigt
+- [x] erledigt (404 und 401 waren schon vorher grün)
 
 ## Zyklen – Update
 
