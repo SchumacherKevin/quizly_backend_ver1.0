@@ -28,7 +28,7 @@ Nur für den Owner (User Stories 5–7).
 - **Erwartetes Rot:** `NoReverseMatch: 'quiz-list'`
 - **Green:** `QuizListCreateView(ListAPIView)`, `QuizSerializer`, URL
 - **Commit:** `feat(quiz): add quiz list endpoint`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 2: Liste enthält nur eigene Quizze als Array
 - **Test:** `test_quiz_list_returns_only_own_quizzes`: 2 Quizze für `user` und 1 für `other_user` ergeben 200, `isinstance(data, list)`, `len == 2`, und die IDs sind die eigenen in der Reihenfolge neueste zuerst
