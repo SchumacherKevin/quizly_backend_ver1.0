@@ -132,8 +132,10 @@ CORS_ALLOW_CREDENTIALS = True
 
 
 # Django REST framework
-# CookieJWTAuthentication is added in step 07.
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "auth_app.authentication.CookieJWTAuthentication",
+    ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],

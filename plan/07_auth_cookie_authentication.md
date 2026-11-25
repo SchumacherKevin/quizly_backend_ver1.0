@@ -74,9 +74,9 @@ DRF authentifiziert Requests über das HttpOnly-Cookie `access_token`. Cookie-He
   - In `settings.py` `DEFAULT_AUTHENTICATION_CLASSES` eintragen
   - `conftest.py`: `auth_client(api_client, user)` erzeugt `refresh = RefreshToken.for_user(user)` und setzt `api_client.cookies["access_token"] = str(refresh.access_token)` sowie `api_client.cookies["refresh_token"] = str(refresh)`
 - **Commit:** `feat(auth): use cookie JWT authentication by default and add auth_client fixture`
-- [ ] erledigt
+- [x] erledigt
 
 ## Abschluss-Check
-- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün (auch die Tests aus Schritt 06: Register bleibt öffentlich)
-- [ ] Status von Schritt 07 auf `[x]` gesetzt (Commit `docs: mark step 07 done`)
-- [ ] Stopp → Review
+- [x] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün (auch die Tests aus Schritt 06: Register bleibt öffentlich)
+- [x] Status von Schritt 07 auf `[x]` gesetzt (Commit `docs: mark step 07 done`)
+- [x] Stopp → Review

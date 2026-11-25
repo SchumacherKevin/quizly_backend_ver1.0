@@ -3,6 +3,7 @@
 import pytest
 from django.contrib.auth.models import User
 from rest_framework.test import APIClient
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from quiz_app.models import Question, Quiz
 
@@ -30,6 +31,15 @@ def other_user(db):
     return User.objects.create_user(
         "otheruser", "other@example.com", TEST_PASSWORD
     )
+
+
+@pytest.fixture
+def auth_client(api_client, user):
+    """Return an API client logged in as ``user`` via JWT cookies."""
+    refresh = RefreshToken.for_user(user)
+    api_client.cookies["access_token"] = str(refresh.access_token)
+    api_client.cookies["refresh_token"] = str(refresh)
+    return api_client
 
 
 def _create_questions(quiz, count):

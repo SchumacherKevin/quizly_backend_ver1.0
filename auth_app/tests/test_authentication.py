@@ -3,6 +3,7 @@
 from datetime import timedelta
 
 import pytest
+from django.conf import settings
 from rest_framework.test import APIRequestFactory
 from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.tokens import AccessToken
@@ -61,3 +62,10 @@ def test_authenticate_header_is_set():
     request = _request_with_cookie()
 
     assert CookieJWTAuthentication().authenticate_header(request)
+
+
+def test_default_authentication_class_is_cookie_jwt():
+    """DRF uses the cookie JWT authentication for every view by default."""
+    classes = settings.REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"]
+
+    assert classes == ["auth_app.authentication.CookieJWTAuthentication"]
