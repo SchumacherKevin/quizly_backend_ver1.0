@@ -39,7 +39,7 @@ MAX_VIDEO_MINUTES=15
 - **Erwartetes Rot:** `ModuleNotFoundError: core.env`
 - **Green:** `core/env.py` → `def get_bool(name: str, default: bool) -> bool`
 - **Commit:** `feat(core): add boolean env helper`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 2: Env-Helper `get_list` und `get_int`
 - **Test:** `test_get_list_splits_and_strips`: `"a, b ,c"` ergibt `["a", "b", "c"]`; ein leerer String ergibt `[]`; fehlt die Variable, gilt der Default
