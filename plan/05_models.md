@@ -25,7 +25,7 @@ Datenmodell für Quizze und Fragen inklusive Validierung und der Fixture `quiz_f
 - **Erwartetes Rot:** `ImportError: cannot import name 'Quiz'`
 - **Green:** Model `Quiz`, `makemigrations quiz_app`, `__str__`, Docstring
 - **Commit:** `feat(quiz): add Quiz model`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 2: Sortierung, neueste zuerst
 - **Test:** `test_quizzes_ordered_newest_first`: drei Quizze anlegen, danach liefert `list(Quiz.objects.all())` die umgekehrte Anlage-Reihenfolge
