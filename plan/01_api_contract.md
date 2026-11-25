@@ -113,9 +113,13 @@ Request: `{"title": "...", "description": "..."}` (Frontend sendet immer beide, 
 ### DELETE `/api/quizzes/{id}/`
 204 ohne Body · 401 · 403 · 404 · 500. Löscht das Quiz samt Fragen (Cascade).
 
-## Akzeptanzkriterien
-- [ ] Jeder Endpoint ist in genau einem Umsetzungsschritt verortet (06, 08, 09, 10, 14)
-- [ ] Response-Texte (`detail`) stimmen wortgleich mit der Doku überein
+## Zuordnung zu den Schritten
+| Endpoint | Schritt |
+|---|---|
+| POST register/ | 06 |
+| POST login/ | 08 |
+| POST logout/, POST token/refresh/ | 09 |
+| GET quizzes/, GET/PATCH/DELETE quizzes/{id}/ | 10 |
+| POST quizzes/ | 14 (Services in 11–13) |
 
-## Commit-Message
-`docs: add API contract`
+Die Response-Texte (`detail`) müssen wortgleich mit dieser Datei übereinstimmen. In den Tests wird immer auf den exakten Text geprüft.

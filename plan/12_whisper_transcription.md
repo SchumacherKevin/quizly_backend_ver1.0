@@ -1,31 +1,46 @@
-# 12 – Whisper-Transkription
+# 12 – Whisper-Service (Transkription)
 
 ## Ziel
-Die Audiodatei wird lokal mit Whisper in Text umgewandelt.
+`quiz_app/services/transcription.py` wandelt eine Audiodatei lokal mit Whisper in Text um. Das Modell wird nur einmal pro Prozess geladen.
 
-## Referenzen
-- `docs/Quizly Checkliste.pdf` – Whisper AI lokal; FFmpeg ist Pflicht
-- `docs/Kurzanleitung Quizly.pdf` – FFmpeg-Installation
+## Kontext (eigenständig)
+- **Vorbedingungen:** 02–11 sind fertig. `openai-whisper` ist installiert, FFmpeg global im `PATH`, `settings.WHISPER_MODEL` existiert (Default `"base"`). In `quiz_app/services/exceptions.py` gibt es `QuizGenerationError`.
+- Betroffene Dateien: `quiz_app/services/transcription.py` (neu), `quiz_app/tests/test_transcription.py`
+- Whisper braucht FFmpeg zum Dekodieren. Fehlt FFmpeg, wirft Whisper eine Exception; die wird als `QuizGenerationError` weitergegeben (→ 500).
+- Auf der CPU wird `fp16=False` gesetzt, das vermeidet eine Warnung.
+- **Tests ohne echtes Modell:** `quiz_app.services.transcription.whisper` wird gepatcht. Der Cache (`functools.lru_cache`) wird vor jedem Test geleert, z. B. per autouse-Fixture `get_whisper_model.cache_clear()`.
+- Der erste echte Lauf lädt das Modell herunter (~140 MB für `base`). Das kommt ins README (Schritt 17).
 
-## Aufgaben
-- [ ] `quiz_app/services/transcription.py`:
-  - `get_whisper_model()`: lädt `whisper.load_model(settings.WHISPER_MODEL)` **lazy** und cacht es mit `functools.lru_cache(maxsize=1)`, damit das Modell nicht bei jedem Request neu geladen wird und auch nicht beim Django-Start
-  - `transcribe_audio(path) -> str`: `model.transcribe(str(path), fp16=False)["text"].strip()`
-  - Ist der Text leer → `QuizGenerationError("Transcript is empty.")`
-  - Andere Exceptions (z. B. FFmpeg fehlt) → `QuizGenerationError`
-- [ ] `fp16=False` vermeidet die CPU-Warnung
-- [ ] Der Import von `whisper` erfolgt innerhalb der Funktion bzw. ist im Test leicht mockbar
+## Zyklen
 
-## Hinweise
-- Beim ersten Aufruf lädt Whisper das Modell `base` herunter (~140 MB). Im README erwähnen.
-- Die Sprache erkennt Whisper automatisch; das Quiz wird in der Sprache des Transkripts erzeugt (siehe 13).
+### Zyklus 1: Modell laden und cachen
+- **Test:** `test_get_whisper_model_loads_configured_model`: `settings.WHISPER_MODEL = "tiny"` führt zu `whisper.load_model` mit dem Aufruf `("tiny")`
+- **Test:** `test_get_whisper_model_is_cached`: Zwei Aufrufe ergeben genau einen `load_model`-Aufruf, und es kommt dasselbe Objekt zurück
+- **Erwartetes Rot:** `ModuleNotFoundError: quiz_app.services.transcription`
+- **Green:** `@lru_cache(maxsize=1) def get_whisper_model()`
+- **Commit:** `feat(quiz): load and cache whisper model`
+- [ ] erledigt
 
-## Akzeptanzkriterien
-- [ ] Ein Modell wird pro Prozess nur einmal geladen
-- [ ] Fehler werden als `QuizGenerationError` weitergereicht
+### Zyklus 2: Audio transkribieren
+- **Test:** `test_transcribe_audio_returns_stripped_text` (mit `tmp_path`)
+  - Arrange: `model.transcribe.return_value = {"text": "  Hallo Welt  "}`
+  - Assert: Ergebnis `"Hallo Welt"`; `transcribe` wurde mit `(str(path), fp16=False)` aufgerufen
+- **Erwartetes Rot:** `ImportError: transcribe_audio`
+- **Green:** `transcribe_audio(path: Path) -> str`
+- **Commit:** `feat(quiz): transcribe audio with whisper`
+- [ ] erledigt
 
-## Tests
-- `quiz_app/tests/test_transcription.py`: `whisper.load_model` wird gemockt; geprüft werden der zurückgegebene Text, ein leeres Transkript (Fehler), eine Exception (Fehler) und das Caching
+### Zyklus 3: Fehlerfälle
+- **Test:** `test_transcribe_audio_rejects_empty_transcript`: `{"text": "   "}` führt zu `QuizGenerationError` mit der Meldung `"Transcript is empty."`
+- **Test:** `test_transcribe_audio_wraps_errors`: `transcribe.side_effect = RuntimeError("ffmpeg not found")` führt zu `QuizGenerationError`
+- **Test:** `test_get_whisper_model_wraps_load_errors`: `load_model.side_effect = RuntimeError` führt beim Transkribieren zu `QuizGenerationError`
+- **Erwartetes Rot:** `RuntimeError` statt `QuizGenerationError`
+- **Green:** `try/except Exception` mit `raise QuizGenerationError("Transcription failed.") from exc`; zusätzlich Prüfung auf leeren Text
+- **Commit:** `feat(quiz): handle whisper transcription errors`
+- [ ] erledigt
 
-## Commit-Message
-`feat(quiz): add Whisper transcription service`
+## Abschluss-Check
+- [ ] Kein Test lädt ein echtes Whisper-Modell
+- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
+- [ ] Status von Schritt 12 auf `[x]` gesetzt (Commit `docs: mark step 12 done`)
+- [ ] Stopp → Review → `git merge --ff-only step/12-whisper`

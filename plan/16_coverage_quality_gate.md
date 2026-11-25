@@ -1,0 +1,59 @@
+# 16 – Coverage- und Quality-Gate
+
+## Ziel
+Gesamtabnahme der Codequalität: Coverage ≥ 90 %, alle DoD-Regeln der Checkliste erfüllt, keine Lücken im API-Vertrag.
+Die Tests sind durch TDD schon entstanden. Hier werden nur **Lücken gefunden und geschlossen**.
+
+## Kontext (eigenständig)
+- **Vorbedingungen:** 02–15 sind fertig; alle Endpoints und Services sind implementiert und getestet.
+- Werkzeuge: `pytest --cov` (Konfiguration in `pyproject.toml`), `black`, `isort`, `flake8`
+- **DoD-Regeln (Checkliste):**
+  - Funktionen ≤ 14 Zeilen und eine Aufgabe
+  - `snake_case`, sprechende Namen
+  - keine ungenutzten Variablen, Funktionen oder Imports und kein auskommentierter Code
+  - Docstrings
+  - `views.py` nur Views mit Response
+  - Helper in `utils.py` bzw. `services/`
+  - PEP8
+- **Endpoints und erwartete Statuscodes** (aus `01_api_contract.md`):
+  | Endpoint | Codes |
+  |---|---|
+  | POST register/ | 201, 400 |
+  | POST login/ | 200, 400, 401 |
+  | POST logout/ | 200, 401 |
+  | POST token/refresh/ | 200, 401 |
+  | POST quizzes/ | 201, 400, 401, 500 |
+  | GET quizzes/ | 200, 401 |
+  | GET quizzes/{id}/ | 200, 401, 403, 404 |
+  | PATCH quizzes/{id}/ | 200, 400, 401, 403, 404 |
+  | DELETE quizzes/{id}/ | 204, 401, 403, 404 |
+
+## Zyklen
+
+### Zyklus 1: Coverage-Analyse
+- **Aufgabe:** `pytest --cov-report=term-missing --cov-report=html` ausführen und die fehlenden Zeilen pro Datei notieren
+- **Für jede Lücke** einen Mini-Zyklus durchführen: Test schreiben, der die Lücke abdeckt → grün → Commit `test(<scope>): cover <verhalten>`
+- Nicht testbarer oder toter Code wird **entfernt** statt ausgenommen (`refactor: remove unused ...`)
+- [ ] Coverage ≥ 90 %
+
+### Zyklus 2: Abgleich mit dem API-Vertrag
+- **Aufgabe:** Für jede Zeile der Tabelle oben per `grep` den passenden Test suchen (z. B. `status_code == 403` in `quiz_app/tests/`)
+- Fehlt ein Code, gibt es einen Mini-Zyklus mit Test und Commit
+- [ ] Jeder Statuscode ist durch mindestens einen Test abgedeckt
+
+### Zyklus 3: Funktionslänge und Docstrings
+- **Aufgabe:** Ein Skript im Scratchpad (**nicht** ins Repo) mit `ast` zählt die Zeilen jeder Funktion in `core`, `auth_app` und `quiz_app` (ohne `migrations` und `tests`) und listet alle mit mehr als 14 Zeilen bzw. ohne Docstring
+- Jeden Fund refaktorieren; die Tests müssen grün bleiben. Commit: `refactor(<scope>): split <funktion>` bzw. `docs(<scope>): add missing docstrings`
+- [ ] 0 Funde
+
+### Zyklus 4: Struktur-Review
+- [ ] `views.py` enthält nur Views (keine Helper-Funktionen)
+- [ ] Kein auskommentierter Code (`grep -rn "^\s*# .*(" --include=*.py` stichprobenartig prüfen)
+- [ ] Keine Secrets im Repo (`git grep -i "api_key\s*="` liefert nur Settings und Env)
+- [ ] `python manage.py makemigrations --check` ist sauber
+- Commit je Korrektur
+
+## Abschluss-Check
+- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün, Coverage ≥ 90 %
+- [ ] Status von Schritt 16 auf `[x]` gesetzt (Commit `docs: mark step 16 done`)
+- [ ] Stopp → Review → `git merge --ff-only step/16-quality-gate`
