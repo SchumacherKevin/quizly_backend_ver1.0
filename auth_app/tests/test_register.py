@@ -65,3 +65,15 @@ def test_register_rejects_duplicate_email(api_client, user, email):
     assert response.status_code == 400
     assert response.json()["email"] == ["Email already exists."]
     assert not User.objects.filter(username="newuser").exists()
+
+
+@pytest.mark.django_db
+def test_register_rejects_password_mismatch(api_client):
+    """Different password and confirmation are rejected with 400."""
+    payload = _payload(confirmed_password="Other1234!")
+
+    response = _register(api_client, payload)
+
+    assert response.status_code == 400
+    assert response.json()["password"] == ["Passwords do not match."]
+    assert not User.objects.filter(username="newuser").exists()

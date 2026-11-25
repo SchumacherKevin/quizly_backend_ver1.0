@@ -59,7 +59,7 @@ Neue User können sich registrieren (User Story 1).
 - **Erwartetes Rot:** 201
 - **Green:** `validate(self, attrs)` vergleicht beide Felder und entfernt `confirmed_password` vor `create`
 - **Commit:** `feat(auth): validate password confirmation`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 6: Passwortstärke und Pflichtfelder
 - **Test:** `test_register_rejects_weak_password`: `"123"` als Passwort und Bestätigung ergibt 400 mit dem Key `"password"`

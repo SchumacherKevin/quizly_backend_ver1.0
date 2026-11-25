@@ -25,7 +25,15 @@ class RegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Email already exists.")
         return value
 
+    def validate(self, attrs):
+        """Ensure both passwords match and drop the confirmation."""
+        confirmed_password = attrs.pop("confirmed_password")
+        if attrs["password"] != confirmed_password:
+            raise serializers.ValidationError(
+                {"password": "Passwords do not match."}
+            )
+        return attrs
+
     def create(self, validated_data):
         """Create the user with a hashed password."""
-        validated_data.pop("confirmed_password")
         return User.objects.create_user(**validated_data)
