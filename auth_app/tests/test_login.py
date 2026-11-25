@@ -62,3 +62,20 @@ def test_login_rejects_invalid_credentials(
     assert response.json() == {"detail": "Invalid username or password."}
     assert "access_token" not in response.cookies
     assert "refresh_token" not in response.cookies
+
+
+@pytest.mark.parametrize(
+    ("payload", "missing"),
+    [
+        ({}, ["password", "username"]),
+        ({"username": "testuser"}, ["password"]),
+        ({"password": TEST_PASSWORD}, ["username"]),
+    ],
+    ids=["empty", "only-username", "only-password"],
+)
+def test_login_requires_username_and_password(api_client, payload, missing):
+    """Missing fields are reported per field with 400."""
+    response = _login(api_client, **payload)
+
+    assert response.status_code == 400
+    assert sorted(response.json()) == missing

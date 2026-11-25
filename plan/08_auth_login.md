@@ -52,7 +52,7 @@ Login mit Username und Passwort setzt `access_token` und `refresh_token` als Htt
 - **Test:** `test_login_requires_username_and_password` (parametrisiert: `{}`, nur Username, nur Passwort) ergibt 400 mit dem jeweiligen Feld-Key
 - **Erwartetes Rot:** vermutlich schon grün durch `serializer.is_valid(raise_exception=True)`; dann als Absicherung committen
 - **Commit:** `test(auth): require username and password on login`
-- [ ] erledigt
+- [x] erledigt (wie erwartet sofort grün, Absicherungstest)
 
 ### Zyklus 5: Inaktive User
 - **Test:** `test_login_rejects_inactive_user`: `user.is_active = False` ergibt 401 mit derselben allgemeinen Meldung
