@@ -106,7 +106,7 @@ Ein Zyklus wird nie mit roten Tests committet.
 | 06 | Register | [06_auth_register.md](06_auth_register.md) | [x] |
 | 07 | Cookie-Authentifizierung | [07_auth_cookie_authentication.md](07_auth_cookie_authentication.md) | [x] |
 | 08 | Login | [08_auth_login.md](08_auth_login.md) | [x] |
-| 09 | Logout und Refresh | [09_auth_logout_refresh.md](09_auth_logout_refresh.md) | [ ] |
+| 09 | Logout und Refresh | [09_auth_logout_refresh.md](09_auth_logout_refresh.md) | [x] |
 | 10 | Quiz lesen, ändern, löschen | [10_quiz_read_update_delete.md](10_quiz_read_update_delete.md) | [ ] |
 | 11 | YouTube-Service | [11_youtube_download.md](11_youtube_download.md) | [ ] |
 | 12 | Whisper-Service | [12_whisper_transcription.md](12_whisper_transcription.md) | [ ] |
