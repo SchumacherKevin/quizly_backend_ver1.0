@@ -40,7 +40,7 @@ DRF authentifiziert Requests über das HttpOnly-Cookie `access_token`. Cookie-He
 - **Test:** `test_authenticate_header_is_set`: `CookieJWTAuthentication().authenticate_header(request)` ist nicht leer (das sichert 401 statt 403)
 - **Erwartetes Rot:** Bei korrekt umgesetztem Zyklus 2 vermutlich schon grün; dann als Absicherung committen
 - **Commit:** `test(auth): cover invalid and expired access tokens`
-- [ ] erledigt
+- [x] erledigt (wie erwartet sofort grün, Absicherungstests)
 
 ### Zyklus 4: Cookie-Helper setzen
 - **Test:** `auth_app/tests/test_cookie_utils.py::test_set_auth_cookies_sets_httponly_cookies`
