@@ -63,7 +63,8 @@ pytest mit Coverage läuft, black/isort/flake8 sichern PEP8 automatisch, und die
 - **Verifikation:** `black --check . ; isort --check-only . ; flake8` liefern 0 Meldungen, und `pytest` ist grün.
 - **Hinweis:** Die Regel „Funktionen ≤ 14 Zeilen“ prüft flake8 nicht. Sie wird im Refactor-Schritt jedes Zyklus manuell geprüft und in Schritt 16 noch einmal geprüft.
 - **Commit:** `chore: configure black, isort and flake8 for pep8`
-- [ ] erledigt
+- **Umsetzungsnotiz:** Die von `startapp` erzeugten `admin.py`/`models.py` enthielten ungenutzte Imports (F401) und bestehen jetzt nur aus einem Docstring. Die Passwort-Validatoren in `settings.py` nutzen ein Präfix `PASSWORD_VALIDATION`, damit sie unter 79 Zeichen bleiben.
+- [x] erledigt
 
 ### Zyklus 3: Basis-Fixtures
 - **Test:** `core/tests/test_fixtures.py::test_user_fixture_has_hashed_password`
