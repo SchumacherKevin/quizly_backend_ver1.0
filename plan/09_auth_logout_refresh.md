@@ -88,4 +88,4 @@
 ## Abschluss-Check
 - [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
 - [ ] Status von Schritt 09 auf `[x]` gesetzt (Commit `docs: mark step 09 done`)
-- [ ] Stopp → Review → `git merge --ff-only step/09-logout-refresh`
+- [ ] Stopp → Review

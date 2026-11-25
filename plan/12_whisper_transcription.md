@@ -43,4 +43,4 @@
 - [ ] Kein Test lädt ein echtes Whisper-Modell
 - [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
 - [ ] Status von Schritt 12 auf `[x]` gesetzt (Commit `docs: mark step 12 done`)
-- [ ] Stopp → Review → `git merge --ff-only step/12-whisper`
+- [ ] Stopp → Review

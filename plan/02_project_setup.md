@@ -17,7 +17,6 @@ Lauffähiges, leeres Django-Projekt mit `.venv`, Abhängigkeiten und den Apps `c
 
 ### Zyklus 1: Repo-Basis und `.venv`
 - **Aufgaben:**
-  - (Kevin) `git switch -c step/02-setup`
   - `.gitignore` anlegen:
     ```
     .venv/
@@ -75,4 +74,4 @@ Lauffähiges, leeres Django-Projekt mit `.venv`, Abhängigkeiten und den Apps `c
 - [x] `python manage.py check` ist fehlerfrei
 - [x] `git status` ist sauber, und `.venv`, `db.sqlite3` sowie `.env` sind nicht getrackt
 - [x] Status von Schritt 02 in `00_overview.md` auf `[x]` gesetzt (Commit `docs: mark step 02 done`)
-- [ ] Stopp → Review mit Kevin → `git switch main ; git merge --ff-only step/02-setup`
+- [x] Stopp → Review mit Kevin

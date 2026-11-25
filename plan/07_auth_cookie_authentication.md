@@ -78,4 +78,4 @@ DRF authentifiziert Requests über das HttpOnly-Cookie `access_token`. Cookie-He
 ## Abschluss-Check
 - [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün (auch die Tests aus Schritt 06: Register bleibt öffentlich)
 - [ ] Status von Schritt 07 auf `[x]` gesetzt (Commit `docs: mark step 07 done`)
-- [ ] Stopp → Review → `git merge --ff-only step/07-cookie-auth`
+- [ ] Stopp → Review

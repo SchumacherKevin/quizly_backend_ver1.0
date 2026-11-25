@@ -86,4 +86,4 @@
 - [ ] Kein Test greift auf das Netz zu (z. B. ohne Internet ausführen bzw. jeden Test auf den Patch prüfen)
 - [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
 - [ ] Status von Schritt 11 auf `[x]` gesetzt (Commit `docs: mark step 11 done`)
-- [ ] Stopp → Review → `git merge --ff-only step/11-youtube`
+- [ ] Stopp → Review

@@ -79,22 +79,21 @@ Ein Zyklus wird nie mit roten Tests committet.
 
 ## Git-Workflow (alles macht Kevin)
 - **Claude führt keine verändernden Git-Befehle aus** (kein `add`, `commit`, `switch -c`, `merge`, `push`). Nur lesende Befehle wie `git status`, `git log` und `git diff` sind erlaubt.
-- Pro Schritt ein Branch: `step/NN-kurzname` (z. B. `step/06-register`)
-- Nach jedem Zyklus ein Commit auf dem Branch
-- Nach dem Review des Schritts: `git switch main ; git merge --ff-only step/NN-kurzname`
+- Es wird direkt auf `main` gearbeitet (keine Feature-Branches)
+- Nach jedem Zyklus ein Commit auf `main`
 - Commit-Präfixe: `feat`, `test`, `fix`, `refactor`, `chore`, `docs` mit Scope (`auth`, `quiz`, `core`)
 - Wo in den Schritt-Dateien „Commit:“ oder Git-Befehle stehen, sind das **Vorschläge bzw. Aufgaben für Kevin**.
 
 ## So arbeitet Claude einen Schritt ab
 1. Nur `00`, `01` und die Schritt-Datei lesen und keine anderen Plan-Dateien voraussetzen
-2. Vorbedingungen der Schritt-Datei prüfen: `git status`, `git log --oneline`, `pytest` grün, Status-Tabelle. Kevin hat den Branch angelegt.
+2. Vorbedingungen der Schritt-Datei prüfen: `git status`, `git log --oneline`, `pytest` grün, Status-Tabelle, und der letzte Zyklus ist committet.
 3. **Einen Zyklus** durchführen: Red → Green → Refactor → alle Checks grün → Checkbox abhaken
 4. **Stoppen** und Kevin geben:
    - die geänderten Dateien
    - die Testergebnisse
    - die fertige Commit-Message
 5. Kevin committet und sagt „weiter“ → nächster Zyklus
-6. Nach dem letzten Zyklus: Abschluss-Check, Status unten auf `[x]` setzen, kurze Zusammenfassung des Schritts (Abweichungen vom Plan) → Kevin reviewt und merged
+6. Nach dem letzten Zyklus: Abschluss-Check, Status unten auf `[x]` setzen, kurze Zusammenfassung des Schritts (Abweichungen vom Plan) → Kevin reviewt
 
 ## Status
 | # | Schritt | Datei | Status |

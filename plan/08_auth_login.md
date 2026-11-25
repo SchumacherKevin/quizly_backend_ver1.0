@@ -62,4 +62,4 @@ Login mit Username und Passwort setzt `access_token` und `refresh_token` als Htt
 ## Abschluss-Check
 - [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
 - [ ] Status von Schritt 08 auf `[x]` gesetzt (Commit `docs: mark step 08 done`)
-- [ ] Stopp → Review → `git merge --ff-only step/08-login`
+- [ ] Stopp → Review

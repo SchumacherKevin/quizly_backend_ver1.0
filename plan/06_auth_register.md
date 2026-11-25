@@ -73,4 +73,4 @@ Neue User können sich registrieren (User Story 1).
 - [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
 - [ ] Die View enthält nur die Response-Logik
 - [ ] Status von Schritt 06 auf `[x]` gesetzt (Commit `docs: mark step 06 done`)
-- [ ] Stopp → Review → `git merge --ff-only step/06-register`
+- [ ] Stopp → Review

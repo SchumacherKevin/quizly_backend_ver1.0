@@ -67,4 +67,4 @@ Datenmodell für Quizze und Fragen inklusive Validierung und der Fixture `quiz_f
 - [ ] `python manage.py makemigrations --check` meldet keine fehlenden Migrationen
 - [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
 - [ ] Status von Schritt 05 auf `[x]` gesetzt (Commit `docs: mark step 05 done`)
-- [ ] Stopp → Review → `git merge --ff-only step/05-models`
+- [ ] Stopp → Review

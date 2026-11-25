@@ -47,4 +47,4 @@ Im Django-Admin lassen sich Quizze (mit Fragen inline) und einzelne Fragen bearb
 - [ ] Manuell: `python manage.py createsuperuser`; unter `/admin/` ein Quiz und eine Frage bearbeiten
 - [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
 - [ ] Status von Schritt 15 auf `[x]` gesetzt (Commit `docs: mark step 15 done`)
-- [ ] Stopp → Review → `git merge --ff-only step/15-admin`
+- [ ] Stopp → Review

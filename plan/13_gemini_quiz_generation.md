@@ -96,4 +96,4 @@
 - [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
 - [ ] Optional manuell (zählt gegen das Kontingent): `python manage.py shell` und dort `generate_quiz("<kurzer Text>", "Test")`
 - [ ] Status von Schritt 13 auf `[x]` gesetzt (Commit `docs: mark step 13 done`)
-- [ ] Stopp → Review → `git merge --ff-only step/13-gemini`
+- [ ] Stopp → Review

@@ -102,4 +102,4 @@ Nur für den Owner (User Stories 5–7).
 ## Abschluss-Check
 - [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
 - [ ] Status von Schritt 10 auf `[x]` gesetzt (Commit `docs: mark step 10 done`)
-- [ ] Stopp → Review → `git merge --ff-only step/10-quiz-rud`
+- [ ] Stopp → Review

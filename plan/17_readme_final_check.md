@@ -88,4 +88,4 @@ Inhalt:
 - [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
 - [ ] Alle DoD-Zeilen abgehakt
 - [ ] Status von Schritt 17 auf `[x]` gesetzt (Commit `docs: mark step 17 done`)
-- [ ] Stopp → finales Review mit Kevin → `git merge --ff-only step/17-readme`
+- [ ] Stopp → finales Review mit Kevin

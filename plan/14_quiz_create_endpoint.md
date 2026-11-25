@@ -109,4 +109,4 @@ Aus einer YouTube-URL entsteht synchron ein gespeichertes Quiz; die Antwort ist 
 ## Abschluss-Check
 - [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
 - [ ] Status von Schritt 14 auf `[x]` gesetzt (Commit `docs: mark step 14 done`)
-- [ ] Stopp → Review → `git merge --ff-only step/14-quiz-create`
+- [ ] Stopp → Review

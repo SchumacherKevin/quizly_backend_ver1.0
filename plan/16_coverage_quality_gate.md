@@ -56,4 +56,4 @@ Die Tests sind durch TDD schon entstanden. Hier werden nur **Lücken gefunden un
 ## Abschluss-Check
 - [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün, Coverage ≥ 90 %
 - [ ] Status von Schritt 16 auf `[x]` gesetzt (Commit `docs: mark step 16 done`)
-- [ ] Stopp → Review → `git merge --ff-only step/16-quality-gate`
+- [ ] Stopp → Review

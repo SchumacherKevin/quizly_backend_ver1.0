@@ -48,7 +48,7 @@ MAX_VIDEO_MINUTES=15
 - **Erwartetes Rot:** `ImportError` für `get_list` / `get_int`
 - **Green:** `get_list(name, default) -> list[str]`, `get_int(name, default) -> int`
 - **Commit:** `feat(core): add list and int env helpers`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 3: Settings lesen `.env`
 - **Test:** `core/tests/test_settings.py::test_quizly_settings_have_expected_types`
@@ -90,4 +90,4 @@ MAX_VIDEO_MINUTES=15
 - [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
 - [ ] `.env` ist nicht getrackt, `.env.template` ist getrackt
 - [ ] Status von Schritt 04 auf `[x]` gesetzt (Commit `docs: mark step 04 done`)
-- [ ] Stopp → Review → `git merge --ff-only step/04-settings`
+- [ ] Stopp → Review
