@@ -4,7 +4,11 @@ import pytest
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
-from auth_app.utils import set_access_cookie, set_auth_cookies
+from auth_app.utils import (
+    delete_auth_cookies,
+    set_access_cookie,
+    set_auth_cookies,
+)
 
 
 def _assert_secure_flags(cookie):
@@ -40,3 +44,16 @@ def test_set_access_cookie_only_sets_access():
 
     assert response.cookies["access_token"].value == "abc"
     assert "refresh_token" not in response.cookies
+
+
+@pytest.mark.parametrize("name", ["access_token", "refresh_token"])
+def test_delete_auth_cookies_expires_both(name):
+    """Deleting the auth cookies empties and expires both of them."""
+    response = Response()
+
+    delete_auth_cookies(response)
+
+    cookie = response.cookies[name]
+    assert cookie.value == ""
+    assert cookie["max-age"] == 0
+    assert cookie["path"] == "/"

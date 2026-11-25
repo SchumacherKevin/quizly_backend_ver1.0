@@ -35,3 +35,11 @@ def set_auth_cookies(response, refresh):
     """Store the ``refresh`` token and its access token as cookies."""
     set_access_cookie(response, refresh.access_token)
     set_refresh_cookie(response, refresh)
+
+
+def delete_auth_cookies(response):
+    """Expire both JWT cookies on the client."""
+    for name in (ACCESS_COOKIE, REFRESH_COOKIE):
+        response.delete_cookie(
+            name, path="/", samesite=settings.AUTH_COOKIE_SAMESITE
+        )

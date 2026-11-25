@@ -64,7 +64,7 @@ DRF authentifiziert Requests über das HttpOnly-Cookie `access_token`. Cookie-He
 - **Erwartetes Rot:** `ImportError`
 - **Green:** `delete_auth_cookies(response)` mit `response.delete_cookie(name, path="/", samesite=...)` für beide Cookies
 - **Commit:** `feat(auth): add helper to delete auth cookies`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 6: Als Standard aktivieren, Fixture `auth_client`
 - **Test:** `test_default_authentication_class_is_cookie_jwt`: `settings.REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"] == ["auth_app.authentication.CookieJWTAuthentication"]`
