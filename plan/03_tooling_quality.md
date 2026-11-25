@@ -37,7 +37,7 @@ pytest mit Coverage läuft, black/isort/flake8 sichern PEP8 automatisch, und die
   omit = ["*/migrations/*", "*/tests/*", "manage.py", "core/asgi.py", "core/wsgi.py"]
   ```
 - **Commit:** `test(core): configure pytest-django with coverage and add smoke tests`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 2: Formatter und Linter
 - **Aufgaben:**

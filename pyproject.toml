@@ -1,0 +1,14 @@
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "core.settings"
+python_files = ["test_*.py"]
+addopts = "--cov --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["core", "auth_app", "quiz_app"]
+omit = [
+    "*/migrations/*",
+    "*/tests/*",
+    "manage.py",
+    "core/asgi.py",
+    "core/wsgi.py",
+]
