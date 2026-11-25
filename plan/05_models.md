@@ -61,11 +61,12 @@ Datenmodell für Quizze und Fragen inklusive Validierung und der Fixture `quiz_f
 - **Test:** `test_quiz_factory_creates_quiz_with_questions`: `quiz_factory(user, questions=3)` ergibt `quiz.owner == user` und `quiz.questions.count() == 3`; jede Frage besteht `full_clean()`
 - **Erwartetes Rot:** `fixture 'quiz_factory' not found`
 - **Green:** In `conftest.py` eine Fixture, die eine Funktion `make(owner, questions=2, title="Test Quiz")` zurückgibt. Fragen: `question_title=f"Question {i}"`, Optionen `["A", "B", "C", "D"]`, `answer="A"`.
+- **Refactor:** Das Anlegen der Fragen ist in `_create_questions(quiz, count)` ausgelagert (≤ 14 Zeilen); die lokale `quiz`-Fixture in `test_models.py` nutzt `quiz_factory(user, questions=0)`
 - **Commit:** `test(quiz): add quiz_factory fixture`
-- [ ] erledigt
+- [x] erledigt
 
 ## Abschluss-Check
-- [ ] `python manage.py makemigrations --check` meldet keine fehlenden Migrationen
-- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
-- [ ] Status von Schritt 05 auf `[x]` gesetzt (Commit `docs: mark step 05 done`)
-- [ ] Stopp → Review
+- [x] `python manage.py makemigrations --check` meldet keine fehlenden Migrationen
+- [x] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
+- [x] Status von Schritt 05 auf `[x]` gesetzt (Commit `docs: mark step 05 done`)
+- [x] Stopp → Review

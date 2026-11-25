@@ -10,9 +10,9 @@ OPTIONS = ["Option A", "Option B", "Option C", "Option D"]
 
 
 @pytest.fixture
-def quiz(user):
-    """Return a quiz owned by the default test user."""
-    return Quiz.objects.create(owner=user, title="Quiz", video_url=VIDEO_URL)
+def quiz(quiz_factory, user):
+    """Return a quiz without questions owned by the default test user."""
+    return quiz_factory(user, questions=0)
 
 
 @pytest.fixture
