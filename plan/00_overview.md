@@ -103,7 +103,7 @@ Ein Zyklus wird nie mit roten Tests committet.
 | 03 | Tooling, pytest, Qualität | [03_tooling_quality.md](03_tooling_quality.md) | [x] |
 | 04 | Settings, Env, CORS, JWT | [04_settings_cors_config.md](04_settings_cors_config.md) | [x] |
 | 05 | Models | [05_models.md](05_models.md) | [x] |
-| 06 | Register | [06_auth_register.md](06_auth_register.md) | [ ] |
+| 06 | Register | [06_auth_register.md](06_auth_register.md) | [x] |
 | 07 | Cookie-Authentifizierung | [07_auth_cookie_authentication.md](07_auth_cookie_authentication.md) | [ ] |
 | 08 | Login | [08_auth_login.md](08_auth_login.md) | [ ] |
 | 09 | Logout und Refresh | [09_auth_logout_refresh.md](09_auth_logout_refresh.md) | [ ] |
