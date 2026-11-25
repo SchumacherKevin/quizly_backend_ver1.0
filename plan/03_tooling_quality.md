@@ -81,9 +81,10 @@ pytest mit Coverage läuft, black/isort/flake8 sichern PEP8 automatisch, und die
   - `other_user(db)` analog mit `otheruser` / `other@example.com`
   - Docstrings für jede Fixture
 - **Commit:** `test: add shared api_client and user fixtures`
-- [ ] erledigt
+- **Umsetzungsnotiz:** Das Passwort steht als Konstante `TEST_PASSWORD` in `conftest.py`, damit spätere Tests es importieren können.
+- [x] erledigt
 
 ## Abschluss-Check
-- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
-- [ ] Status von Schritt 03 in `00_overview.md` auf `[x]` gesetzt (Commit `docs: mark step 03 done`)
+- [x] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
+- [x] Status von Schritt 03 in `00_overview.md` auf `[x]` gesetzt (Commit `docs: mark step 03 done`)
 - [ ] Stopp → Review → `git merge --ff-only step/03-tooling`

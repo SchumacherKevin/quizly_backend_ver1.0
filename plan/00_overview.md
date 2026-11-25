@@ -101,7 +101,7 @@ Ein Zyklus wird nie mit roten Tests committet.
 |---|---|---|---|
 | 01 | API-Vertrag (Referenz) | [01_api_contract.md](01_api_contract.md) | [x] |
 | 02 | Projekt-Setup und `.venv` | [02_project_setup.md](02_project_setup.md) | [x] |
-| 03 | Tooling, pytest, Qualität | [03_tooling_quality.md](03_tooling_quality.md) | [ ] |
+| 03 | Tooling, pytest, Qualität | [03_tooling_quality.md](03_tooling_quality.md) | [x] |
 | 04 | Settings, Env, CORS, JWT | [04_settings_cors_config.md](04_settings_cors_config.md) | [ ] |
 | 05 | Models | [05_models.md](05_models.md) | [ ] |
 | 06 | Register | [06_auth_register.md](06_auth_register.md) | [ ] |
