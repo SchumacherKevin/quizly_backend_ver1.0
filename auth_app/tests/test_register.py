@@ -1,0 +1,36 @@
+"""Tests for the registration endpoint POST /api/register/."""
+
+import pytest
+from django.contrib.auth.models import User
+from django.urls import reverse
+
+PASSWORD = "Test1234!"
+
+
+def _payload(**overrides):
+    """Return a valid registration payload with optional overrides."""
+    payload = {
+        "username": "newuser",
+        "email": "new@example.com",
+        "password": PASSWORD,
+        "confirmed_password": PASSWORD,
+    }
+    payload.update(overrides)
+    return payload
+
+
+def _register(api_client, payload):
+    """Post ``payload`` to the registration endpoint."""
+    return api_client.post(reverse("register"), payload, format="json")
+
+
+@pytest.mark.django_db
+def test_register_creates_user(api_client):
+    """A valid registration creates the user and returns 201."""
+    response = _register(api_client, _payload())
+
+    assert response.status_code == 201
+    assert response.json() == {"detail": "User created successfully!"}
+    user = User.objects.get(username="newuser")
+    assert user.email == "new@example.com"
+    assert user.check_password(PASSWORD)

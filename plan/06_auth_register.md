@@ -32,7 +32,7 @@ Neue User können sich registrieren (User Story 1).
   - `RegistrationView(APIView).post` gibt die Response zurück
   - URL `register/`
 - **Commit:** `feat(auth): add registration endpoint`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 2: Kein Login nach der Registrierung
 - **Test:** `test_register_sets_no_cookies`: Bei Erfolg enthält `response.cookies` weder `access_token` noch `refresh_token`
