@@ -47,7 +47,7 @@ Lauffähiges, leeres Django-Projekt mit `.venv`, Abhängigkeiten und den Apps `c
   - `ffmpeg -version` muss funktionieren
 - **Hinweis:** `openai-whisper` zieht `torch` mit (groß, das dauert). yt-dlp aktuell halten, weil YouTube alte Versionen blockiert.
 - **Commit:** `chore: add pinned runtime and dev requirements`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 3: Django-Projekt und Apps
 - **Aufgaben:**
