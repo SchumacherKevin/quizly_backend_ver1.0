@@ -27,3 +27,27 @@ class Quiz(models.Model):
     def __str__(self):
         """Return the quiz title."""
         return self.title
+
+
+class Question(models.Model):
+    """A multiple choice question with four options belonging to a quiz."""
+
+    quiz = models.ForeignKey(
+        Quiz,
+        on_delete=models.CASCADE,
+        related_name="questions",
+    )
+    question_title = models.CharField(max_length=500)
+    question_options = models.JSONField()
+    answer = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        """Keep questions in the order they were generated."""
+
+        ordering = ["id"]
+
+    def __str__(self):
+        """Return the question title."""
+        return self.question_title

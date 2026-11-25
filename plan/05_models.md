@@ -41,7 +41,7 @@ Datenmodell für Quizze und Fragen inklusive Validierung und der Fixture `quiz_f
 - **Erwartetes Rot:** `ImportError: Question`
 - **Green:** Model `Question` und eine Migration
 - **Commit:** `feat(quiz): add Question model with cascade delete`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 4: Validierung von Optionen und Antwort
 - **Test:** `test_question_clean_accepts_valid_data`: `question.full_clean()` mit 4 Strings und `answer` in den Optionen wirft keinen Fehler
