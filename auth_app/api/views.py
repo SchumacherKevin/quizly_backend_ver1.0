@@ -1,12 +1,17 @@
 """API views for auth_app."""
 
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from auth_app.api.serializers import LoginSerializer, RegistrationSerializer
 from auth_app.utils import authenticate_credentials, build_login_response
+
+LOGOUT_DETAIL = (
+    "Log-Out successfully! All Tokens will be deleted. "
+    "Refresh token is now invalid."
+)
 
 
 class RegistrationView(APIView):
@@ -47,3 +52,13 @@ class LoginView(APIView):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
         return build_login_response(user)
+
+
+class LogoutView(APIView):
+    """Log the current user out."""
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        """Confirm the logout."""
+        return Response({"detail": LOGOUT_DETAIL})

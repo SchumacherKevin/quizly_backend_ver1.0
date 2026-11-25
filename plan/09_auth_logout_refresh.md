@@ -27,7 +27,7 @@
 - **Erwartetes Rot:** `NoReverseMatch: 'logout'`
 - **Green:** `LogoutView(APIView)` mit `IsAuthenticated`, URL `logout/`
 - **Commit:** `feat(auth): add logout endpoint`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 2: Logout löscht die Cookies
 - **Test:** `test_logout_deletes_auth_cookies`: Für `access_token` und `refresh_token` gilt in `response.cookies` `max-age == 0` und `value == ""`
