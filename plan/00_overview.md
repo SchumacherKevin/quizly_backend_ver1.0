@@ -12,7 +12,7 @@ Das Backend liefert eine REST-API unter `http://127.0.0.1:8000/api/`.
 ## Entscheidungen
 | Thema | Entscheidung |
 |---|---|
-| Stack | Django + Django REST Framework, **Python 3.12**, SQLite |
+| Stack | Django + Django REST Framework, **Python 3.14**, SQLite |
 | Umgebung | `.venv` im Projektroot (nicht committen) |
 | Apps | `core` (Settings/URLs), `auth_app`, `quiz_app` |
 | Auth | simplejwt; HttpOnly-Cookies `access_token` / `refresh_token`; `CookieJWTAuthentication`; Access 5 min, Refresh 1 Tag; keine Rotation; Blacklist beim Logout; kein CSRF |

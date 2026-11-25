@@ -1,0 +1,12 @@
+.venv/
+.env
+db.sqlite3
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+media/
+*.webm
+*.m4a
+*.mp3

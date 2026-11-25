@@ -4,7 +4,7 @@
 Lauffähiges, leeres Django-Projekt mit `.venv`, Abhängigkeiten und den Apps `core`, `auth_app` und `quiz_app`. Ab diesem Stand kann in Schritt 03 per TDD gearbeitet werden.
 
 ## Kontext (eigenständig)
-- **Vorbedingungen:** Repo `quizly_backend_ver1.0` existiert (Branch `main`), der Ordner `plan/` ist committet. Python 3.12 und FFmpeg sind installiert.
+- **Vorbedingungen:** Repo `quizly_backend_ver1.0` existiert (Branch `main`), der Ordner `plan/` ist committet. Python 3.14 und FFmpeg sind installiert.
 - In diesem Schritt gibt es **noch keine automatisierten Tests**, weil pytest erst in 03 eingerichtet wird. Die Verifikation erfolgt manuell über `manage.py check`.
 - Shell: PowerShell (Windows).
 - Die Struktur muss dem Zielbild in `00_overview.md` entsprechen.
@@ -33,11 +33,11 @@ Lauffähiges, leeres Django-Projekt mit `.venv`, Abhängigkeiten und den Apps `c
     *.m4a
     *.mp3
     ```
-  - `py -3.12 -m venv .venv`, danach `.\.venv\Scripts\Activate.ps1` und `python -m pip install --upgrade pip`
-  - `python --version` muss 3.12.x ausgeben
+  - `py -3.14 -m venv .venv`, danach `.\.venv\Scripts\Activate.ps1` und `python -m pip install --upgrade pip`
+  - `python --version` muss 3.14.x ausgeben
 - **Verifikation:** `git status` zeigt `.venv/` **nicht** an.
 - **Commit:** `chore: add gitignore for python venv and local artifacts`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 2: Abhängigkeiten
 - **Aufgaben:**

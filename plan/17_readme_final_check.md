@@ -15,13 +15,13 @@ Eine aussagekräftige `README.md`, ein manueller End-to-End-Test mit dem echten 
 ### Zyklus 1: README schreiben
 Inhalt:
 - [ ] Projektbeschreibung und Features (YouTube → Quiz mit 10 Fragen)
-- [ ] Tech-Stack: Python 3.12, Django, DRF, simplejwt, django-cors-headers, yt-dlp, openai-whisper, google-genai
-- [ ] **Voraussetzungen:** Python 3.12, **FFmpeg global installiert** (Windows: `winget install ffmpeg` bzw. Download und `PATH` setzen; macOS: `brew install ffmpeg`); Prüfung mit `ffmpeg -version`
+- [ ] Tech-Stack: Python 3.14, Django, DRF, simplejwt, django-cors-headers, yt-dlp, openai-whisper, google-genai
+- [ ] **Voraussetzungen:** Python 3.14, **FFmpeg global installiert** (Windows: `winget install ffmpeg` bzw. Download und `PATH` setzen; macOS: `brew install ffmpeg`); Prüfung mit `ffmpeg -version`
 - [ ] Installation (PowerShell):
   ```powershell
   git clone <repo>
   cd quizly_backend_ver1.0
-  py -3.12 -m venv .venv
+  py -3.14 -m venv .venv
   .\.venv\Scripts\Activate.ps1
   pip install -r requirements.txt
   Copy-Item .env.template .env   # Werte eintragen (SECRET_KEY, GEMINI_API_KEY ...)
