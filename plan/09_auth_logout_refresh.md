@@ -75,7 +75,7 @@
 - **Test:** `test_refresh_does_not_return_tokens`: Body ist genau `{"detail": "Token refreshed"}`, und `"refresh_token"` steht nicht in `response.cookies`
 - **Erwartetes Rot:** vermutlich grün; als Absicherung committen
 - **Commit:** `test(auth): ensure refresh does not expose or rotate tokens`
-- [ ] erledigt
+- [x] erledigt (wie erwartet sofort grün, Absicherungstest)
 
 ### Zyklus 7: Ungültige, fehlende oder geblacklistete Tokens
 - **Test:** `test_refresh_without_cookie_returns_401`: 401 mit `{"detail": "Refresh token not found."}`

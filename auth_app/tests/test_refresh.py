@@ -20,3 +20,13 @@ def test_refresh_sets_new_access_cookie(api_client, user):
     cookie = response.cookies["access_token"]
     assert cookie["httponly"] is True
     assert AccessToken(cookie.value)["user_id"] == str(user.id)
+
+
+def test_refresh_does_not_return_tokens(api_client, user):
+    """No token is sent in the body and the refresh token is not rotated."""
+    api_client.cookies["refresh_token"] = str(RefreshToken.for_user(user))
+
+    response = _refresh(api_client)
+
+    assert response.json() == {"detail": "Token refreshed"}
+    assert "refresh_token" not in response.cookies
