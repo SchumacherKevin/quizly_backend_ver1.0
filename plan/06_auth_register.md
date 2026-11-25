@@ -38,7 +38,7 @@ Neue User können sich registrieren (User Story 1).
 - **Test:** `test_register_sets_no_cookies`: Bei Erfolg enthält `response.cookies` weder `access_token` noch `refresh_token`
 - **Erwartetes Rot:** keins, der Test ist von Anfang an grün (Absicherungs-Test). Trotzdem einzeln committen.
 - **Commit:** `test(auth): ensure registration does not log user in`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 3: Doppelter Username
 - **Test:** `test_register_rejects_duplicate_username`: Mit der Fixture `user` und Username `testuser` ergibt sich 400, und `"username" in response.json()`

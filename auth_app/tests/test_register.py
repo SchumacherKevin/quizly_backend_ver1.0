@@ -34,3 +34,13 @@ def test_register_creates_user(api_client):
     user = User.objects.get(username="newuser")
     assert user.email == "new@example.com"
     assert user.check_password(PASSWORD)
+
+
+@pytest.mark.django_db
+def test_register_sets_no_cookies(api_client):
+    """Registration does not log the user in, so no JWT cookies are set."""
+    response = _register(api_client, _payload())
+
+    assert response.status_code == 201
+    assert "access_token" not in response.cookies
+    assert "refresh_token" not in response.cookies
