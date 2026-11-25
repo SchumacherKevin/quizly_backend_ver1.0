@@ -77,3 +77,30 @@ def test_register_rejects_password_mismatch(api_client):
     assert response.status_code == 400
     assert response.json()["password"] == ["Passwords do not match."]
     assert not User.objects.filter(username="newuser").exists()
+
+
+@pytest.mark.django_db
+def test_register_rejects_weak_password(api_client):
+    """A password failing Django's validators is rejected with 400."""
+    payload = _payload(password="123", confirmed_password="123")
+
+    response = _register(api_client, payload)
+
+    assert response.status_code == 400
+    assert "password" in response.json()
+    assert not User.objects.filter(username="newuser").exists()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "missing", ["username", "email", "password", "confirmed_password"]
+)
+def test_register_requires_all_fields(api_client, missing):
+    """Each missing field is reported as a JSON error with 400."""
+    payload = _payload()
+    del payload[missing]
+
+    response = _register(api_client, payload)
+
+    assert response.status_code == 400
+    assert missing in response.json()

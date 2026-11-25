@@ -1,5 +1,6 @@
 """Serializers for the auth_app API."""
 
+from django.contrib.auth import password_validation
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
@@ -23,6 +24,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
         """Reject an email that is already used, ignoring case."""
         if User.objects.filter(email__iexact=value).exists():
             raise serializers.ValidationError("Email already exists.")
+        return value
+
+    def validate_password(self, value):
+        """Run Django's configured password validators."""
+        password_validation.validate_password(value)
         return value
 
     def validate(self, attrs):

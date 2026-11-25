@@ -66,11 +66,12 @@ Neue User können sich registrieren (User Story 1).
 - **Test:** `test_register_requires_all_fields` (parametrisiert, jeweils ein Feld weglassen): 400, das fehlende Feld steht im Body, und die Antwort ist gültiges JSON
 - **Erwartetes Rot:** schwaches Passwort ergibt 201
 - **Green:** `django.contrib.auth.password_validation.validate_password` in `validate_password` des Serializers
+- **Hinweis:** Die Pflichtfeld-Tests waren sofort grün (DRF prüft das selbst); rot war nur der Test mit dem schwachen Passwort.
 - **Commit:** `feat(auth): validate password strength and required fields`
-- [ ] erledigt
+- [x] erledigt
 
 ## Abschluss-Check
-- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
-- [ ] Die View enthält nur die Response-Logik
-- [ ] Status von Schritt 06 auf `[x]` gesetzt (Commit `docs: mark step 06 done`)
-- [ ] Stopp → Review
+- [x] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
+- [x] Die View enthält nur die Response-Logik
+- [x] Status von Schritt 06 auf `[x]` gesetzt (Commit `docs: mark step 06 done`)
+- [x] Stopp → Review
