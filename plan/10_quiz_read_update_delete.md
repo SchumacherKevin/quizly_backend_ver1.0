@@ -45,7 +45,7 @@ Nur für den Owner (User Stories 5–7).
 - **Erwartetes Rot:** abweichende Keys
 - **Green:** `QuestionSerializer` (ohne Timestamps) und nested `questions` (read_only) im `QuizSerializer`
 - **Commit:** `feat(quiz): serialize quizzes with nested questions`
-- [ ] erledigt
+- [x] erledigt
 
 ## Zyklen – Detail
 
