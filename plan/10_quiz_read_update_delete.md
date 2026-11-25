@@ -52,9 +52,9 @@ Nur für den Owner (User Stories 5–7).
 ### Zyklus 4: Eigenes Quiz abrufen
 - **Test:** `test_quiz_detail_returns_own_quiz`: 200 und `data["id"] == quiz.id`, `len(data["questions"]) == 2`
 - **Erwartetes Rot:** `NoReverseMatch: 'quiz-detail'`
-- **Green:** `QuizDetailView(RetrieveUpdateDestroyAPIView)`, Queryset `Quiz.objects.prefetch_related("questions")`
+- **Green:** `QuizDetailView(RetrieveAPIView)`, Queryset `Quiz.objects.prefetch_related("questions")`. Bewusst noch nicht `RetrieveUpdateDestroyAPIView`, damit PATCH (Zyklus 6) und DELETE (Zyklus 9) nicht ungetestet freigeschaltet werden; die Klasse wird dort erweitert.
 - **Commit:** `feat(quiz): add quiz detail endpoint`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 5: Fremdes Quiz, nicht vorhanden, ohne Login
 - **Test:** `test_quiz_detail_of_other_user_returns_403`: Quiz von `other_user` ergibt **403**
