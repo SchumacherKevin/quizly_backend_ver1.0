@@ -14,7 +14,16 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
         model = User
         fields = ["username", "email", "password", "confirmed_password"]
-        extra_kwargs = {"password": {"write_only": True}}
+        extra_kwargs = {
+            "password": {"write_only": True},
+            "email": {"required": True, "allow_blank": False},
+        }
+
+    def validate_email(self, value):
+        """Reject an email that is already used, ignoring case."""
+        if User.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError("Email already exists.")
+        return value
 
     def create(self, validated_data):
         """Create the user with a hashed password."""

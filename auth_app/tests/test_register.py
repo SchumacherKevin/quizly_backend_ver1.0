@@ -55,3 +55,13 @@ def test_register_rejects_duplicate_username(api_client, user):
     assert response.status_code == 400
     assert "username" in response.json()
     assert User.objects.filter(username=user.username).count() == 1
+
+
+@pytest.mark.parametrize("email", ["test@example.com", "TEST@Example.com"])
+def test_register_rejects_duplicate_email(api_client, user, email):
+    """An email that is already used is rejected, ignoring case."""
+    response = _register(api_client, _payload(email=email))
+
+    assert response.status_code == 400
+    assert response.json()["email"] == ["Email already exists."]
+    assert not User.objects.filter(username="newuser").exists()

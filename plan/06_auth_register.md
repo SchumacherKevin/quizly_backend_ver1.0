@@ -52,7 +52,7 @@ Neue User können sich registrieren (User Story 1).
 - **Erwartetes Rot:** 201, weil die E-Mail bisher nicht geprüft wird
 - **Green:** `validate_email` mit `User.objects.filter(email__iexact=value).exists()`; die E-Mail ist Pflichtfeld (`required=True`)
 - **Commit:** `feat(auth): enforce unique email on registration`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 5: Passwörter stimmen nicht überein
 - **Test:** `test_register_rejects_password_mismatch`: `confirmed_password="Other1234!"` ergibt 400 und `response.json()["password"] == ["Passwords do not match."]`; es wird kein User angelegt
