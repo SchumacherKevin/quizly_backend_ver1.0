@@ -6,6 +6,7 @@ in the project root (see ``.env.template``).
 """
 
 import os
+from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -33,6 +34,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "corsheaders",
+    "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
     "auth_app",
     "quiz_app",
 ]
@@ -126,6 +129,28 @@ CORS_ALLOWED_ORIGINS = get_list(
 )
 
 CORS_ALLOW_CREDENTIALS = True
+
+
+# Django REST framework
+# CookieJWTAuthentication is added in step 07.
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}
+
+
+# JWT (simplejwt) and auth cookies
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+}
+
+AUTH_COOKIE_SAMESITE = "Lax"
+
+AUTH_COOKIE_SECURE = not DEBUG
 
 
 # Quizly

@@ -80,14 +80,15 @@ MAX_VIDEO_MINUTES=15
 - **Test:** `test_simple_jwt_lifetimes`: `ACCESS_TOKEN_LIFETIME == timedelta(minutes=5)`, `REFRESH_TOKEN_LIFETIME == timedelta(days=1)`, `ROTATE_REFRESH_TOKENS is False`
 - **Test:** `test_token_blacklist_installed`: `"rest_framework_simplejwt.token_blacklist" in settings.INSTALLED_APPS` und `"rest_framework" in settings.INSTALLED_APPS`
 - **Test:** `test_default_permission_is_authenticated`: `settings.REST_FRAMEWORK["DEFAULT_PERMISSION_CLASSES"] == ["rest_framework.permissions.IsAuthenticated"]`
-- **Test:** `test_auth_cookie_settings`: `settings.AUTH_COOKIE_SAMESITE == "Lax"` und `settings.AUTH_COOKIE_SECURE == (not settings.DEBUG)`
+- **Test:** `test_auth_cookie_settings`: `settings.AUTH_COOKIE_SAMESITE == "Lax"` und `settings.AUTH_COOKIE_SECURE is (not get_bool("DEBUG", False))`
+  - Achtung: Der Test-Runner setzt `settings.DEBUG` immer auf `False`. Deshalb wird gegen den Env-Wert verglichen, nicht gegen `settings.DEBUG`.
 - **Erwartetes Rot:** `AttributeError` bzw. `KeyError: 'SIMPLE_JWT'`
 - **Green:** Werte in `settings.py` eintragen; danach `python manage.py migrate` (legt die Blacklist-Tabellen an)
 - **Commit:** `feat(core): configure DRF defaults, simplejwt and blacklist`
-- [ ] erledigt
+- [x] erledigt
 
 ## Abschluss-Check
-- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
-- [ ] `.env` ist nicht getrackt, `.env.template` ist getrackt
-- [ ] Status von Schritt 04 auf `[x]` gesetzt (Commit `docs: mark step 04 done`)
-- [ ] Stopp → Review
+- [x] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
+- [x] `.env` ist nicht getrackt, `.env.template` ist getrackt
+- [x] Status von Schritt 04 auf `[x]` gesetzt (Commit `docs: mark step 04 done`)
+- [x] Stopp → Review
