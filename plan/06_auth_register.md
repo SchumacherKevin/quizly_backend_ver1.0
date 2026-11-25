@@ -44,7 +44,7 @@ Neue User können sich registrieren (User Story 1).
 - **Test:** `test_register_rejects_duplicate_username`: Mit der Fixture `user` und Username `testuser` ergibt sich 400, und `"username" in response.json()`
 - **Erwartetes Rot:** möglicherweise schon grün durch den Model-Validator. Dann gilt Zyklus 2 entsprechend: als Absicherung committen.
 - **Commit:** `test(auth): reject duplicate username on registration`
-- [ ] erledigt
+- [x] erledigt (war sofort grün durch den Unique-Validator des User-Models)
 
 ### Zyklus 4: Doppelte E-Mail (Groß-/Kleinschreibung egal)
 - **Test:** `test_register_rejects_duplicate_email` (parametrisiert: `test@example.com`, `TEST@Example.com`)

@@ -44,3 +44,14 @@ def test_register_sets_no_cookies(api_client):
     assert response.status_code == 201
     assert "access_token" not in response.cookies
     assert "refresh_token" not in response.cookies
+
+
+def test_register_rejects_duplicate_username(api_client, user):
+    """A username that is already taken is rejected with 400."""
+    payload = _payload(username=user.username)
+
+    response = _register(api_client, payload)
+
+    assert response.status_code == 400
+    assert "username" in response.json()
+    assert User.objects.filter(username=user.username).count() == 1
