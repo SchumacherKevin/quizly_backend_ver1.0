@@ -74,7 +74,7 @@ MAX_VIDEO_MINUTES=15
 - **Erwartetes Rot:** `KeyError: 'Access-Control-Allow-Origin'`
 - **Green:** `corsheaders` in `INSTALLED_APPS`; `CorsMiddleware` **ganz oben** in `MIDDLEWARE`; `CORS_ALLOWED_ORIGINS = get_list("CORS_ORIGINS", [...])`; `CORS_ALLOW_CREDENTIALS = True`
 - **Commit:** `feat(core): enable CORS with credentials for frontend origins`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 5: DRF- und simplejwt-Konfiguration
 - **Test:** `test_simple_jwt_lifetimes`: `ACCESS_TOKEN_LIFETIME == timedelta(minutes=5)`, `REFRESH_TOKEN_LIFETIME == timedelta(days=1)`, `ROTATE_REFRESH_TOKENS is False`
