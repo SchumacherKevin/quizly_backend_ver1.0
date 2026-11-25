@@ -30,9 +30,9 @@ Datenmodell für Quizze und Fragen inklusive Validierung und der Fixture `quiz_f
 ### Zyklus 2: Sortierung, neueste zuerst
 - **Test:** `test_quizzes_ordered_newest_first`: drei Quizze anlegen, danach liefert `list(Quiz.objects.all())` die umgekehrte Anlage-Reihenfolge
 - **Erwartetes Rot:** Die Reihenfolge stimmt nicht
-- **Green:** `Meta.ordering = ["-created_at"]` und eine Migration
+- **Green:** `Meta.ordering = ["-created_at", "-id"]` und eine Migration (`-id` als Tie-Breaker, weil schnell hintereinander angelegte Quizze den gleichen Zeitstempel haben können). Außerdem `verbose_name_plural = "quizzes"` für den Admin.
 - **Commit:** `feat(quiz): order quizzes by newest first`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 3: Question anlegen und Cascade
 - **Test:** `test_question_str_returns_title`: Frage mit 4 Optionen anlegen, `str(question) == question_title`

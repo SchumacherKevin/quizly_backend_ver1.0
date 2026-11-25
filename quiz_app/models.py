@@ -18,6 +18,12 @@ class Quiz(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        """Show the newest quiz first; the id breaks timestamp ties."""
+
+        ordering = ["-created_at", "-id"]
+        verbose_name_plural = "quizzes"
+
     def __str__(self):
         """Return the quiz title."""
         return self.title
