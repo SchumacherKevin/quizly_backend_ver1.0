@@ -34,7 +34,7 @@
 - **Erwartetes Rot:** `KeyError: 'access_token'`
 - **Green:** `delete_auth_cookies(response)` in der View
 - **Commit:** `feat(auth): delete auth cookies on logout`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 3: Logout blacklistet den Refresh-Token
 - **Test:** `test_logout_blacklists_refresh_token`

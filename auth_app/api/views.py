@@ -6,7 +6,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from auth_app.api.serializers import LoginSerializer, RegistrationSerializer
-from auth_app.utils import authenticate_credentials, build_login_response
+from auth_app.utils import (
+    authenticate_credentials,
+    build_login_response,
+    delete_auth_cookies,
+)
 
 LOGOUT_DETAIL = (
     "Log-Out successfully! All Tokens will be deleted. "
@@ -60,5 +64,7 @@ class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        """Confirm the logout."""
-        return Response({"detail": LOGOUT_DETAIL})
+        """Delete the auth cookies and confirm the logout."""
+        response = Response({"detail": LOGOUT_DETAIL})
+        delete_auth_cookies(response)
+        return response
