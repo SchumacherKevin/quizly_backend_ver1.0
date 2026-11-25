@@ -68,10 +68,11 @@ Lauffähiges, leeres Django-Projekt mit `.venv`, Abhängigkeiten und den Apps `c
     ```
 - **Verifikation:** `python manage.py check` meldet keine Fehler; `python manage.py migrate` läuft durch; `python manage.py runserver` zeigt die Django-Seite auf `http://127.0.0.1:8000/admin/`.
 - **Commit:** `chore: scaffold django project with core, auth_app and quiz_app`
-- [ ] erledigt
+- **Umsetzungsnotiz:** Die von `startapp` erzeugten `views.py` im App-Root wurden entfernt, weil alle Views in `api/views.py` liegen.
+- [x] erledigt
 
 ## Abschluss-Check
-- [ ] `python manage.py check` ist fehlerfrei
-- [ ] `git status` ist sauber, und `.venv`, `db.sqlite3` sowie `.env` sind nicht getrackt
-- [ ] Status von Schritt 02 in `00_overview.md` auf `[x]` gesetzt (Commit `docs: mark step 02 done`)
+- [x] `python manage.py check` ist fehlerfrei
+- [x] `git status` ist sauber, und `.venv`, `db.sqlite3` sowie `.env` sind nicht getrackt
+- [x] Status von Schritt 02 in `00_overview.md` auf `[x]` gesetzt (Commit `docs: mark step 02 done`)
 - [ ] Stopp → Review mit Kevin → `git switch main ; git merge --ff-only step/02-setup`
