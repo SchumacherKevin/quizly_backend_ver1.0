@@ -33,8 +33,17 @@ class LoginView(APIView):
     authentication_classes = []
 
     def post(self, request):
-        """Return the user data for valid credentials."""
+        """Return user data and cookies, or a generic 401.
+
+        The 401 is returned explicitly: with ``authentication_classes = []``
+        DRF would turn ``AuthenticationFailed`` into a 403.
+        """
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = authenticate_credentials(serializer.validated_data)
+        if user is None:
+            return Response(
+                {"detail": "Invalid username or password."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
         return build_login_response(user)

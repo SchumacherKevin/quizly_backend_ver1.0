@@ -46,7 +46,7 @@ Login mit Username und Passwort setzt `access_token` und `refresh_token` als Htt
 - **Erwartetes Rot:** 200 oder ein Fehler, weil `authenticate` `None` liefert
 - **Green:** Liefert `authenticate_credentials` `None`, gibt die View `Response({"detail": "Invalid username or password."}, status=401)` zurück
 - **Commit:** `feat(auth): return generic 401 on invalid login`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 4: Fehlende Felder ergeben 400
 - **Test:** `test_login_requires_username_and_password` (parametrisiert: `{}`, nur Username, nur Passwort) ergibt 400 mit dem jeweiligen Feld-Key

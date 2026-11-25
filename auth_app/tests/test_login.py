@@ -1,5 +1,6 @@
 """Tests for the login endpoint POST /api/login/."""
 
+import pytest
 from django.urls import reverse
 
 from conftest import TEST_PASSWORD
@@ -44,3 +45,20 @@ def test_login_does_not_expose_tokens_in_body(api_client, user):
     assert "refresh" not in body
     assert response.cookies["access_token"].value not in body
     assert response.cookies["refresh_token"].value not in body
+
+
+@pytest.mark.parametrize(
+    ("username", "password"),
+    [("testuser", "Wrong1234!"), ("ghost", TEST_PASSWORD)],
+    ids=["wrong-password", "unknown-user"],
+)
+def test_login_rejects_invalid_credentials(
+    api_client, user, username, password
+):
+    """Invalid credentials get a generic 401 without cookies."""
+    response = _login(api_client, username=username, password=password)
+
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Invalid username or password."}
+    assert "access_token" not in response.cookies
+    assert "refresh_token" not in response.cookies
