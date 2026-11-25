@@ -31,3 +31,41 @@ def test_patch_updates_title_and_description(auth_client, user, quiz_factory):
     assert quiz.title == "New"
     assert quiz.description == "Desc"
     assert quiz.updated_at > old_updated_at
+
+
+def test_patch_ignores_read_only_fields(auth_client, user, quiz_factory):
+    """Video URL and questions cannot be changed via PATCH."""
+    quiz = quiz_factory(user, questions=2)
+    old_video_url = quiz.video_url
+
+    response = _patch(
+        auth_client,
+        quiz.id,
+        {"video_url": "https://example.com", "questions": []},
+    )
+
+    assert response.status_code == 200
+    quiz.refresh_from_db()
+    assert quiz.video_url == old_video_url
+    assert quiz.questions.count() == 2
+
+
+def test_patch_rejects_empty_title(auth_client, user, quiz_factory):
+    """An empty title is rejected with 400."""
+    quiz = quiz_factory(user)
+
+    response = _patch(auth_client, quiz.id, {"title": ""})
+
+    assert response.status_code == 400
+    assert "title" in response.json()
+
+
+def test_put_not_allowed(auth_client, user, quiz_factory):
+    """PUT is not supported on the quiz detail endpoint."""
+    quiz = quiz_factory(user)
+
+    response = auth_client.put(
+        _detail_url(quiz.id), {"title": "New"}, format="json"
+    )
+
+    assert response.status_code == 405

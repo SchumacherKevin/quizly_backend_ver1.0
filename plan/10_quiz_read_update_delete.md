@@ -82,8 +82,9 @@ Nur für den Owner (User Stories 5–7).
 - **Test:** `test_patch_rejects_empty_title`: `{"title": ""}` ergibt 400 mit dem Key `"title"`
 - **Test:** `test_put_not_allowed`: PUT ergibt 405
 - **Erwartetes Rot:** einzeln prüfen, was rot ist
-- **Commit:** `feat(quiz): validate quiz patch input`
-- [ ] erledigt
+- **Ergebnis:** alle drei sofort grün (`QuizUpdateSerializer` kennt nur `title`/`description`, `CharField` verbietet leere Werte, `http_method_names` schließt PUT aus). Deshalb als Absicherung mit `test(...)` committet.
+- **Commit:** `test(quiz): cover quiz patch input validation`
+- [x] erledigt
 
 ### Zyklus 8: PATCH auf fremde oder fehlende Quizze
 - **Test:** `test_patch_other_users_quiz_returns_403`, `test_patch_missing_quiz_returns_404`, `test_patch_requires_auth` (401); beim 403-Fall bleibt die DB unverändert
