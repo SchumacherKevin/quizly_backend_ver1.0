@@ -84,10 +84,12 @@
 - **Test:** `test_refresh_after_logout_fails`: Logout mit `auth_client`, danach den Refresh mit dem **alten** Refresh-Wert erneut setzen; Ergebnis 401
 - **Erwartetes Rot:** Exception (`TokenError`) oder 403
 - **Green:** `TokenError` abfangen und explizit 401 zurückgeben
+- **Falle:** Ohne Cookie lieferte die View zuerst **200**, weil `RefreshToken(None)` einen neuen Token erzeugt. Deshalb wird `None` vor dem Aufruf geprüft.
+- **Refactor:** `unauthorized_response(detail)` in `auth_app/utils.py`, das auch `LoginView` nutzt (views.py enthält nur Views). Geblacklistete Tokens bekommen dieselbe Meldung `"Refresh token invalid."`.
 - **Commit:** `feat(auth): reject missing, invalid and blacklisted refresh tokens`
-- [ ] erledigt
+- [x] erledigt
 
 ## Abschluss-Check
-- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
-- [ ] Status von Schritt 09 auf `[x]` gesetzt (Commit `docs: mark step 09 done`)
-- [ ] Stopp → Review
+- [x] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
+- [x] Status von Schritt 09 auf `[x]` gesetzt (Commit `docs: mark step 09 done`)
+- [x] Stopp → Review

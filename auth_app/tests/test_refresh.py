@@ -30,3 +30,44 @@ def test_refresh_does_not_return_tokens(api_client, user):
 
     assert response.json() == {"detail": "Token refreshed"}
     assert "refresh_token" not in response.cookies
+
+
+def test_refresh_without_cookie_returns_401(api_client):
+    """A missing refresh cookie is rejected with 401."""
+    response = _refresh(api_client)
+
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Refresh token not found."}
+
+
+def test_refresh_with_invalid_cookie_returns_401(api_client):
+    """A malformed refresh cookie is rejected with 401."""
+    api_client.cookies["refresh_token"] = "garbage"
+
+    response = _refresh(api_client)
+
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Refresh token invalid."}
+
+
+def test_refresh_with_blacklisted_token_returns_401(api_client, user):
+    """A blacklisted refresh token is rejected with 401."""
+    refresh = RefreshToken.for_user(user)
+    refresh.blacklist()
+    api_client.cookies["refresh_token"] = str(refresh)
+
+    response = _refresh(api_client)
+
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Refresh token invalid."}
+
+
+def test_refresh_after_logout_fails(auth_client):
+    """The old refresh token cannot be used after logging out."""
+    old_refresh = auth_client.cookies["refresh_token"].value
+    auth_client.post(reverse("logout"))
+    auth_client.cookies["refresh_token"] = old_refresh
+
+    response = _refresh(auth_client)
+
+    assert response.status_code == 401

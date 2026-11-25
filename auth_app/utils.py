@@ -2,6 +2,7 @@
 
 from django.conf import settings
 from django.contrib.auth import authenticate
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -46,6 +47,11 @@ def set_auth_cookies(response, refresh):
 def authenticate_credentials(data):
     """Return the user for ``username`` and ``password`` or ``None``."""
     return authenticate(username=data["username"], password=data["password"])
+
+
+def unauthorized_response(detail):
+    """Return a 401 response with the message ``detail``."""
+    return Response({"detail": detail}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 def build_login_response(user):

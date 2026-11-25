@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.exceptions import TokenError
 
 from auth_app.api.serializers import LoginSerializer, RegistrationSerializer
 from auth_app.utils import (
@@ -14,6 +15,7 @@ from auth_app.utils import (
     delete_auth_cookies,
     refresh_access_token,
     set_access_cookie,
+    unauthorized_response,
 )
 
 LOGOUT_DETAIL = (
@@ -55,10 +57,7 @@ class LoginView(APIView):
         serializer.is_valid(raise_exception=True)
         user = authenticate_credentials(serializer.validated_data)
         if user is None:
-            return Response(
-                {"detail": "Invalid username or password."},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
+            return unauthorized_response("Invalid username or password.")
         return build_login_response(user)
 
 
@@ -82,8 +81,18 @@ class CookieTokenRefreshView(APIView):
     authentication_classes = []
 
     def post(self, request):
-        """Set a fresh access token cookie."""
+        """Set a fresh access cookie or answer 401 explicitly.
+
+        Explicit 401 responses are needed because DRF would turn auth
+        errors into 403 when ``authentication_classes`` is empty.
+        """
         raw_token = request.COOKIES.get(REFRESH_COOKIE)
+        if raw_token is None:
+            return unauthorized_response("Refresh token not found.")
+        try:
+            access_token = refresh_access_token(raw_token)
+        except TokenError:
+            return unauthorized_response("Refresh token invalid.")
         response = Response({"detail": "Token refreshed"})
-        set_access_cookie(response, refresh_access_token(raw_token))
+        set_access_cookie(response, access_token)
         return response
