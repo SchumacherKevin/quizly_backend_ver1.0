@@ -69,7 +69,7 @@
   - `refresh_access_token(raw) -> str` in `utils.py` gibt `str(RefreshToken(raw).access_token)` zurück
   - `set_access_cookie` setzt das Cookie
 - **Commit:** `feat(auth): add cookie based token refresh endpoint`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 6: Kein Token im Body und keine Rotation
 - **Test:** `test_refresh_does_not_return_tokens`: Body ist genau `{"detail": "Token refreshed"}`, und `"refresh_token"` steht nicht in `response.cookies`

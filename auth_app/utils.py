@@ -71,6 +71,11 @@ def blacklist_refresh_token(raw_token):
         pass
 
 
+def refresh_access_token(raw_token):
+    """Return a new access token string for the refresh ``raw_token``."""
+    return str(RefreshToken(raw_token).access_token)
+
+
 def delete_auth_cookies(response):
     """Expire both JWT cookies on the client."""
     for name in (ACCESS_COOKIE, REFRESH_COOKIE):

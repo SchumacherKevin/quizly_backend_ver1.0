@@ -12,6 +12,8 @@ from auth_app.utils import (
     blacklist_refresh_token,
     build_login_response,
     delete_auth_cookies,
+    refresh_access_token,
+    set_access_cookie,
 )
 
 LOGOUT_DETAIL = (
@@ -70,4 +72,18 @@ class LogoutView(APIView):
         blacklist_refresh_token(request.COOKIES.get(REFRESH_COOKIE))
         response = Response({"detail": LOGOUT_DETAIL})
         delete_auth_cookies(response)
+        return response
+
+
+class CookieTokenRefreshView(APIView):
+    """Issue a new access cookie from the refresh cookie."""
+
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def post(self, request):
+        """Set a fresh access token cookie."""
+        raw_token = request.COOKIES.get(REFRESH_COOKIE)
+        response = Response({"detail": "Token refreshed"})
+        set_access_cookie(response, refresh_access_token(raw_token))
         return response
