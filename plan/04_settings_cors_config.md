@@ -64,7 +64,7 @@ MAX_VIDEO_MINUTES=15
   - `.env.template` committen; `.env` lokal aus dem Template erzeugen (mit einem echten, zufälligen `SECRET_KEY`)
 - **Hinweis:** Für pytest muss `.env` existieren. Im README (Schritt 17) vermerken.
 - **Commit:** `feat(core): load settings from environment via dotenv`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 4: CORS mit Credentials
 - **Test:** `test_cors_preflight_allows_frontend_origin`
