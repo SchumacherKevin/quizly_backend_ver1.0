@@ -28,8 +28,9 @@ Login mit Username und Passwort setzt `access_token` und `refresh_token` als Htt
   - `authenticate_credentials(data)` in `auth_app/utils.py` ruft `django.contrib.auth.authenticate` auf
   - `LoginView` (`AllowAny`, `authentication_classes = []`)
   - URL `login/`
+- **Hinweis:** Die User-Daten liefert ein `UserSerializer` (`id`, `username`, `email`) in `auth_app/api/serializers.py`
 - **Commit:** `feat(auth): add login endpoint returning user data`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 2: Cookies werden gesetzt
 - **Test:** `test_login_sets_httponly_cookies`: `response.cookies["access_token"]["httponly"]` und `response.cookies["refresh_token"]["httponly"]` sind `True`, die Werte sind nicht leer

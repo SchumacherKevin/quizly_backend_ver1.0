@@ -43,3 +43,20 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """Create the user with a hashed password."""
         return User.objects.create_user(**validated_data)
+
+
+class LoginSerializer(serializers.Serializer):
+    """Validate that username and password are present."""
+
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """Public user data returned after login."""
+
+    class Meta:
+        """Expose only non sensitive user fields."""
+
+        model = User
+        fields = ["id", "username", "email"]

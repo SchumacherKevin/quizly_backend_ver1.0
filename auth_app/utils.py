@@ -1,6 +1,7 @@
 """Helpers for the JWT auth cookies."""
 
 from django.conf import settings
+from django.contrib.auth import authenticate
 
 ACCESS_COOKIE = "access_token"
 REFRESH_COOKIE = "refresh_token"
@@ -35,6 +36,11 @@ def set_auth_cookies(response, refresh):
     """Store the ``refresh`` token and its access token as cookies."""
     set_access_cookie(response, refresh.access_token)
     set_refresh_cookie(response, refresh)
+
+
+def authenticate_credentials(data):
+    """Return the user for ``username`` and ``password`` or ``None``."""
+    return authenticate(username=data["username"], password=data["password"])
 
 
 def delete_auth_cookies(response):
