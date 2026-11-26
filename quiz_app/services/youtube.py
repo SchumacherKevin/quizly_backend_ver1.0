@@ -13,14 +13,6 @@ WATCH_HOSTS = {"www.youtube.com", "youtube.com", "m.youtube.com"}
 SHORT_HOSTS = {"youtu.be"}
 VIDEO_ID_PATTERN = re.compile(r"^[A-Za-z0-9_-]{11}$")
 WATCH_URL = "https://www.youtube.com/watch?v={video_id}"
-# "no-certifi": verify TLS against the OS certificate store instead of
-# certifi, so HTTPS scanners with their own root CA (antivirus web shields)
-# do not break the download. Certificates are still verified.
-INFO_OPTIONS = {
-    "quiet": True,
-    "noplaylist": True,
-    "compat_opts": {"no-certifi"},
-}
 AUDIO_TEMPLATE = "audio.%(ext)s"
 LOAD_ERROR = "Video could not be loaded."
 
@@ -99,6 +91,25 @@ def normalize_url(video_id: str) -> str:
     return WATCH_URL.format(video_id=video_id)
 
 
+def base_options() -> dict:
+    """Build the yt-dlp options shared by metadata fetch and download.
+
+    A new dict is returned on every call because yt-dlp writes its own
+    defaults (e.g. ``outtmpl``) into the dict it receives. ``no-certifi``
+    verifies TLS against the OS certificate store instead of certifi, so
+    HTTPS scanners with their own root CA (antivirus web shields) work;
+    certificates are still verified.
+
+    Returns:
+        A fresh options dict for ``yt_dlp.YoutubeDL``.
+    """
+    return {
+        "quiet": True,
+        "noplaylist": True,
+        "compat_opts": {"no-certifi"},
+    }
+
+
 def fetch_video_info(url: str) -> dict:
     """Load the video metadata without downloading anything.
 
@@ -112,7 +123,7 @@ def fetch_video_info(url: str) -> dict:
         InvalidVideoError: If yt-dlp cannot load the video.
     """
     try:
-        with yt_dlp.YoutubeDL(INFO_OPTIONS) as ydl:
+        with yt_dlp.YoutubeDL(base_options()) as ydl:
             return ydl.extract_info(url, download=False)
     except yt_dlp.utils.DownloadError as error:
         raise InvalidVideoError(LOAD_ERROR) from error
@@ -146,9 +157,9 @@ def build_download_options(target_dir) -> dict:
         The options dict for ``yt_dlp.YoutubeDL``.
     """
     return {
+        **base_options(),
         "format": "bestaudio/best",
         "outtmpl": str(Path(target_dir) / AUDIO_TEMPLATE),
-        **INFO_OPTIONS,
     }
 
 

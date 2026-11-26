@@ -1,6 +1,6 @@
 """Tests for the YouTube service (no network access)."""
 
-from unittest.mock import patch
+from unittest.mock import DEFAULT, patch
 
 import pytest
 import yt_dlp
@@ -163,3 +163,26 @@ def test_download_options_prefer_system_certificates(tmp_path):
     options = build_download_options(tmp_path)
 
     assert "no-certifi" in options["compat_opts"]
+
+
+def _mutate_like_yt_dlp(options):
+    """Mimic yt-dlp, which writes its defaults into the passed dict."""
+    options["outtmpl"] = {"default": "%(title)s [%(id)s].%(ext)s"}
+    return DEFAULT
+
+
+def test_fetch_video_info_does_not_leak_into_download_options(
+    ydl_cls, tmp_path
+):
+    """A metadata fetch must not change where the audio is saved.
+
+    yt-dlp mutates its options dict; sharing one dict made downloads
+    land in the working directory instead of ``target_dir``.
+    """
+    ydl_cls.side_effect = _mutate_like_yt_dlp
+    _ydl(ydl_cls).extract_info.return_value = {"duration": 60}
+
+    fetch_video_info(VIDEO_URL)
+
+    outtmpl = build_download_options(tmp_path)["outtmpl"]
+    assert outtmpl == str(tmp_path / "audio.%(ext)s")
