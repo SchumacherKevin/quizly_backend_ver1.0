@@ -38,7 +38,7 @@ Aus einer YouTube-URL entsteht synchron ein gespeichertes Quiz; die Antwort ist 
 - **Erwartetes Rot:** `ModuleNotFoundError: quiz_app.services.pipeline`
 - **Green:** `save_quiz(user, video_url, data) -> Quiz` mit `@transaction.atomic`; `Quiz.objects.create(...)`; `Question.objects.bulk_create([...])` über den Helper `_build_questions(quiz, items)`
 - **Commit:** `feat(quiz): persist generated quiz atomically`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 2: Atomarität
 - **Test:** `test_save_quiz_rolls_back_on_error`: Mit `patch("quiz_app.services.pipeline.Question.objects.bulk_create", side_effect=IntegrityError)` gilt nach `pytest.raises(IntegrityError)`: `Quiz.objects.count() == 0`
