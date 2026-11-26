@@ -16,6 +16,7 @@ from quiz_app.api.serializers import (
     QuizUpdateSerializer,
 )
 from quiz_app.models import Quiz
+from quiz_app.services.exceptions import InvalidVideoError
 from quiz_app.services.pipeline import create_quiz_from_url
 
 
@@ -34,9 +35,14 @@ class QuizListCreateView(ListCreateAPIView):
         """Generate a quiz from the posted YouTube URL (synchronous)."""
         serializer = QuizCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        quiz = create_quiz_from_url(
-            request.user, serializer.validated_data["url"]
-        )
+        try:
+            quiz = create_quiz_from_url(
+                request.user, serializer.validated_data["url"]
+            )
+        except InvalidVideoError as exc:
+            return Response(
+                {"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST
+            )
         return Response(
             QuizCreateResponseSerializer(quiz).data,
             status=status.HTTP_201_CREATED,

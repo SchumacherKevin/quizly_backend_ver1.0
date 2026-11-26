@@ -3,6 +3,8 @@
 from rest_framework import serializers
 
 from quiz_app.models import Question, Quiz
+from quiz_app.services.exceptions import InvalidVideoError
+from quiz_app.services.youtube import extract_video_id
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -49,6 +51,14 @@ class QuizCreateSerializer(serializers.Serializer):
     """Validate the POST input: the YouTube URL of the video."""
 
     url = serializers.CharField()
+
+    def validate_url(self, value):
+        """Reject URLs that are not a supported YouTube video link."""
+        try:
+            extract_video_id(value)
+        except InvalidVideoError as exc:
+            raise serializers.ValidationError(str(exc)) from exc
+        return value
 
 
 class QuestionDetailSerializer(QuestionSerializer):

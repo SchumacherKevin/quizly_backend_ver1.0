@@ -87,7 +87,7 @@ Aus einer YouTube-URL entsteht synchron ein gespeichertes Quiz; die Antwort ist 
 - **Erwartetes Rot:** 500 oder eine unbehandelte Exception
 - **Green:** `validate_url` im Serializer ruft `extract_video_id` auf; die View fängt `InvalidVideoError` ab und gibt 400 `{"detail": str(exc)}` zurück
 - **Commit:** `feat(quiz): return 400 for invalid or unsupported videos`
-- [ ] erledigt
+- [x] erledigt (`test_create_quiz_requires_url` war schon grün, weil `CharField` Pflicht ist. Ungültige URL ergibt den Feldfehler `{"url": ["Invalid YouTube URL."]}`, Video-Fehler ergeben `{"detail": ...}`. Das Frontend wertet den Body nicht aus, sondern zeigt bei jedem Fehler „Error generating quiz“ (`api.js:10-13`))
 
 ### Zyklus 7: Pipeline-Fehler ergeben 500
 - **Test:** `test_create_quiz_returns_500_on_generation_error`: `generate_quiz` wirft `QuizGenerationError("Quiz generation failed.")`; Ergebnis 500 mit `{"detail": "Quiz generation failed."}`, kein Quiz in der DB
