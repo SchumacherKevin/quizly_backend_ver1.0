@@ -47,13 +47,13 @@ Die Tests sind durch TDD schon entstanden. Hier werden nur **Lücken gefunden un
 - [x] 0 Funde (Erstlauf: 0 Funde bei der Länge, 126 beim Format, verteilt auf ca. 60 Funktionen, 6 leere `__init__.py` und 2 `apps.py`. Alle auf das Google-Format umgestellt; per AST-Vergleich gegen HEAD verifiziert, dass sich nur Docstrings geändert haben. Tests bleiben ein einzeiliger Docstring, weil Fixtures als Parameter kein `Args:` brauchen)
 
 ### Zyklus 4: Struktur-Review
-- [ ] `views.py` enthält nur Views (keine Helper-Funktionen)
-- [ ] Kein auskommentierter Code (`grep -rn "^\s*# .*(" --include=*.py` stichprobenartig prüfen)
-- [ ] Keine Secrets im Repo (`git grep -i "api_key\s*="` liefert nur Settings und Env)
-- [ ] `python manage.py makemigrations --check` ist sauber
-- Commit je Korrektur
+- [x] `views.py` enthält nur Views (keine Helper-Funktionen): in beiden `views.py` nur Klassen, keine Funktionen auf Modulebene
+- [x] Kein auskommentierter Code (`grep -rn "^\s*# .*(" --include=*.py` stichprobenartig prüfen): alle `#`-Zeilen geprüft, nur Abschnittsüberschriften und Doku-Links in `core/settings.py`
+- [x] Keine Secrets im Repo (`git grep -i "api_key\s*="` liefert nur Settings und Env): Treffer nur in Settings (`os.getenv`), `.env.template` (Platzhalter) und Tests (Fake-Key). Zusätzlich die gesamte Git-History geprüft: weder der echte Gemini-Key noch der `SECRET_KEY` sind enthalten, `.env` und die DB sind nicht getrackt
+- [x] `python manage.py makemigrations --check` ist sauber („No changes detected“)
+- Commit je Korrektur (keine Korrektur nötig)
 
 ## Abschluss-Check
-- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün, Coverage ≥ 90 %
-- [ ] Status von Schritt 16 auf `[x]` gesetzt (Commit `docs: mark step 16 done`)
-- [ ] Stopp → Review
+- [x] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün, Coverage ≥ 90 % (170 passed, 100 %)
+- [x] Status von Schritt 16 auf `[x]` gesetzt (Commit `docs: mark step 16 done`)
+- [x] Stopp → Review
