@@ -44,8 +44,8 @@ Inhalt:
 - [x] erledigt (README auf Englisch wie der Code. Zusätzlich: Hinweis, dass `DEBUG=True` für lokales HTTP nötig ist, weil die Cookies sonst `Secure` sind; Linux-Befehl für FFmpeg; PyTorch-Download; SECRET_KEY-Generator; Beispiel-Quiz; 503-Hinweis zu Gemini)
 
 ### Zyklus 2: Frisches Setup prüfen
-- [ ] Repo in einen temporären Ordner klonen und die README Schritt für Schritt befolgen, bis `runserver` läuft und `pytest` grün ist
-- [ ] Gefundene Lücken in der README korrigieren. **Commit:** `docs: fix setup instructions`
+- [x] Repo in einen temporären Ordner klonen und die README Schritt für Schritt befolgen, bis `runserver` läuft und `pytest` grün ist (26.11.2026, Klon aus dem lokalen Repo, weil der Stand noch nicht gepusht war: venv, `pip install` in 1,8 min, `.env` mit generiertem `SECRET_KEY`, `migrate` und `check` sauber; `runserver` antwortet mit 401 auf `GET quizzes/` und 201 auf `POST register/`; Dev-Requirements: 170 passed, 100 %, black/isort/flake8 sauber. Klon danach gelöscht)
+- [x] Gefundene Lücken in der README korrigieren (eine Lücke: `Activate.ps1` scheitert an der Standard-ExecutionPolicy; Hinweis auf `Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned` ergänzt). **Commit:** `docs: fix setup instructions`
 
 ### Zyklus 3: API-Test mit der Postman CLI
 - [ ] Collection mit den 9 Endpoints anlegen; der Cookie-Jar überträgt die Cookies vom Login in die folgenden Requests

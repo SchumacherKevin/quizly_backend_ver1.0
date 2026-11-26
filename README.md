@@ -60,6 +60,14 @@ python manage.py createsuperuser  # optional, for /admin/
 python manage.py runserver
 ```
 
+If `Activate.ps1` fails with "running scripts is disabled on this system", allow
+scripts for the current terminal session only and activate again:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+.\.venv\Scripts\Activate.ps1
+```
+
 On macOS/Linux use `python3.14 -m venv .venv`, `source .venv/bin/activate` and
 `cp .env.template .env`.
 
