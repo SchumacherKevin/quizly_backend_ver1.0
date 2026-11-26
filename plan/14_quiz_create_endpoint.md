@@ -62,7 +62,7 @@ Aus einer YouTube-URL entsteht synchron ein gespeichertes Quiz; die Antwort ist 
   - Assert: `not Path(captured_dir).exists()`; im Fehlerfall zusätzlich `Quiz.objects.count() == 0`
 - **Erwartetes Rot:** vermutlich grün durch `TemporaryDirectory`; als Absicherung committen
 - **Commit:** `test(quiz): ensure temporary audio files are cleaned up`
-- [ ] erledigt
+- [x] erledigt (sofort grün durch `TemporaryDirectory`; Gegenprobe mit `mkdtemp` ohne Aufräumen: beide Tests rot)
 
 ### Zyklus 5: Endpoint 201 mit Fragen-Timestamps
 - **Test:** `quiz_app/tests/test_quiz_create.py::test_create_quiz_returns_201_with_full_quiz`
