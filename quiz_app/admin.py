@@ -2,7 +2,15 @@
 
 from django.contrib import admin
 
-from quiz_app.models import Quiz
+from quiz_app.models import Question, Quiz
+
+
+class QuestionInline(admin.TabularInline):
+    """Edit the questions of a quiz directly on the quiz page."""
+
+    model = Question
+    extra = 0
+    readonly_fields = ("created_at", "updated_at")
 
 
 @admin.register(Quiz)
@@ -13,3 +21,4 @@ class QuizAdmin(admin.ModelAdmin):
     list_filter = ("created_at", "owner")
     search_fields = ("title", "description")
     readonly_fields = ("created_at", "updated_at")
+    inlines = [QuestionInline]

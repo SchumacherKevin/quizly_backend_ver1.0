@@ -26,7 +26,7 @@ Im Django-Admin lassen sich Quizze (mit Fragen inline) und einzelne Fragen bearb
 - **Erwartetes Rot:** Das Inline fehlt
 - **Green:** `QuestionInline(admin.TabularInline)` mit `model = Question`, `extra = 0`, `readonly_fields` für die Timestamps; `inlines = [QuestionInline]`
 - **Commit:** `feat(quiz): edit questions inline in quiz admin`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 3: Fragen einzeln bearbeiten
 - **Test:** `test_question_changelist_and_change_view_load`: beide ergeben 200
