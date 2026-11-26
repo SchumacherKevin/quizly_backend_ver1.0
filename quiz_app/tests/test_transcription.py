@@ -4,7 +4,10 @@ from unittest.mock import patch
 
 import pytest
 
-from quiz_app.services.transcription import get_whisper_model
+from quiz_app.services.transcription import (
+    get_whisper_model,
+    transcribe_audio,
+)
 
 WHISPER_PATH = "quiz_app.services.transcription.whisper"
 
@@ -41,3 +44,15 @@ def test_get_whisper_model_is_cached(whisper_mock):
 
     assert first is second
     whisper_mock.load_model.assert_called_once()
+
+
+def test_transcribe_audio_returns_stripped_text(whisper_mock, tmp_path):
+    """The transcript text is returned without surrounding whitespace."""
+    model = whisper_mock.load_model.return_value
+    model.transcribe.return_value = {"text": "  Hallo Welt  "}
+    audio_path = tmp_path / "audio.webm"
+
+    text = transcribe_audio(audio_path)
+
+    assert text == "Hallo Welt"
+    model.transcribe.assert_called_once_with(str(audio_path), fp16=False)

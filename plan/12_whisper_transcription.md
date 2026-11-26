@@ -28,7 +28,7 @@
 - **Erwartetes Rot:** `ImportError: transcribe_audio`
 - **Green:** `transcribe_audio(path: Path) -> str`
 - **Commit:** `feat(quiz): transcribe audio with whisper`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 3: Fehlerfälle
 - **Test:** `test_transcribe_audio_rejects_empty_transcript`: `{"text": "   "}` führt zu `QuizGenerationError` mit der Meldung `"Transcript is empty."`
