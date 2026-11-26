@@ -3,7 +3,7 @@
 import pytest
 
 from quiz_app.services.exceptions import InvalidVideoError
-from quiz_app.services.youtube import extract_video_id
+from quiz_app.services.youtube import extract_video_id, normalize_url
 
 VIDEO_ID = "dQw4w9WgXcQ"
 
@@ -41,3 +41,10 @@ def test_extract_video_id_rejects_invalid_urls(url):
     """Foreign hosts and malformed ids raise ``InvalidVideoError``."""
     with pytest.raises(InvalidVideoError):
         extract_video_id(url)
+
+
+def test_normalize_url():
+    """A video id is turned into the embeddable watch URL."""
+    assert normalize_url(VIDEO_ID) == (
+        "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    )

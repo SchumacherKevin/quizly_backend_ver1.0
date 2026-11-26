@@ -52,7 +52,7 @@
 - **Erwartetes Rot:** `ImportError`
 - **Green:** `normalize_url(video_id: str) -> str`
 - **Commit:** `feat(quiz): normalize youtube urls to watch format`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 4: Metadaten laden
 - **Test:** `test_fetch_video_info_returns_info_without_download`: Der Mock liefert `{"title": "T", "duration": 120}`; die Funktion gibt dieses Dict zurück, und `extract_info` wurde mit `(url, download=False)` aufgerufen

@@ -8,6 +8,7 @@ from quiz_app.services.exceptions import InvalidVideoError
 WATCH_HOSTS = {"www.youtube.com", "youtube.com", "m.youtube.com"}
 SHORT_HOSTS = {"youtu.be"}
 VIDEO_ID_PATTERN = re.compile(r"^[A-Za-z0-9_-]{11}$")
+WATCH_URL = "https://www.youtube.com/watch?v={video_id}"
 
 
 def _query_id(parsed):
@@ -40,3 +41,8 @@ def extract_video_id(url: str) -> str:
     if not VIDEO_ID_PATTERN.match(video_id):
         raise InvalidVideoError("Invalid YouTube URL.")
     return video_id
+
+
+def normalize_url(video_id: str) -> str:
+    """Return the canonical watch URL the frontend can embed."""
+    return WATCH_URL.format(video_id=video_id)
