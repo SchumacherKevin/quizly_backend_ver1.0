@@ -299,3 +299,19 @@ def test_request_quiz_openai_wraps_api_errors(openai_cls):
     with pytest.raises(QuizGenerationError) as exc_info:
         request_quiz("prompt")
     assert FAKE_KEY not in str(exc_info.value)
+
+
+def test_build_prompt_describes_json_format():
+    """The prompt names the JSON format for providers without a schema."""
+    prompt = build_prompt("transcript", "title")
+
+    assert "JSON" in prompt
+    for key in (
+        "title",
+        "description",
+        "questions",
+        "question_title",
+        "question_options",
+        "answer",
+    ):
+        assert f'"{key}"' in prompt

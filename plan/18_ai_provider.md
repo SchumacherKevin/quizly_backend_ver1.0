@@ -42,7 +42,7 @@ Gemini bleibt der Standard. Wer eine andere KI-API nutzt, stellt sie per `.env` 
 - **Test:** `test_build_prompt_describes_json_format`: Der Prompt enthält `"JSON"` und die Keys `title`, `description`, `questions`, `question_title`, `question_options`, `answer`
 - **Grund:** Andere Anbieter bekommen kein Schema wie Gemini (`response_schema`), und der JSON-Modus von OpenAI verlangt das Wort „JSON“ im Prompt
 - **Commit:** `feat(quiz): describe json response format in prompt`
-- [ ] erledigt
+- [x] erledigt (Beispiel-Objekt im Template mit verdoppelten `{{ }}` wegen `.format()`; geprüft, dass das Beispiel gültiges JSON ist)
 
 ### Zyklus 4: Dokumentation
 - [ ] `.env.template` um die neuen Variablen ergänzen (auskommentiert bzw. leer, Gemini aktiv)

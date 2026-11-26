@@ -25,6 +25,13 @@ Rules:
 - Use the language of the transcript.
 - Only ask about content of the transcript.
 
+Answer with a single JSON object and nothing else, in this format:
+{{"title": "...", "description": "...", "questions": [
+  {{"question_title": "...",
+    "question_options": ["...", "...", "...", "..."],
+    "answer": "..."}}
+]}}
+
 Video title: {video_title}
 
 Transcript:
