@@ -5,7 +5,11 @@ import copy
 import pytest
 
 from quiz_app.services.exceptions import QuizGenerationError
-from quiz_app.services.generation import validate_quiz_data
+from quiz_app.services.generation import (
+    MAX_TRANSCRIPT_CHARS,
+    build_prompt,
+    validate_quiz_data,
+)
 
 
 def test_validate_quiz_data_accepts_valid_quiz(gemini_quiz_data):
@@ -86,3 +90,25 @@ def test_validate_quiz_data_rejects_invalid(gemini_quiz_data, change):
 
     with pytest.raises(QuizGenerationError):
         validate_quiz_data(data)
+
+
+def test_build_prompt_contains_transcript_and_rules():
+    """The prompt carries transcript, video title and the quiz rules."""
+    prompt = build_prompt("Python ist eine Sprache.", "Python Intro")
+
+    assert "Python ist eine Sprache." in prompt
+    assert "Python Intro" in prompt
+    assert "10" in prompt
+    assert "4" in prompt
+    assert "exactly match one of the options" in prompt
+
+
+def test_build_prompt_truncates_long_transcript():
+    """Overly long transcripts are cut to ``MAX_TRANSCRIPT_CHARS``."""
+    head = "a" * MAX_TRANSCRIPT_CHARS
+    transcript = head + "#TAIL#" * 100
+
+    prompt = build_prompt(transcript, "Title")
+
+    assert head in prompt
+    assert "#TAIL#" not in prompt

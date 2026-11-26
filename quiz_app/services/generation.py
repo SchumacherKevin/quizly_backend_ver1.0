@@ -3,10 +3,27 @@
 from django.core.exceptions import ValidationError
 
 from quiz_app.services.exceptions import QuizGenerationError
-from quiz_app.utils import validate_answer, validate_options
+from quiz_app.utils import OPTION_COUNT, validate_answer, validate_options
 
 QUESTION_COUNT = 10
 MAX_TITLE_LENGTH = 255
+MAX_TRANSCRIPT_CHARS = 30000
+PROMPT_TEMPLATE = """You create a quiz from the transcript of a YouTube video.
+
+Rules:
+- Write exactly {question_count} questions.
+- Every question has exactly {option_count} distinct, non-empty options.
+- The "answer" must exactly match one of the options, character by character.
+- "title" is a short quiz title (at most {max_title} characters).
+- "description" summarizes the quiz in 1-2 sentences.
+- Use the language of the transcript.
+- Only ask about content of the transcript.
+
+Video title: {video_title}
+
+Transcript:
+{transcript}
+"""
 
 
 def _require_text(value, field: str) -> None:
@@ -54,3 +71,14 @@ def validate_quiz_data(data: dict) -> None:
     _validate_question_count(data)
     for question in data["questions"]:
         _validate_question(question)
+
+
+def build_prompt(transcript: str, video_title: str) -> str:
+    """Return the Gemini prompt; long transcripts are truncated."""
+    return PROMPT_TEMPLATE.format(
+        question_count=QUESTION_COUNT,
+        option_count=OPTION_COUNT,
+        max_title=MAX_TITLE_LENGTH,
+        video_title=video_title,
+        transcript=transcript[:MAX_TRANSCRIPT_CHARS],
+    )

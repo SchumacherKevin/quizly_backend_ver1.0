@@ -60,7 +60,7 @@
 - **Erwartetes Rot:** `ImportError`
 - **Green:** Konstante `MAX_TRANSCRIPT_CHARS = 30000`, `PROMPT_TEMPLATE` als Modulkonstante, `build_prompt(transcript, video_title) -> str`
 - **Commit:** `feat(quiz): build gemini prompt from transcript`
-- [ ] erledigt
+- [x] erledigt (Prompt auf Englisch mit der Regel „Use the language of the transcript“; Zahlen kommen aus `QUESTION_COUNT`, `OPTION_COUNT` und `MAX_TITLE_LENGTH`; geschweifte Klammern im Transkript sind unkritisch, weil nur das Template formatiert wird)
 
 ### Zyklus 4: JSON parsen
 - **Test:** `test_parse_quiz_returns_dict`: `json.dumps(gemini_quiz_data)` ergibt nach dem Parsen ein Dict gleich der Fixture
