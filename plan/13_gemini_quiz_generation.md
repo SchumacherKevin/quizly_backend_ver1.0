@@ -52,7 +52,7 @@
 - **Erwartetes Rot:** keine Exception
 - **Green:** kleine Prüf-Helper wie `_validate_title`, `_validate_question_count` und `_validate_question` (jeweils ≤ 14 Zeilen)
 - **Commit:** `feat(quiz): reject invalid generated quizzes`
-- [ ] erledigt
+- [x] erledigt (nutzt `validate_options`/`validate_answer` aus `quiz_app/utils.py` wieder und übersetzt deren `ValidationError`; die Testfälle sind benannte Mutator-Funktionen statt Lambdas)
 
 ### Zyklus 3: Prompt bauen
 - **Test:** `test_build_prompt_contains_transcript_and_rules`: Der Prompt enthält das Transkript, den Videotitel, `"10"`, `"4"` und den Hinweis, dass `answer` exakt einer Option entsprechen muss
