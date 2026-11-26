@@ -87,4 +87,4 @@ pytest mit Coverage läuft, black/isort/flake8 sichern PEP8 automatisch, und die
 ## Abschluss-Check
 - [x] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
 - [x] Status von Schritt 03 in `00_overview.md` auf `[x]` gesetzt (Commit `docs: mark step 03 done`)
-- [ ] Stopp → Review
+- [x] Stopp → Review
