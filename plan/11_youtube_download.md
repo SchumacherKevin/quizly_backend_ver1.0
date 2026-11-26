@@ -60,7 +60,7 @@
 - **Erwartetes Rot:** `ImportError`
 - **Green:** `fetch_video_info(url: str) -> dict` mit `YoutubeDL({"quiet": True, "noplaylist": True})`
 - **Commit:** `feat(quiz): fetch youtube video metadata`
-- [ ] erledigt
+- [x] erledigt (Patch als Fixture `ydl_cls` in `test_youtube.py`; Meldung `"Video could not be loaded."`)
 
 ### Zyklus 5: Videolänge prüfen
 - **Test:** `test_check_duration_accepts_short_video`: `settings.MAX_VIDEO_MINUTES = 15` (Fixture `settings`) und `{"duration": 900}` ergeben keinen Fehler

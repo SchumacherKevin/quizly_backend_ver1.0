@@ -3,12 +3,15 @@
 import re
 from urllib.parse import parse_qs, urlparse
 
+import yt_dlp
+
 from quiz_app.services.exceptions import InvalidVideoError
 
 WATCH_HOSTS = {"www.youtube.com", "youtube.com", "m.youtube.com"}
 SHORT_HOSTS = {"youtu.be"}
 VIDEO_ID_PATTERN = re.compile(r"^[A-Za-z0-9_-]{11}$")
 WATCH_URL = "https://www.youtube.com/watch?v={video_id}"
+INFO_OPTIONS = {"quiet": True, "noplaylist": True}
 
 
 def _query_id(parsed):
@@ -46,3 +49,15 @@ def extract_video_id(url: str) -> str:
 def normalize_url(video_id: str) -> str:
     """Return the canonical watch URL the frontend can embed."""
     return WATCH_URL.format(video_id=video_id)
+
+
+def fetch_video_info(url: str) -> dict:
+    """Return the video metadata without downloading anything.
+
+    Raises ``InvalidVideoError`` if yt-dlp cannot load the video.
+    """
+    try:
+        with yt_dlp.YoutubeDL(INFO_OPTIONS) as ydl:
+            return ydl.extract_info(url, download=False)
+    except yt_dlp.utils.DownloadError as error:
+        raise InvalidVideoError("Video could not be loaded.") from error

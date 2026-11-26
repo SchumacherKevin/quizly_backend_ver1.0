@@ -1,11 +1,20 @@
 """Tests for the YouTube service (no network access)."""
 
+from unittest.mock import patch
+
 import pytest
+import yt_dlp
 
 from quiz_app.services.exceptions import InvalidVideoError
-from quiz_app.services.youtube import extract_video_id, normalize_url
+from quiz_app.services.youtube import (
+    extract_video_id,
+    fetch_video_info,
+    normalize_url,
+)
 
 VIDEO_ID = "dQw4w9WgXcQ"
+VIDEO_URL = f"https://www.youtube.com/watch?v={VIDEO_ID}"
+YDL_PATH = "quiz_app.services.youtube.yt_dlp.YoutubeDL"
 
 
 @pytest.mark.parametrize(
@@ -48,3 +57,36 @@ def test_normalize_url():
     assert normalize_url(VIDEO_ID) == (
         "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     )
+
+
+@pytest.fixture
+def ydl_cls():
+    """Patch ``YoutubeDL`` so no test ever touches the network."""
+    with patch(YDL_PATH) as mock_cls:
+        yield mock_cls
+
+
+def _ydl(ydl_cls):
+    """Return the instance yielded by ``with YoutubeDL(...) as ydl``."""
+    return ydl_cls.return_value.__enter__.return_value
+
+
+def test_fetch_video_info_returns_info_without_download(ydl_cls):
+    """Metadata is fetched via ``extract_info`` without downloading."""
+    _ydl(ydl_cls).extract_info.return_value = {"title": "T", "duration": 120}
+
+    info = fetch_video_info(VIDEO_URL)
+
+    assert info == {"title": "T", "duration": 120}
+    _ydl(ydl_cls).extract_info.assert_called_once_with(
+        VIDEO_URL, download=False
+    )
+
+
+def test_fetch_video_info_raises_invalid_video_on_download_error(ydl_cls):
+    """A yt-dlp ``DownloadError`` becomes ``InvalidVideoError``."""
+    error = yt_dlp.utils.DownloadError("x")
+    _ydl(ydl_cls).extract_info.side_effect = error
+
+    with pytest.raises(InvalidVideoError):
+        fetch_video_info(VIDEO_URL)
