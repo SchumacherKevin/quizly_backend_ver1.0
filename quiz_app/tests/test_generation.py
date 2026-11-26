@@ -10,6 +10,7 @@ from quiz_app.services.exceptions import QuizGenerationError
 from quiz_app.services.generation import (
     MAX_TRANSCRIPT_CHARS,
     build_prompt,
+    generate_quiz,
     parse_quiz,
     request_quiz,
     validate_quiz_data,
@@ -187,3 +188,28 @@ def test_request_quiz_wraps_api_errors(client_cls):
     with pytest.raises(QuizGenerationError) as exc_info:
         request_quiz("prompt")
     assert FAKE_KEY not in str(exc_info.value)
+
+
+def test_generate_quiz_returns_validated_data(client_cls, gemini_quiz_data):
+    """A valid Gemini answer is returned as the parsed quiz dict."""
+    _generate(client_cls).return_value.text = json.dumps(gemini_quiz_data)
+
+    assert generate_quiz("transcript", "title") == gemini_quiz_data
+
+
+def test_generate_quiz_raises_on_invalid_answer(client_cls, gemini_quiz_data):
+    """An answer that is not one of the options is rejected."""
+    _foreign_answer(gemini_quiz_data)
+    _generate(client_cls).return_value.text = json.dumps(gemini_quiz_data)
+
+    with pytest.raises(QuizGenerationError):
+        generate_quiz("transcript", "title")
+
+
+def test_generate_quiz_calls_gemini_once(client_cls, gemini_quiz_data):
+    """Exactly one Gemini request is made per quiz."""
+    _generate(client_cls).return_value.text = json.dumps(gemini_quiz_data)
+
+    generate_quiz("transcript", "title")
+
+    assert _generate(client_cls).call_count == 1

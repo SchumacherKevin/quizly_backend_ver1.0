@@ -89,11 +89,11 @@
 - **Erwartetes Rot:** `ImportError`
 - **Green:** `generate_quiz(transcript, video_title) -> dict` mit build → request → parse → validate
 - **Commit:** `feat(quiz): generate validated quiz from transcript`
-- [ ] erledigt
+- [x] erledigt
 
 ## Abschluss-Check
-- [ ] Kein Test ruft die echte Gemini-API auf
-- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
+- [x] Kein Test ruft die echte Gemini-API auf (geprüft: `test_generation.py` mit gesperrtem `socket.connect`/`getaddrinfo` → 21 passed)
+- [x] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
 - [ ] Optional manuell (zählt gegen das Kontingent): `python manage.py shell` und dort `generate_quiz("<kurzer Text>", "Test")`
-- [ ] Status von Schritt 13 auf `[x]` gesetzt (Commit `docs: mark step 13 done`)
-- [ ] Stopp → Review
+- [x] Status von Schritt 13 auf `[x]` gesetzt (Commit `docs: mark step 13 done`)
+- [x] Stopp → Review

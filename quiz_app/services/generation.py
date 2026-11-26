@@ -147,3 +147,14 @@ def request_quiz(prompt: str) -> str:
     except Exception as exc:
         raise QuizGenerationError("Gemini request failed.") from exc
     return response.text
+
+
+def generate_quiz(transcript: str, video_title: str) -> dict:
+    """Create a validated quiz dict from a transcript with one Gemini call.
+
+    Raises ``QuizGenerationError`` if any stage fails.
+    """
+    raw = request_quiz(build_prompt(transcript, video_title))
+    data = parse_quiz(raw)
+    validate_quiz_data(data)
+    return data
