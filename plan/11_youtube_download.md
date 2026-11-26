@@ -31,7 +31,7 @@
   - Host-Whitelist als Konstante
   - kleine Helper für „Query-ID“ und „Pfad-ID“
 - **Commit:** `feat(quiz): extract video id from youtube urls`
-- [ ] erledigt
+- [x] erledigt (Fallback `return ""` für fremde Hosts ist noch ungetestet; ihn ersetzt Zyklus 2 durch `InvalidVideoError`)
 
 ### Zyklus 2: Ungültige URLs
 - **Test:** `test_extract_video_id_rejects_invalid_urls` (parametrisiert), jeweils `pytest.raises(InvalidVideoError)`:
