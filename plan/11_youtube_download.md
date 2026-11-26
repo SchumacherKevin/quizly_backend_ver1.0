@@ -69,7 +69,7 @@
 - **Erwartetes Rot:** `ImportError`
 - **Green:** `check_duration(info: dict) -> None`
 - **Commit:** `feat(quiz): limit maximum video duration`
-- [ ] erledigt
+- [x] erledigt (Meldungen: `"Video duration is unknown."` und `"Video is longer than {limit} minutes."`)
 
 ### Zyklus 6: Audio herunterladen
 - **Test:** `test_download_audio_uses_expected_options` (mit `tmp_path`)

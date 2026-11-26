@@ -7,6 +7,7 @@ import yt_dlp
 
 from quiz_app.services.exceptions import InvalidVideoError
 from quiz_app.services.youtube import (
+    check_duration,
     extract_video_id,
     fetch_video_info,
     normalize_url,
@@ -90,3 +91,26 @@ def test_fetch_video_info_raises_invalid_video_on_download_error(ydl_cls):
 
     with pytest.raises(InvalidVideoError):
         fetch_video_info(VIDEO_URL)
+
+
+def test_check_duration_accepts_short_video(settings):
+    """A video exactly at the limit is accepted."""
+    settings.MAX_VIDEO_MINUTES = 15
+
+    check_duration({"duration": 900})
+
+
+def test_check_duration_rejects_long_video(settings):
+    """A video above the limit is rejected and the limit is named."""
+    settings.MAX_VIDEO_MINUTES = 15
+
+    with pytest.raises(InvalidVideoError, match="15"):
+        check_duration({"duration": 901})
+
+
+def test_check_duration_rejects_missing_duration(settings):
+    """Videos without a duration (e.g. livestreams) are rejected."""
+    settings.MAX_VIDEO_MINUTES = 15
+
+    with pytest.raises(InvalidVideoError):
+        check_duration({})

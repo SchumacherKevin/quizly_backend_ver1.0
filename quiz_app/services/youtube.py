@@ -4,6 +4,7 @@ import re
 from urllib.parse import parse_qs, urlparse
 
 import yt_dlp
+from django.conf import settings
 
 from quiz_app.services.exceptions import InvalidVideoError
 
@@ -61,3 +62,16 @@ def fetch_video_info(url: str) -> dict:
             return ydl.extract_info(url, download=False)
     except yt_dlp.utils.DownloadError as error:
         raise InvalidVideoError("Video could not be loaded.") from error
+
+
+def check_duration(info: dict) -> None:
+    """Ensure the video is not longer than ``MAX_VIDEO_MINUTES``.
+
+    Videos without a duration (e.g. livestreams) are rejected as well.
+    """
+    duration = info.get("duration")
+    if not duration:
+        raise InvalidVideoError("Video duration is unknown.")
+    limit = settings.MAX_VIDEO_MINUTES
+    if duration > limit * 60:
+        raise InvalidVideoError(f"Video is longer than {limit} minutes.")
