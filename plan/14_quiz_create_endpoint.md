@@ -54,7 +54,7 @@ Aus einer YouTube-URL entsteht synchron ein gespeichertes Quiz; die Antwort ist 
 - **Erwartetes Rot:** `ImportError: create_quiz_from_url`
 - **Green:** `create_quiz_from_url(user, url) -> Quiz` und `_transcribe_video(url) -> str` (mit `TemporaryDirectory`), jeweils ≤ 14 Zeilen
 - **Commit:** `feat(quiz): orchestrate quiz generation pipeline`
-- [ ] erledigt
+- [x] erledigt (die vier Patches stecken in der Fixture `services` in `test_pipeline.py`; `check_duration` läuft echt mit)
 
 ### Zyklus 4: Temp-Verzeichnis wird immer gelöscht
 - **Test:** `test_pipeline_removes_temp_dir_on_success` und `test_pipeline_removes_temp_dir_on_error`
