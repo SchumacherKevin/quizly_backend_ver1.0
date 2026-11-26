@@ -13,7 +13,14 @@ WATCH_HOSTS = {"www.youtube.com", "youtube.com", "m.youtube.com"}
 SHORT_HOSTS = {"youtu.be"}
 VIDEO_ID_PATTERN = re.compile(r"^[A-Za-z0-9_-]{11}$")
 WATCH_URL = "https://www.youtube.com/watch?v={video_id}"
-INFO_OPTIONS = {"quiet": True, "noplaylist": True}
+# "no-certifi": verify TLS against the OS certificate store instead of
+# certifi, so HTTPS scanners with their own root CA (antivirus web shields)
+# do not break the download. Certificates are still verified.
+INFO_OPTIONS = {
+    "quiet": True,
+    "noplaylist": True,
+    "compat_opts": {"no-certifi"},
+}
 AUDIO_TEMPLATE = "audio.%(ext)s"
 LOAD_ERROR = "Video could not be loaded."
 
@@ -141,8 +148,7 @@ def build_download_options(target_dir) -> dict:
     return {
         "format": "bestaudio/best",
         "outtmpl": str(Path(target_dir) / AUDIO_TEMPLATE),
-        "quiet": True,
-        "noplaylist": True,
+        **INFO_OPTIONS,
     }
 
 

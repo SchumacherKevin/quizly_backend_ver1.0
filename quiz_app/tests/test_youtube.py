@@ -7,6 +7,7 @@ import yt_dlp
 
 from quiz_app.services.exceptions import InvalidVideoError
 from quiz_app.services.youtube import (
+    build_download_options,
     check_duration,
     download_audio,
     extract_video_id,
@@ -141,3 +142,24 @@ def test_download_audio_raises_invalid_video_on_error(ydl_cls, tmp_path):
 
     with pytest.raises(InvalidVideoError):
         download_audio(VIDEO_URL, tmp_path)
+
+
+def test_fetch_video_info_prefers_system_certificates(ydl_cls):
+    """yt-dlp must use the OS certificate store instead of certifi.
+
+    HTTPS scanners (e.g. antivirus web shields) re-sign traffic with a
+    root that only exists in the OS store, so certifi would fail.
+    """
+    _ydl(ydl_cls).extract_info.return_value = {"duration": 60}
+
+    fetch_video_info(VIDEO_URL)
+
+    options = ydl_cls.call_args.args[0]
+    assert "no-certifi" in options["compat_opts"]
+
+
+def test_download_options_prefer_system_certificates(tmp_path):
+    """The audio download uses the OS certificate store as well."""
+    options = build_download_options(tmp_path)
+
+    assert "no-certifi" in options["compat_opts"]
