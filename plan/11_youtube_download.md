@@ -45,7 +45,7 @@
 - **Erwartetes Rot:** falsche Rückgabe oder eine andere Exception
 - **Green:** ID per Regex prüfen; sonst `raise InvalidVideoError("Invalid YouTube URL.")`
 - **Commit:** `feat(quiz): reject non youtube or malformed urls`
-- [ ] erledigt
+- [x] erledigt (Abweichung: zusätzlicher Fall `https://evil.com/shorts/<ID>`, denn `/shorts/` wurde in Zyklus 1 auf jedem Host akzeptiert; die Shorts-Prüfung läuft jetzt erst nach der Host-Whitelist)
 
 ### Zyklus 3: URL normalisieren
 - **Test:** `test_normalize_url`: `normalize_url("dQw4w9WgXcQ") == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"`

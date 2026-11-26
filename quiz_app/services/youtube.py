@@ -1,9 +1,13 @@
 """YouTube helpers: URL parsing, metadata and audio download."""
 
+import re
 from urllib.parse import parse_qs, urlparse
+
+from quiz_app.services.exceptions import InvalidVideoError
 
 WATCH_HOSTS = {"www.youtube.com", "youtube.com", "m.youtube.com"}
 SHORT_HOSTS = {"youtu.be"}
+VIDEO_ID_PATTERN = re.compile(r"^[A-Za-z0-9_-]{11}$")
 
 
 def _query_id(parsed):
@@ -16,11 +20,23 @@ def _path_id(parsed):
     return parsed.path.rstrip("/").split("/")[-1]
 
 
-def extract_video_id(url: str) -> str:
-    """Return the video id of a supported YouTube URL."""
-    parsed = urlparse(url)
-    if parsed.hostname in SHORT_HOSTS or parsed.path.startswith("/shorts/"):
+def _raw_id(parsed):
+    """Return the unvalidated id candidate, or '' for foreign hosts."""
+    if parsed.hostname in SHORT_HOSTS:
         return _path_id(parsed)
-    if parsed.hostname in WATCH_HOSTS:
-        return _query_id(parsed)
-    return ""
+    if parsed.hostname not in WATCH_HOSTS:
+        return ""
+    if parsed.path.startswith("/shorts/"):
+        return _path_id(parsed)
+    return _query_id(parsed)
+
+
+def extract_video_id(url: str) -> str:
+    """Return the video id of a supported YouTube URL.
+
+    Raises ``InvalidVideoError`` for foreign hosts or malformed ids.
+    """
+    video_id = _raw_id(urlparse(url))
+    if not VIDEO_ID_PATTERN.match(video_id):
+        raise InvalidVideoError("Invalid YouTube URL.")
+    return video_id
