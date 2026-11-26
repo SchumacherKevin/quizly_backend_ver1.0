@@ -41,3 +41,26 @@ def test_question_changelist_and_change_view_load(
 
     assert admin_client.get(changelist).status_code == 200
     assert admin_client.get(change).status_code == 200
+
+
+def test_question_admin_rejects_answer_not_in_options(
+    admin_client, user, quiz_factory
+):
+    """Saving an answer that is not an option re-shows the form."""
+    quiz = quiz_factory(user, questions=1)
+    question = quiz.questions.first()
+    url = reverse("admin:quiz_app_question_change", args=[question.pk])
+    payload = {
+        "quiz": quiz.pk,
+        "question_title": "Q",
+        "question_options": '["A", "B", "C", "D"]',
+        "answer": "Z",
+    }
+
+    response = admin_client.post(url, payload)
+
+    assert response.status_code == 200
+    assert "Answer must be one of the options." in response.content.decode()
+    question.refresh_from_db()
+    assert question.question_title == "Question 0"
+    assert question.answer == "A"

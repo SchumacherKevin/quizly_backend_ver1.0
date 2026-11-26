@@ -41,10 +41,10 @@ Im Django-Admin lassen sich Quizze (mit Fragen inline) und einzelne Fragen bearb
   - Assert: 200 (das Formular wird erneut angezeigt, kein Redirect), eine Fehlermeldung steht im Inhalt, und die DB ist unverändert
 - **Erwartetes Rot:** 302, falls `clean()` nicht greift; sonst grün und als Absicherung committen
 - **Commit:** `test(quiz): ensure admin validates question answers`
-- [ ] erledigt
+- [x] erledigt (sofort grün durch `Question.clean()`; Gegenprobe mit deaktiviertem `clean()` ergibt `assert 302 == 200`)
 
 ## Abschluss-Check
 - [ ] Manuell: `python manage.py createsuperuser`; unter `/admin/` ein Quiz und eine Frage bearbeiten
-- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
-- [ ] Status von Schritt 15 auf `[x]` gesetzt (Commit `docs: mark step 15 done`)
-- [ ] Stopp → Review
+- [x] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
+- [x] Status von Schritt 15 auf `[x]` gesetzt (Commit `docs: mark step 15 done`)
+- [x] Stopp → Review
