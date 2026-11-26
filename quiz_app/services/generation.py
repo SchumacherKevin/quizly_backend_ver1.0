@@ -2,7 +2,10 @@
 
 import json
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
+from google import genai
+from pydantic import BaseModel
 
 from quiz_app.services.exceptions import QuizGenerationError
 from quiz_app.utils import OPTION_COUNT, validate_answer, validate_options
@@ -98,3 +101,49 @@ def parse_quiz(raw: str) -> dict:
     if not isinstance(data, dict):
         raise QuizGenerationError("Gemini returned no quiz object.")
     return data
+
+
+class QuestionSchema(BaseModel):
+    """Response schema of a single generated question."""
+
+    question_title: str
+    question_options: list[str]
+    answer: str
+
+
+class QuizSchema(BaseModel):
+    """Response schema Gemini must follow for the whole quiz."""
+
+    title: str
+    description: str
+    questions: list[QuestionSchema]
+
+
+GENERATION_CONFIG = {
+    "response_mime_type": "application/json",
+    "response_schema": QuizSchema,
+}
+
+
+def _ensure_api_key() -> None:
+    """Fail early if no Gemini API key is configured."""
+    if not settings.GEMINI_API_KEY:
+        raise QuizGenerationError("Gemini API key is not configured.")
+
+
+def request_quiz(prompt: str) -> str:
+    """Send ``prompt`` to Gemini once and return the raw JSON text.
+
+    Any API error becomes a ``QuizGenerationError`` without the key.
+    """
+    _ensure_api_key()
+    try:
+        client = genai.Client(api_key=settings.GEMINI_API_KEY)
+        response = client.models.generate_content(
+            model=settings.GEMINI_MODEL,
+            contents=prompt,
+            config=GENERATION_CONFIG,
+        )
+    except Exception as exc:
+        raise QuizGenerationError("Gemini request failed.") from exc
+    return response.text

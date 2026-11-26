@@ -22,9 +22,9 @@
   ```
 
 ## Zyklus 0 (manuell, Kevin): Modell verifizieren
-- [ ] In Google AI Studio (https://aistudio.google.com) den API-Key anlegen bzw. prüfen
-- [ ] Unter „Rate Limits“ prüfen, welches Flash-Modell im Free Tier verfügbar ist. Die Recherche vom 25.11.2026 ergab vermutlich `gemini-3.8-flash`, das ist aber nicht offiziell bestätigt.
-- [ ] `GEMINI_MODEL` in `.env` und `.env.template` eintragen und `GEMINI_API_KEY` in `.env`
+- [x] In Google AI Studio (https://aistudio.google.com) den API-Key anlegen bzw. prüfen
+- [x] Unter „Rate Limits“ prüfen, welches Flash-Modell im Free Tier verfügbar ist. Die Recherche vom 25.11.2026 ergab vermutlich `gemini-3.8-flash`, das ist aber nicht offiziell bestätigt.
+- [x] `GEMINI_MODEL` in `.env` und `.env.template` eintragen und `GEMINI_API_KEY` in `.env` (Kevin hat am 26.11.2026 bestätigt, dass `gemini-3.8-flash` korrekt ist; das Template war schon richtig, deshalb kein `chore`-Commit nötig)
 - **Commit (falls sich das Template ändert):** `chore: set verified gemini model in env template`
 
 ## Zyklen
@@ -80,7 +80,7 @@
 - **Erwartetes Rot:** `ImportError`
 - **Green:** Pydantic-Schemas `QuestionSchema` und `QuizSchema`; `request_quiz(prompt: str) -> str`
 - **Commit:** `feat(quiz): request quiz from gemini`
-- [ ] erledigt
+- [x] erledigt (Abweichung: Test-Key `"test-secret-key"` statt `"key"`, damit die Leak-Prüfung aussagekräftig ist, und die simulierte API-Fehlermeldung enthält den Key absichtlich; zusätzlich wird `contents == prompt` geprüft. Config-Dict offline gegen `types.GenerateContentConfig` geprüft)
 
 ### Zyklus 6: Orchestrierung `generate_quiz`
 - **Test:** `test_generate_quiz_returns_validated_data`: Der Mock liefert `json.dumps(gemini_quiz_data)`; `generate_quiz("transcript", "title")` ergibt die Fixture

@@ -2,6 +2,7 @@
 
 import copy
 import json
+from unittest.mock import patch
 
 import pytest
 
@@ -10,6 +11,7 @@ from quiz_app.services.generation import (
     MAX_TRANSCRIPT_CHARS,
     build_prompt,
     parse_quiz,
+    request_quiz,
     validate_quiz_data,
 )
 
@@ -131,3 +133,57 @@ def test_parse_quiz_rejects_non_object():
     """Valid JSON that is not an object raises ``QuizGenerationError``."""
     with pytest.raises(QuizGenerationError):
         parse_quiz("[]")
+
+
+CLIENT_PATH = "quiz_app.services.generation.genai.Client"
+FAKE_KEY = "test-secret-key"
+
+
+@pytest.fixture
+def client_cls(settings):
+    """Patch ``genai.Client`` and configure a fake key and model."""
+    settings.GEMINI_API_KEY = FAKE_KEY
+    settings.GEMINI_MODEL = "gemini-test"
+    with patch(CLIENT_PATH) as mock_cls:
+        yield mock_cls
+
+
+def _generate(client_cls):
+    """Return the mocked ``client.models.generate_content``."""
+    return client_cls.return_value.models.generate_content
+
+
+def test_request_quiz_calls_configured_model(client_cls):
+    """Gemini is called with key, model and JSON response config."""
+    _generate(client_cls).return_value.text = '{"a": 1}'
+
+    raw = request_quiz("prompt")
+
+    assert raw == '{"a": 1}'
+    client_cls.assert_called_once_with(api_key=FAKE_KEY)
+    kwargs = _generate(client_cls).call_args.kwargs
+    assert kwargs["model"] == "gemini-test"
+    assert kwargs["contents"] == "prompt"
+    assert kwargs["config"]["response_mime_type"] == "application/json"
+
+
+def test_request_quiz_without_api_key_raises(client_cls, settings):
+    """A missing API key fails early without creating a client."""
+    settings.GEMINI_API_KEY = ""
+
+    with pytest.raises(
+        QuizGenerationError, match="Gemini API key is not configured."
+    ):
+        request_quiz("prompt")
+    client_cls.assert_not_called()
+
+
+def test_request_quiz_wraps_api_errors(client_cls):
+    """API errors are wrapped and never leak the API key."""
+    _generate(client_cls).side_effect = Exception(
+        f"quota exceeded for {FAKE_KEY}"
+    )
+
+    with pytest.raises(QuizGenerationError) as exc_info:
+        request_quiz("prompt")
+    assert FAKE_KEY not in str(exc_info.value)
