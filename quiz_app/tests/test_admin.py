@@ -29,3 +29,15 @@ def test_quiz_change_view_shows_question_inline(
     assert response.status_code == 200
     assert "questions-TOTAL_FORMS" in content
     assert quiz.questions.first().question_title in content
+
+
+def test_question_changelist_and_change_view_load(
+    admin_client, user, quiz_factory
+):
+    """Single questions can be listed and opened in the admin."""
+    question = quiz_factory(user, questions=1).questions.first()
+    changelist = reverse("admin:quiz_app_question_changelist")
+    change = reverse("admin:quiz_app_question_change", args=[question.pk])
+
+    assert admin_client.get(changelist).status_code == 200
+    assert admin_client.get(change).status_code == 200

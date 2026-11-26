@@ -22,3 +22,13 @@ class QuizAdmin(admin.ModelAdmin):
     search_fields = ("title", "description")
     readonly_fields = ("created_at", "updated_at")
     inlines = [QuestionInline]
+
+
+@admin.register(Question)
+class QuestionAdmin(admin.ModelAdmin):
+    """Admin list and edit view for single questions."""
+
+    list_display = ("id", "question_title", "quiz")
+    list_filter = ("quiz",)
+    search_fields = ("question_title", "answer")
+    readonly_fields = ("created_at", "updated_at")

@@ -33,7 +33,7 @@ Im Django-Admin lassen sich Quizze (mit Fragen inline) und einzelne Fragen bearb
 - **Erwartetes Rot:** `NoReverseMatch`
 - **Green:** `@admin.register(Question) class QuestionAdmin` mit `list_display = ("id", "question_title", "quiz")`, `search_fields`, `list_filter = ("quiz",)`
 - **Commit:** `feat(quiz): register Question in admin`
-- [ ] erledigt
+- [x] erledigt (zusätzlich `readonly_fields` für die Timestamps, wie bei `QuizAdmin`)
 
 ### Zyklus 4: Admin lehnt ungültige Antworten ab
 - **Test:** `test_question_admin_rejects_answer_not_in_options`
