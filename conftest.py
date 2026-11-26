@@ -1,5 +1,8 @@
 """Shared pytest fixtures for the Quizly backend."""
 
+from types import SimpleNamespace
+from unittest.mock import patch
+
 import pytest
 from django.contrib.auth.models import User
 from rest_framework.test import APIClient
@@ -9,6 +12,7 @@ from quiz_app.models import Question, Quiz
 
 TEST_PASSWORD = "Test1234!"
 TEST_VIDEO_URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+PIPELINE = "quiz_app.services.pipeline"
 
 
 @pytest.fixture
@@ -89,3 +93,24 @@ def gemini_quiz_data():
         "description": "Ein Quiz über Python.",
         "questions": [_gemini_question(i) for i in range(1, 11)],
     }
+
+
+@pytest.fixture
+def services(tmp_path, gemini_quiz_data):
+    """Patch all external pipeline services with happy-path results."""
+    with (
+        patch(f"{PIPELINE}.fetch_video_info") as fetch,
+        patch(f"{PIPELINE}.download_audio") as download,
+        patch(f"{PIPELINE}.transcribe_audio") as transcribe,
+        patch(f"{PIPELINE}.generate_quiz") as generate,
+    ):
+        fetch.return_value = {"title": "Video", "duration": 60}
+        download.return_value = tmp_path / "audio.webm"
+        transcribe.return_value = "text"
+        generate.return_value = gemini_quiz_data
+        yield SimpleNamespace(
+            fetch=fetch,
+            download=download,
+            transcribe=transcribe,
+            generate=generate,
+        )

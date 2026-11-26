@@ -77,7 +77,7 @@ Aus einer YouTube-URL entsteht synchron ein gespeichertes Quiz; die Antwort ist 
   - `QuizCreateResponseSerializer` erbt von `QuizSerializer` und nutzt `questions = QuestionDetailSerializer(many=True)`
   - `create()` validiert, ruft `create_quiz_from_url` auf und antwortet mit 201
 - **Commit:** `feat(quiz): add quiz creation endpoint`
-- [ ] erledigt
+- [x] erledigt (Refactor vorab: Fixture `services` von `test_pipeline.py` in `conftest.py` verschoben, damit die Endpoint-Tests sie nutzen; `url` ist vorerst ein `CharField`, die Prüfung folgt in Zyklus 6)
 
 ### Zyklus 6: Ungültige Eingaben ergeben 400
 - **Test:** `test_create_quiz_rejects_invalid_url` (parametrisiert: `"https://vimeo.com/1"`, `"abc"`): 400, kein Quiz in der DB, und `fetch_video_info` wurde **nicht** aufgerufen

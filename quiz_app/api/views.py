@@ -1,16 +1,26 @@
 """API views for quiz_app."""
 
-from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework import status
+from rest_framework.generics import (
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from quiz_app.api.permissions import IsOwner
-from quiz_app.api.serializers import QuizSerializer, QuizUpdateSerializer
+from quiz_app.api.serializers import (
+    QuizCreateResponseSerializer,
+    QuizCreateSerializer,
+    QuizSerializer,
+    QuizUpdateSerializer,
+)
 from quiz_app.models import Quiz
+from quiz_app.services.pipeline import create_quiz_from_url
 
 
-class QuizListCreateView(ListAPIView):
-    """List the quizzes of the current user (create follows in step 14)."""
+class QuizListCreateView(ListCreateAPIView):
+    """List the quizzes of the current user or create one from a video."""
 
     serializer_class = QuizSerializer
 
@@ -18,6 +28,18 @@ class QuizListCreateView(ListAPIView):
         """Return only the quizzes owned by the current user."""
         return Quiz.objects.filter(owner=self.request.user).prefetch_related(
             "questions"
+        )
+
+    def create(self, request, *args, **kwargs):
+        """Generate a quiz from the posted YouTube URL (synchronous)."""
+        serializer = QuizCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        quiz = create_quiz_from_url(
+            request.user, serializer.validated_data["url"]
+        )
+        return Response(
+            QuizCreateResponseSerializer(quiz).data,
+            status=status.HTTP_201_CREATED,
         )
 
 

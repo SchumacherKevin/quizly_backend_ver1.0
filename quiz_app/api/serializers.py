@@ -43,3 +43,24 @@ class QuizUpdateSerializer(serializers.ModelSerializer):
 
         model = Quiz
         fields = ["title", "description"]
+
+
+class QuizCreateSerializer(serializers.Serializer):
+    """Validate the POST input: the YouTube URL of the video."""
+
+    url = serializers.CharField()
+
+
+class QuestionDetailSerializer(QuestionSerializer):
+    """Question representation with timestamps (POST response only)."""
+
+    class Meta(QuestionSerializer.Meta):
+        """Add the timestamps to the default question fields."""
+
+        fields = QuestionSerializer.Meta.fields + ["created_at", "updated_at"]
+
+
+class QuizCreateResponseSerializer(QuizSerializer):
+    """Quiz representation returned after creation (with timestamps)."""
+
+    questions = QuestionDetailSerializer(many=True, read_only=True)

@@ -1,7 +1,6 @@
 """Tests for the quiz creation pipeline (all external services mocked)."""
 
 from pathlib import Path
-from types import SimpleNamespace
 from unittest.mock import patch
 
 import pytest
@@ -15,29 +14,7 @@ from quiz_app.services.pipeline import create_quiz_from_url, save_quiz
 pytestmark = pytest.mark.django_db
 
 BULK_CREATE_PATH = "quiz_app.services.pipeline.Question.objects.bulk_create"
-PIPELINE = "quiz_app.services.pipeline"
 SHORT_URL = "https://youtu.be/dQw4w9WgXcQ"
-
-
-@pytest.fixture
-def services(tmp_path, gemini_quiz_data):
-    """Patch all external pipeline services with happy-path results."""
-    with (
-        patch(f"{PIPELINE}.fetch_video_info") as fetch,
-        patch(f"{PIPELINE}.download_audio") as download,
-        patch(f"{PIPELINE}.transcribe_audio") as transcribe,
-        patch(f"{PIPELINE}.generate_quiz") as generate,
-    ):
-        fetch.return_value = {"title": "Video", "duration": 60}
-        download.return_value = tmp_path / "audio.webm"
-        transcribe.return_value = "text"
-        generate.return_value = gemini_quiz_data
-        yield SimpleNamespace(
-            fetch=fetch,
-            download=download,
-            transcribe=transcribe,
-            generate=generate,
-        )
 
 
 def test_save_quiz_creates_quiz_with_questions(user, gemini_quiz_data):
