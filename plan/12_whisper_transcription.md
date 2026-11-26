@@ -19,7 +19,7 @@
 - **Erwartetes Rot:** `ModuleNotFoundError: quiz_app.services.transcription`
 - **Green:** `@lru_cache(maxsize=1) def get_whisper_model()`
 - **Commit:** `feat(quiz): load and cache whisper model`
-- [ ] erledigt
+- [x] erledigt (`import whisper` auf Modulebene zieht torch mit; der Testlauf wird dadurch um ein paar Sekunden langsamer, ein Modell wird aber nicht geladen)
 
 ### Zyklus 2: Audio transkribieren
 - **Test:** `test_transcribe_audio_returns_stripped_text` (mit `tmp_path`)
