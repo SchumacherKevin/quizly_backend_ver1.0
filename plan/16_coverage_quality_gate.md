@@ -34,7 +34,7 @@ Die Tests sind durch TDD schon entstanden. Hier werden nur **Lücken gefunden un
 - **Aufgabe:** `pytest --cov-report=term-missing --cov-report=html` ausführen und die fehlenden Zeilen pro Datei notieren
 - **Für jede Lücke** einen Mini-Zyklus durchführen: Test schreiben, der die Lücke abdeckt → grün → Commit `test(<scope>): cover <verhalten>`
 - Nicht testbarer oder toter Code wird **entfernt** statt ausgenommen (`refactor: remove unused ...`)
-- [ ] Coverage ≥ 90 %
+- [x] Coverage ≥ 90 % (Ergebnis 26.11.2026: 502 Statements, 0 fehlend, **100 %**; zusätzlich mit `--cov-branch`: 58 Branches, 0 teilweise, ebenfalls 100 %. Keine Lücken, deshalb keine Mini-Zyklen. Ausgenommen sind nur `migrations`, `tests`, `manage.py`, `asgi.py` und `wsgi.py`, also generierter Einstiegscode ohne Logik)
 
 ### Zyklus 2: Abgleich mit dem API-Vertrag
 - **Aufgabe:** Für jede Zeile der Tabelle oben per `grep` den passenden Test suchen (z. B. `status_code == 403` in `quiz_app/tests/`)
