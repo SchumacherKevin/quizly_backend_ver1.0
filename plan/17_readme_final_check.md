@@ -14,10 +14,10 @@ Eine aussagekräftige `README.md`, ein manueller End-to-End-Test mit dem echten 
 
 ### Zyklus 1: README schreiben
 Inhalt:
-- [ ] Projektbeschreibung und Features (YouTube → Quiz mit 10 Fragen)
-- [ ] Tech-Stack: Python 3.14, Django, DRF, simplejwt, django-cors-headers, yt-dlp, openai-whisper, google-genai
-- [ ] **Voraussetzungen:** Python 3.14, **FFmpeg global installiert** (Windows: `winget install ffmpeg` bzw. Download und `PATH` setzen; macOS: `brew install ffmpeg`); Prüfung mit `ffmpeg -version`
-- [ ] Installation (PowerShell):
+- [x] Projektbeschreibung und Features (YouTube → Quiz mit 10 Fragen)
+- [x] Tech-Stack: Python 3.14, Django, DRF, simplejwt, django-cors-headers, yt-dlp, openai-whisper, google-genai
+- [x] **Voraussetzungen:** Python 3.14, **FFmpeg global installiert** (Windows: `winget install ffmpeg` bzw. Download und `PATH` setzen; macOS: `brew install ffmpeg`); Prüfung mit `ffmpeg -version`
+- [x] Installation (PowerShell):
   ```powershell
   git clone <repo>
   cd quizly_backend_ver1.0
@@ -29,19 +29,19 @@ Inhalt:
   python manage.py createsuperuser
   python manage.py runserver
   ```
-- [ ] Erklärung der Env-Variablen (Tabelle); Gemini-Key unter https://ai.google.dev/
-- [ ] Hinweise:
+- [x] Erklärung der Env-Variablen (Tabelle); Gemini-Key unter https://ai.google.dev/
+- [x] Hinweise:
   - Whisper lädt beim ersten Lauf das Modell herunter
   - Das Gemini-Free-Tier ist begrenzt
   - yt-dlp aktuell halten (`pip install -U yt-dlp`)
   - Maximale Videolänge per `MAX_VIDEO_MINUTES`
   - Der Access-Token bleibt nach dem Logout bis zu 5 Minuten technisch gültig, das Cookie wird aber gelöscht
-- [ ] Frontend-Hinweis: über `http://127.0.0.1:5500` öffnen
-- [ ] API-Übersicht: Tabelle mit allen 9 Endpoints (Methode, Pfad, Auth, Beschreibung)
-- [ ] Entwicklung: `pip install -r requirements-dev.txt`, `pytest`, `black . ; isort . ; flake8`, TDD-Workflow mit Verweis auf `plan/00_overview.md`
-- [ ] Projektstruktur
+- [x] Frontend-Hinweis: über `http://127.0.0.1:5500` öffnen
+- [x] API-Übersicht: Tabelle mit allen 9 Endpoints (Methode, Pfad, Auth, Beschreibung)
+- [x] Entwicklung: `pip install -r requirements-dev.txt`, `pytest`, `black . ; isort . ; flake8`, TDD-Workflow mit Verweis auf `plan/00_overview.md`
+- [x] Projektstruktur
 - **Commit:** `docs: add README with setup and ffmpeg requirement`
-- [ ] erledigt
+- [x] erledigt (README auf Englisch wie der Code. Zusätzlich: Hinweis, dass `DEBUG=True` für lokales HTTP nötig ist, weil die Cookies sonst `Secure` sind; Linux-Befehl für FFmpeg; PyTorch-Download; SECRET_KEY-Generator; Beispiel-Quiz; 503-Hinweis zu Gemini)
 
 ### Zyklus 2: Frisches Setup prüfen
 - [ ] Repo in einen temporären Ordner klonen und die README Schritt für Schritt befolgen, bis `runserver` läuft und `pytest` grün ist
