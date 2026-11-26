@@ -16,8 +16,9 @@ from quiz_app.api.serializers import (
     QuizUpdateSerializer,
 )
 from quiz_app.models import Quiz
-from quiz_app.services.exceptions import InvalidVideoError
+from quiz_app.services.exceptions import QuizlyServiceError
 from quiz_app.services.pipeline import create_quiz_from_url
+from quiz_app.utils import service_error_response
 
 
 class QuizListCreateView(ListCreateAPIView):
@@ -39,10 +40,8 @@ class QuizListCreateView(ListCreateAPIView):
             quiz = create_quiz_from_url(
                 request.user, serializer.validated_data["url"]
             )
-        except InvalidVideoError as exc:
-            return Response(
-                {"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST
-            )
+        except QuizlyServiceError as exc:
+            return service_error_response(exc)
         return Response(
             QuizCreateResponseSerializer(quiz).data,
             status=status.HTTP_201_CREATED,

@@ -95,7 +95,7 @@ Aus einer YouTube-URL entsteht synchron ein gespeichertes Quiz; die Antwort ist 
 - **Erwartetes Rot:** unbehandelte Exception
 - **Green:** `except QuizGenerationError` gibt 500 zurück; Logging mit `logger.exception(...)` ohne Secrets
 - **Commit:** `feat(quiz): return 500 on quiz generation failures`
-- [ ] erledigt
+- [x] erledigt (die View fängt `QuizlyServiceError`, und der Helper `service_error_response` in `quiz_app/utils.py` ordnet 400 bzw. 500 zu und loggt nur 500er; das Logging wird per `caplog` geprüft)
 
 ### Zyklus 8: Authentifizierung
 - **Test:** `test_create_quiz_requires_auth`: `api_client.post(...)` ergibt 401, und keine Service-Funktion wurde aufgerufen

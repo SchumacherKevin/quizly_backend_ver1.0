@@ -1,6 +1,14 @@
 """Helper functions for the quiz_app."""
 
+import logging
+
 from django.core.exceptions import ValidationError
+from rest_framework import status
+from rest_framework.response import Response
+
+from quiz_app.services.exceptions import QuizGenerationError
+
+logger = logging.getLogger(__name__)
 
 OPTION_COUNT = 4
 
@@ -23,3 +31,17 @@ def validate_answer(answer, options):
     """Ensure ``answer`` exactly matches one of the ``options``."""
     if answer not in options:
         raise ValidationError({"answer": "Answer must be one of the options."})
+
+
+def service_error_response(exc):
+    """Map a pipeline error to a ``{"detail": ...}`` response.
+
+    ``QuizGenerationError`` becomes 500 and is logged with traceback
+    (our messages never contain secrets); everything else is a 400.
+    """
+    if isinstance(exc, QuizGenerationError):
+        logger.exception("Quiz generation failed: %s", exc)
+        code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    else:
+        code = status.HTTP_400_BAD_REQUEST
+    return Response({"detail": str(exc)}, status=code)

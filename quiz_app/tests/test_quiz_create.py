@@ -5,7 +5,10 @@ from django.urls import reverse
 
 from conftest import TEST_VIDEO_URL
 from quiz_app.models import Quiz
-from quiz_app.services.exceptions import InvalidVideoError
+from quiz_app.services.exceptions import (
+    InvalidVideoError,
+    QuizGenerationError,
+)
 
 pytestmark = pytest.mark.django_db
 
@@ -74,3 +77,31 @@ def test_create_quiz_rejects_unavailable_video(auth_client, services):
 
     assert response.status_code == 400
     assert response.json() == {"detail": "Video not available."}
+
+
+def test_create_quiz_returns_500_on_generation_error(
+    auth_client, services, caplog
+):
+    """Gemini failures give 500, are logged and nothing is saved."""
+    error = QuizGenerationError("Quiz generation failed.")
+    services.generate.side_effect = error
+
+    response = _post(auth_client, {"url": TEST_VIDEO_URL})
+
+    assert response.status_code == 500
+    assert response.json() == {"detail": "Quiz generation failed."}
+    assert Quiz.objects.count() == 0
+    assert "Quiz generation failed" in caplog.text
+
+
+def test_create_quiz_returns_500_on_transcription_error(auth_client, services):
+    """Whisper failures give 500 with the error message, nothing saved."""
+    services.transcribe.side_effect = QuizGenerationError(
+        "Transcription failed."
+    )
+
+    response = _post(auth_client, {"url": TEST_VIDEO_URL})
+
+    assert response.status_code == 500
+    assert response.json() == {"detail": "Transcription failed."}
+    assert Quiz.objects.count() == 0
