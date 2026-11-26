@@ -19,7 +19,7 @@ Im Django-Admin lassen sich Quizze (mit Fragen inline) und einzelne Fragen bearb
 - **Erwartetes Rot:** `NoReverseMatch: admin:quiz_app_quiz_changelist`
 - **Green:** `@admin.register(Quiz) class QuizAdmin` mit `list_display = ("id", "title", "owner", "created_at")`, `list_filter`, `search_fields = ("title", "description")`, `readonly_fields = ("created_at", "updated_at")`
 - **Commit:** `feat(quiz): register Quiz in admin`
-- [ ] erledigt
+- [x] erledigt
 
 ### Zyklus 2: Fragen inline im Quiz
 - **Test:** `test_quiz_change_view_shows_question_inline`: Die Change-View ergibt 200, `"questions-TOTAL_FORMS"` steht im Inhalt, ebenso der Titel der ersten Frage
