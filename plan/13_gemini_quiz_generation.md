@@ -36,7 +36,7 @@
   - `conftest.py`: `gemini_quiz_data()` liefert `{"title": "Python Basics", "description": "Ein Quiz über Python.", "questions": [...]}` mit 10 Fragen, jeweils `question_options = [f"Option {i}A", ..., f"Option {i}D"]` und `answer = f"Option {i}A"`
   - `validate_quiz_data(data: dict) -> None`
 - **Commit:** `feat(quiz): validate generated quiz data`
-- [ ] erledigt
+- [x] erledigt (Fake-it: `validate_quiz_data` ist noch ein No-op; Zyklus 2 ergänzt die Regeln. Fixture mit Helper `_gemini_question(i)`, Fragen 1–10)
 
 ### Zyklus 2: Ungültige Quizdaten
 - **Test:** `test_validate_quiz_data_rejects_invalid` (parametrisiert; die Fixture wird jeweils kopiert und verändert), jeweils `pytest.raises(QuizGenerationError)`:

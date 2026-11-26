@@ -69,3 +69,23 @@ def quiz_factory(db):
         return quiz
 
     return make
+
+
+def _gemini_question(i):
+    """Return one valid generated question with four distinct options."""
+    options = [f"Option {i}{letter}" for letter in "ABCD"]
+    return {
+        "question_title": f"Question {i}?",
+        "question_options": options,
+        "answer": options[0],
+    }
+
+
+@pytest.fixture
+def gemini_quiz_data():
+    """Return a valid quiz dict as Gemini would generate it."""
+    return {
+        "title": "Python Basics",
+        "description": "Ein Quiz über Python.",
+        "questions": [_gemini_question(i) for i in range(1, 11)],
+    }
