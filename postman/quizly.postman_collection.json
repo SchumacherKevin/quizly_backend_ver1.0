@@ -1,0 +1,289 @@
+{
+  "info": {
+    "name": "Quizly API – end-to-end",
+    "description": "Runs the full API flow against a local server (python manage.py runserver). The cookie jar carries the HttpOnly JWT cookies from login to the following requests. 'Create quiz' calls YouTube, Whisper and Gemini for real (uses one Gemini request).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8000/api" },
+    { "key": "videoUrl", "value": "https://youtu.be/dQw4w9WgXcQ" },
+    { "key": "username", "value": "" },
+    { "key": "password", "value": "E2e-Test-1234!" },
+    { "key": "quizId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "01 Register",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.collectionVariables.set('username', 'e2e_' + Date.now());"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('201 Created', () => pm.response.to.have.status(201));",
+              "pm.test('success message', () => {",
+              "  pm.expect(pm.response.json()).to.eql({ detail: 'User created successfully!' });",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"{{username}}\",\n  \"email\": \"{{username}}@example.com\",\n  \"password\": \"{{password}}\",\n  \"confirmed_password\": \"{{password}}\"\n}"
+        },
+        "url": "{{baseUrl}}/register/"
+      }
+    },
+    {
+      "name": "02 Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('detail and user data', () => {",
+              "  pm.expect(body.detail).to.eql('Login successfully!');",
+              "  pm.expect(body.user.username).to.eql(pm.collectionVariables.get('username'));",
+              "  pm.expect(body.user).to.have.all.keys('id', 'username', 'email');",
+              "});",
+              "pm.test('no tokens in the body', () => {",
+              "  pm.expect(JSON.stringify(body)).to.not.include('token');",
+              "});",
+              "pm.test('both cookies set as HttpOnly', () => {",
+              "  const cookies = pm.response.headers.filter(h => h.key.toLowerCase() === 'set-cookie').map(h => h.value);",
+              "  ['access_token', 'refresh_token'].forEach(name => {",
+              "    const cookie = cookies.find(c => c.startsWith(name + '='));",
+              "    pm.expect(cookie, name).to.exist;",
+              "    pm.expect(cookie.toLowerCase(), name).to.include('httponly');",
+              "  });",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": "{{baseUrl}}/login/"
+      }
+    },
+    {
+      "name": "03 List quizzes (empty)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('empty array for a new user', () => {",
+              "  pm.expect(pm.response.json()).to.be.an('array').that.is.empty;",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": { "method": "GET", "url": "{{baseUrl}}/quizzes/" }
+    },
+    {
+      "name": "04 Create quiz (real pipeline)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('201 Created', () => pm.response.to.have.status(201));",
+              "const quiz = pm.response.json();",
+              "pm.collectionVariables.set('quizId', quiz.id);",
+              "pm.test('video URL is normalized', () => {",
+              "  pm.expect(quiz.video_url).to.eql('https://www.youtube.com/watch?v=dQw4w9WgXcQ');",
+              "});",
+              "pm.test('title and description are filled', () => {",
+              "  pm.expect(quiz.title).to.be.a('string').and.not.empty;",
+              "  pm.expect(quiz.description).to.be.a('string').and.not.empty;",
+              "});",
+              "pm.test('10 questions with 4 options and a valid answer', () => {",
+              "  pm.expect(quiz.questions).to.have.lengthOf(10);",
+              "  quiz.questions.forEach(q => {",
+              "    pm.expect(q.question_options).to.have.lengthOf(4);",
+              "    pm.expect(new Set(q.question_options).size).to.eql(4);",
+              "    pm.expect(q.question_options).to.include(q.answer);",
+              "  });",
+              "});",
+              "pm.test('questions contain timestamps (POST only)', () => {",
+              "  pm.expect(quiz.questions[0]).to.have.all.keys('id', 'question_title', 'question_options', 'answer', 'created_at', 'updated_at');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"url\": \"{{videoUrl}}\"\n}" },
+        "url": "{{baseUrl}}/quizzes/"
+      }
+    },
+    {
+      "name": "05 Quiz detail",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "const quiz = pm.response.json();",
+              "pm.test('same quiz with 10 questions', () => {",
+              "  pm.expect(String(quiz.id)).to.eql(String(pm.collectionVariables.get('quizId')));",
+              "  pm.expect(quiz.questions).to.have.lengthOf(10);",
+              "});",
+              "pm.test('questions without timestamps', () => {",
+              "  pm.expect(quiz.questions[0]).to.have.all.keys('id', 'question_title', 'question_options', 'answer');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": { "method": "GET", "url": "{{baseUrl}}/quizzes/{{quizId}}/" }
+    },
+    {
+      "name": "06 Patch quiz",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('title and description updated', () => {",
+              "  const quiz = pm.response.json();",
+              "  pm.expect(quiz.title).to.eql('E2E title');",
+              "  pm.expect(quiz.description).to.eql('E2E description');",
+              "  pm.expect(quiz.questions).to.have.lengthOf(10);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"E2E title\",\n  \"description\": \"E2E description\"\n}"
+        },
+        "url": "{{baseUrl}}/quizzes/{{quizId}}/"
+      }
+    },
+    {
+      "name": "07 Refresh access token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('detail message', () => {",
+              "  pm.expect(pm.response.json()).to.eql({ detail: 'Token refreshed' });",
+              "});",
+              "pm.test('new access cookie set', () => {",
+              "  const cookies = pm.response.headers.filter(h => h.key.toLowerCase() === 'set-cookie').map(h => h.value);",
+              "  pm.expect(cookies.some(c => c.startsWith('access_token='))).to.be.true;",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": { "method": "POST", "url": "{{baseUrl}}/token/refresh/" }
+    },
+    {
+      "name": "08 Delete quiz",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('204 No Content', () => pm.response.to.have.status(204));",
+              "pm.test('empty body', () => pm.expect(pm.response.text()).to.eql(''));"
+            ]
+          }
+        }
+      ],
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/quizzes/{{quizId}}/" }
+    },
+    {
+      "name": "09 Quiz detail after delete",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('404 Not Found', () => pm.response.to.have.status(404));"
+            ]
+          }
+        }
+      ],
+      "request": { "method": "GET", "url": "{{baseUrl}}/quizzes/{{quizId}}/" }
+    },
+    {
+      "name": "10 Logout",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('logout message', () => {",
+              "  pm.expect(pm.response.json()).to.eql({ detail: 'Log-Out successfully! All Tokens will be deleted. Refresh token is now invalid.' });",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": { "method": "POST", "url": "{{baseUrl}}/logout/" }
+    },
+    {
+      "name": "11 Refresh after logout",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"
+            ]
+          }
+        }
+      ],
+      "request": { "method": "POST", "url": "{{baseUrl}}/token/refresh/" }
+    },
+    {
+      "name": "12 List quizzes after logout",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"
+            ]
+          }
+        }
+      ],
+      "request": { "method": "GET", "url": "{{baseUrl}}/quizzes/" }
+    }
+  ]
+}

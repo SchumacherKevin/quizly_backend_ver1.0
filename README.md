@@ -116,6 +116,14 @@ with `localhost` the requests become cross-site and the browser does not send th
   answers 500, so try again later.
 - Keep **yt-dlp** up to date, YouTube changes often:
   `pip install -U yt-dlp`
+- yt-dlp may warn *"No supported JavaScript runtime could be found"*. Downloads
+  still work, but YouTube increasingly needs a JS runtime. If videos stop loading,
+  install [Deno](https://deno.com/) (`winget install DenoLand.Deno`) and restart the
+  server.
+- yt-dlp verifies HTTPS certificates against the **operating system's certificate
+  store** (`compat_opts: no-certifi`). This keeps quiz creation working behind
+  antivirus HTTPS scanners (e.g. Norton Web/Mail Shield) that re-sign traffic with
+  their own root certificate.
 - The maximum video length is set with `MAX_VIDEO_MINUTES`.
 - After logout the cookies are deleted and the refresh token is blacklisted. An
   already issued access token stays technically valid until it expires (max.

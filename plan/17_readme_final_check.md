@@ -48,10 +48,14 @@ Inhalt:
 - [x] Gefundene Lücken in der README korrigieren (eine Lücke: `Activate.ps1` scheitert an der Standard-ExecutionPolicy; Hinweis auf `Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned` ergänzt). **Commit:** `docs: fix setup instructions`
 
 ### Zyklus 3: API-Test mit der Postman CLI
-- [ ] Collection mit den 9 Endpoints anlegen; der Cookie-Jar überträgt die Cookies vom Login in die folgenden Requests
+- [x] Collection mit den 9 Endpoints anlegen; der Cookie-Jar überträgt die Cookies vom Login in die folgenden Requests (`postman/quizly.postman_collection.json`, 12 Requests: zusätzlich GET nach DELETE → 404 und GET nach Logout → 401; prüft u. a. HttpOnly-Cookies, keine Tokens im Body, 10 × 4 Optionen, Antwort in den Optionen)
 - [ ] Ablauf: register → login → list → create (echtes kurzes Video) → detail → patch → refresh → delete → logout → refresh (erwartet 401)
 - [ ] `postman collection run postman/quizly.postman_collection.json` ist grün
 - **Commit:** `test: add postman collection for end-to-end api checks`
+- **Befund 1 (behoben, eigener TDD-Zyklus):** Norton Web/Mail Shield signiert HTTPS mit eigener Root-CA neu. yt-dlp prüft mit `certifi`, das diese Root nicht kennt → `CERTIFICATE_VERIFY_FAILED` → 400. Fix: `compat_opts: {"no-certifi"}` in den yt-dlp-Optionen (Prüfung gegen den Windows-Zertifikatsspeicher, weiterhin verifiziert). Tests `test_fetch_video_info_prefers_system_certificates` und `test_download_options_prefer_system_certificates`. Commit: `fix(quiz): verify youtube tls against os certificate store`
+- **Befund 2:** yt-dlp warnt, dass keine JS-Runtime (Deno) gefunden wurde; der Download funktioniert trotzdem. In der README dokumentiert
+- **Befund 3 (offen):** Gemini `gemini-3.8-flash` antwortet am 26.11.2026 wiederholt mit 503 „high demand“, obwohl das SDK intern selbst wiederholt. Download und Whisper liefen echt durch (Whisper-Modell geladen, ca. 30 s), danach korrekt 500 `{"detail": "Gemini request failed."}`. Ein Lauf mit 201 steht noch aus
+- Stand der Läufe: alle Requests außer Create und den davon abhängigen (Detail, Patch, Delete) sind grün
 
 ### Zyklus 4: E2E mit dem Frontend
 - [ ] Registrieren → Login → Quiz aus einem kurzen Video erstellen → Übersicht (Video-Embed sichtbar) → Titel und Beschreibung bearbeiten (bleibt nach dem Reload erhalten) → Quiz spielen und auswerten → „See all“ → Quiz löschen → Logout
