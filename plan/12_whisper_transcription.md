@@ -37,10 +37,10 @@
 - **Erwartetes Rot:** `RuntimeError` statt `QuizGenerationError`
 - **Green:** `try/except Exception` mit `raise QuizGenerationError("Transcription failed.") from exc`; zusätzlich Prüfung auf leeren Text
 - **Commit:** `feat(quiz): handle whisper transcription errors`
-- [ ] erledigt
+- [x] erledigt (`try/except` im Helper `_run_whisper`, die Leer-Prüfung liegt außerhalb, sonst würde `"Transcript is empty."` zu `"Transcription failed."` umgeschrieben)
 
 ## Abschluss-Check
-- [ ] Kein Test lädt ein echtes Whisper-Modell
-- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
-- [ ] Status von Schritt 12 auf `[x]` gesetzt (Commit `docs: mark step 12 done`)
-- [ ] Stopp → Review
+- [x] Kein Test lädt ein echtes Whisper-Modell (jeder Test in `test_transcription.py` nutzt die Fixture `whisper_mock`)
+- [x] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
+- [x] Status von Schritt 12 auf `[x]` gesetzt (Commit `docs: mark step 12 done`)
+- [x] Stopp → Review

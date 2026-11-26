@@ -4,6 +4,7 @@ from unittest.mock import patch
 
 import pytest
 
+from quiz_app.services.exceptions import QuizGenerationError
 from quiz_app.services.transcription import (
     get_whisper_model,
     transcribe_audio,
@@ -56,3 +57,29 @@ def test_transcribe_audio_returns_stripped_text(whisper_mock, tmp_path):
 
     assert text == "Hallo Welt"
     model.transcribe.assert_called_once_with(str(audio_path), fp16=False)
+
+
+def test_transcribe_audio_rejects_empty_transcript(whisper_mock, tmp_path):
+    """A whitespace-only transcript is treated as a failure."""
+    model = whisper_mock.load_model.return_value
+    model.transcribe.return_value = {"text": "   "}
+
+    with pytest.raises(QuizGenerationError, match="Transcript is empty."):
+        transcribe_audio(tmp_path / "audio.webm")
+
+
+def test_transcribe_audio_wraps_errors(whisper_mock, tmp_path):
+    """Errors from Whisper (e.g. missing FFmpeg) become service errors."""
+    model = whisper_mock.load_model.return_value
+    model.transcribe.side_effect = RuntimeError("ffmpeg not found")
+
+    with pytest.raises(QuizGenerationError):
+        transcribe_audio(tmp_path / "audio.webm")
+
+
+def test_get_whisper_model_wraps_load_errors(whisper_mock, tmp_path):
+    """A failing model load surfaces as ``QuizGenerationError``."""
+    whisper_mock.load_model.side_effect = RuntimeError("download failed")
+
+    with pytest.raises(QuizGenerationError):
+        transcribe_audio(tmp_path / "audio.webm")
