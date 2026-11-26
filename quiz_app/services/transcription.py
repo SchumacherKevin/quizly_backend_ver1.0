@@ -11,12 +11,26 @@ from quiz_app.services.exceptions import QuizGenerationError
 
 @lru_cache(maxsize=1)
 def get_whisper_model():
-    """Load the configured Whisper model once per process."""
+    """Load the configured Whisper model once per process.
+
+    Returns:
+        The Whisper model named in ``settings.WHISPER_MODEL``.
+    """
     return whisper.load_model(settings.WHISPER_MODEL)
 
 
 def _run_whisper(path: Path) -> str:
-    """Return the raw Whisper text; any failure becomes a service error."""
+    """Run Whisper on the audio file.
+
+    Args:
+        path: Path to the audio file.
+
+    Returns:
+        The raw transcript text.
+
+    Raises:
+        QuizGenerationError: If loading the model or transcribing fails.
+    """
     try:
         result = get_whisper_model().transcribe(str(path), fp16=False)
     except Exception as exc:
@@ -25,9 +39,16 @@ def _run_whisper(path: Path) -> str:
 
 
 def transcribe_audio(path: Path) -> str:
-    """Transcribe the audio file at ``path`` and return the plain text.
+    """Transcribe an audio file to plain text.
 
-    Raises ``QuizGenerationError`` if Whisper fails or returns no text.
+    Args:
+        path: Path to the audio file.
+
+    Returns:
+        The transcript without surrounding whitespace.
+
+    Raises:
+        QuizGenerationError: If Whisper fails or returns no text.
     """
     text = _run_whisper(path).strip()
     if not text:

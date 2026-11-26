@@ -8,7 +8,16 @@ TRUTHY_VALUES = {"true", "1", "yes", "on"}
 
 
 def get_bool(name: str, default: bool) -> bool:
-    """Return the environment variable ``name`` parsed as a boolean."""
+    """Read an environment variable as a boolean.
+
+    Args:
+        name: Name of the environment variable.
+        default: Value used if the variable is not set.
+
+    Returns:
+        True for "true", "1", "yes" or "on" (case-insensitive), False for
+        any other value, or ``default`` if the variable is not set.
+    """
     value = os.getenv(name)
     if value is None:
         return default
@@ -16,7 +25,16 @@ def get_bool(name: str, default: bool) -> bool:
 
 
 def get_list(name: str, default: list[str]) -> list[str]:
-    """Return the environment variable ``name`` as a comma separated list."""
+    """Read an environment variable as a comma separated list.
+
+    Args:
+        name: Name of the environment variable.
+        default: Value used if the variable is not set.
+
+    Returns:
+        The stripped, non-empty items, or ``default`` if the variable is
+        not set.
+    """
     value = os.getenv(name)
     if value is None:
         return default
@@ -24,7 +42,18 @@ def get_list(name: str, default: list[str]) -> list[str]:
 
 
 def get_int(name: str, default: int) -> int:
-    """Return the environment variable ``name`` parsed as an integer."""
+    """Read an environment variable as an integer.
+
+    Args:
+        name: Name of the environment variable.
+        default: Value used if the variable is not set.
+
+    Returns:
+        The parsed integer, or ``default`` if the variable is not set.
+
+    Raises:
+        ImproperlyConfigured: If the value is not a valid integer.
+    """
     value = os.getenv(name)
     if value is None:
         return default

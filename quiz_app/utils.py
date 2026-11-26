@@ -14,7 +14,15 @@ OPTION_COUNT = 4
 
 
 def validate_options(options):
-    """Ensure ``options`` is a list of four distinct strings."""
+    """Ensure the options are a list of four distinct strings.
+
+    Args:
+        options: The value of ``question_options``.
+
+    Raises:
+        ValidationError: Keyed by ``question_options`` if the value is not
+            a list of exactly four unique strings.
+    """
     if not isinstance(options, list) or len(options) != OPTION_COUNT:
         raise ValidationError(
             {"question_options": "Exactly 4 options are required."}
@@ -28,7 +36,15 @@ def validate_options(options):
 
 
 def validate_answer(answer, options):
-    """Ensure ``answer`` exactly matches one of the ``options``."""
+    """Ensure the answer exactly matches one of the options.
+
+    Args:
+        answer: The correct answer text.
+        options: The four answer options.
+
+    Raises:
+        ValidationError: Keyed by ``answer`` if it is not an option.
+    """
     if answer not in options:
         raise ValidationError({"answer": "Answer must be one of the options."})
 
@@ -36,8 +52,14 @@ def validate_answer(answer, options):
 def service_error_response(exc):
     """Map a pipeline error to a ``{"detail": ...}`` response.
 
-    ``QuizGenerationError`` becomes 500 and is logged with traceback
-    (our messages never contain secrets); everything else is a 400.
+    ``QuizGenerationError`` is logged with traceback; our messages never
+    contain secrets. Must be called inside an ``except`` block.
+
+    Args:
+        exc: The caught ``QuizlyServiceError``.
+
+    Returns:
+        500 for a ``QuizGenerationError``, otherwise 400.
     """
     if isinstance(exc, QuizGenerationError):
         logger.exception("Quiz generation failed: %s", exc)

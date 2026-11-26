@@ -27,7 +27,11 @@ class Quiz(models.Model):
         verbose_name_plural = "quizzes"
 
     def __str__(self):
-        """Return the quiz title."""
+        """Represent the quiz in the admin and shell.
+
+        Returns:
+            The quiz title.
+        """
         return self.title
 
 
@@ -51,7 +55,11 @@ class Question(models.Model):
         ordering = ["id"]
 
     def __str__(self):
-        """Return the question title."""
+        """Represent the question in the admin and shell.
+
+        Returns:
+            The question title.
+        """
         return self.question_title
 
     def clean(self):

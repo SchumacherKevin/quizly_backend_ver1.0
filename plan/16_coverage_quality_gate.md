@@ -8,10 +8,10 @@ Die Tests sind durch TDD schon entstanden. Hier werden nur **Lücken gefunden un
 - **Vorbedingungen:** 02–15 sind fertig; alle Endpoints und Services sind implementiert und getestet.
 - Werkzeuge: `pytest --cov` (Konfiguration in `pyproject.toml`), `black`, `isort`, `flake8`
 - **DoD-Regeln (Checkliste):**
-  - Funktionen ≤ 14 Zeilen und eine Aufgabe
+  - Funktionen ≤ 14 Zeilen (ohne Docstring) und eine Aufgabe
   - `snake_case`, sprechende Namen
   - keine ungenutzten Variablen, Funktionen oder Imports und kein auskommentierter Code
-  - Docstrings
+  - Docstrings im Google-Format (`Args:`, `Returns:`, `Raises:`), Vorgabe von Kevin am 26.11.2026
   - `views.py` nur Views mit Response
   - Helper in `utils.py` bzw. `services/`
   - PEP8
@@ -39,12 +39,12 @@ Die Tests sind durch TDD schon entstanden. Hier werden nur **Lücken gefunden un
 ### Zyklus 2: Abgleich mit dem API-Vertrag
 - **Aufgabe:** Für jede Zeile der Tabelle oben per `grep` den passenden Test suchen (z. B. `status_code == 403` in `quiz_app/tests/`)
 - Fehlt ein Code, gibt es einen Mini-Zyklus mit Test und Commit
-- [ ] Jeder Statuscode ist durch mindestens einen Test abgedeckt
+- [x] Jeder Statuscode ist durch mindestens einen Test abgedeckt (26.11.2026: alle 9 Endpoints vollständig, zusätzlich 405 für PUT. Auch die vier `detail`-Texte aus dem Vertrag werden wortgleich geprüft; der über zwei Zeilen umbrochene Logout-Text wurde per Vergleich verifiziert. Keine Mini-Zyklen nötig)
 
 ### Zyklus 3: Funktionslänge und Docstrings
-- **Aufgabe:** Ein Skript im Scratchpad (**nicht** ins Repo) mit `ast` zählt die Zeilen jeder Funktion in `core`, `auth_app` und `quiz_app` (ohne `migrations` und `tests`) und listet alle mit mehr als 14 Zeilen bzw. ohne Docstring
+- **Aufgabe:** Ein Skript im Scratchpad (**nicht** ins Repo) mit `ast` zählt die Zeilen jeder Funktion **ohne Docstring** in `core`, `auth_app` und `quiz_app` (ohne `migrations` und `tests`). Es listet alle Funktionen mit mehr als 14 Zeilen und alle ohne Google-Docstring: Fehlt `Args:` bei Parametern (außer `self`/`cls`), `Returns:` bei Rückgabewert oder `Raises:` bei eigenem `raise`? Außerdem prüft es Modul- und Klassen-Docstrings.
 - Jeden Fund refaktorieren; die Tests müssen grün bleiben. Commit: `refactor(<scope>): split <funktion>` bzw. `docs(<scope>): add missing docstrings`
-- [ ] 0 Funde
+- [x] 0 Funde (Erstlauf: 0 Funde bei der Länge, 126 beim Format, verteilt auf ca. 60 Funktionen, 6 leere `__init__.py` und 2 `apps.py`. Alle auf das Google-Format umgestellt; per AST-Vergleich gegen HEAD verifiziert, dass sich nur Docstrings geändert haben. Tests bleiben ein einzeiliger Docstring, weil Fixtures als Parameter kein `Args:` brauchen)
 
 ### Zyklus 4: Struktur-Review
 - [ ] `views.py` enthält nur Views (keine Helper-Funktionen)

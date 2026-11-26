@@ -21,18 +21,49 @@ class RegistrationSerializer(serializers.ModelSerializer):
         }
 
     def validate_email(self, value):
-        """Reject an email that is already used, ignoring case."""
+        """Reject an email that is already used, ignoring case.
+
+        Args:
+            value: The submitted email address.
+
+        Returns:
+            The unchanged email address.
+
+        Raises:
+            ValidationError: If a user with this email already exists.
+        """
         if User.objects.filter(email__iexact=value).exists():
             raise serializers.ValidationError("Email already exists.")
         return value
 
     def validate_password(self, value):
-        """Run Django's configured password validators."""
+        """Run Django's configured password validators.
+
+        Args:
+            value: The submitted password.
+
+        Returns:
+            The unchanged password.
+
+        Raises:
+            django.core.exceptions.ValidationError: If a validator rejects
+                the password (DRF turns it into a field error).
+        """
         password_validation.validate_password(value)
         return value
 
     def validate(self, attrs):
-        """Ensure both passwords match and drop the confirmation."""
+        """Ensure both passwords match and drop the confirmation.
+
+        Args:
+            attrs: The field values validated so far.
+
+        Returns:
+            The attributes without ``confirmed_password``.
+
+        Raises:
+            ValidationError: If the passwords do not match.
+        """
         confirmed_password = attrs.pop("confirmed_password")
         if attrs["password"] != confirmed_password:
             raise serializers.ValidationError(
@@ -41,7 +72,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        """Create the user with a hashed password."""
+        """Create the user with a hashed password.
+
+        Args:
+            validated_data: Username, email and password.
+
+        Returns:
+            The newly created user.
+        """
         return User.objects.create_user(**validated_data)
 
 

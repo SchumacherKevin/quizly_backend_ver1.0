@@ -19,17 +19,39 @@ LOAD_ERROR = "Video could not be loaded."
 
 
 def _query_id(parsed):
-    """Return the ``v`` query parameter of a watch URL."""
+    """Read the id from the ``v`` query parameter of a watch URL.
+
+    Args:
+        parsed: Result of ``urlparse`` for the URL.
+
+    Returns:
+        The value of ``v``, or an empty string if it is missing.
+    """
     return parse_qs(parsed.query).get("v", [""])[0]
 
 
 def _path_id(parsed):
-    """Return the last path segment of a short or shorts URL."""
+    """Read the id from the last path segment (youtu.be or shorts).
+
+    Args:
+        parsed: Result of ``urlparse`` for the URL.
+
+    Returns:
+        The last path segment.
+    """
     return parsed.path.rstrip("/").split("/")[-1]
 
 
 def _raw_id(parsed):
-    """Return the unvalidated id candidate, or '' for foreign hosts."""
+    """Find the id candidate depending on host and path.
+
+    Args:
+        parsed: Result of ``urlparse`` for the URL.
+
+    Returns:
+        The unvalidated id candidate, or an empty string for hosts that
+        are not YouTube.
+    """
     if parsed.hostname in SHORT_HOSTS:
         return _path_id(parsed)
     if parsed.hostname not in WATCH_HOSTS:
@@ -40,9 +62,17 @@ def _raw_id(parsed):
 
 
 def extract_video_id(url: str) -> str:
-    """Return the video id of a supported YouTube URL.
+    """Extract the video id from a supported YouTube URL.
 
-    Raises ``InvalidVideoError`` for foreign hosts or malformed ids.
+    Args:
+        url: URL in ``watch?v=``, ``youtu.be/``, ``shorts/`` or mobile
+            format.
+
+    Returns:
+        The 11 character video id.
+
+    Raises:
+        InvalidVideoError: For foreign hosts or malformed ids.
     """
     video_id = _raw_id(urlparse(url))
     if not VIDEO_ID_PATTERN.match(video_id):
@@ -51,14 +81,28 @@ def extract_video_id(url: str) -> str:
 
 
 def normalize_url(video_id: str) -> str:
-    """Return the canonical watch URL the frontend can embed."""
+    """Build the canonical watch URL the frontend can embed.
+
+    Args:
+        video_id: The 11 character video id.
+
+    Returns:
+        ``https://www.youtube.com/watch?v=<video_id>``.
+    """
     return WATCH_URL.format(video_id=video_id)
 
 
 def fetch_video_info(url: str) -> dict:
-    """Return the video metadata without downloading anything.
+    """Load the video metadata without downloading anything.
 
-    Raises ``InvalidVideoError`` if yt-dlp cannot load the video.
+    Args:
+        url: Normalized YouTube watch URL.
+
+    Returns:
+        The yt-dlp info dict (e.g. ``title`` and ``duration``).
+
+    Raises:
+        InvalidVideoError: If yt-dlp cannot load the video.
     """
     try:
         with yt_dlp.YoutubeDL(INFO_OPTIONS) as ydl:
@@ -70,7 +114,12 @@ def fetch_video_info(url: str) -> dict:
 def check_duration(info: dict) -> None:
     """Ensure the video is not longer than ``MAX_VIDEO_MINUTES``.
 
-    Videos without a duration (e.g. livestreams) are rejected as well.
+    Args:
+        info: The yt-dlp info dict of the video.
+
+    Raises:
+        InvalidVideoError: If the duration is missing (e.g. livestreams)
+            or above the limit.
     """
     duration = info.get("duration")
     if not duration:
@@ -81,7 +130,14 @@ def check_duration(info: dict) -> None:
 
 
 def build_download_options(target_dir) -> dict:
-    """Return the yt-dlp options for an audio download into a folder."""
+    """Build the yt-dlp options for an audio download.
+
+    Args:
+        target_dir: Folder the audio file is written to.
+
+    Returns:
+        The options dict for ``yt_dlp.YoutubeDL``.
+    """
     return {
         "format": "bestaudio/best",
         "outtmpl": str(Path(target_dir) / AUDIO_TEMPLATE),
@@ -91,9 +147,17 @@ def build_download_options(target_dir) -> dict:
 
 
 def download_audio(url: str, target_dir) -> Path:
-    """Download the audio track into ``target_dir`` and return its path.
+    """Download the audio track of a video.
 
-    Raises ``InvalidVideoError`` if yt-dlp cannot load the video.
+    Args:
+        url: Normalized YouTube watch URL.
+        target_dir: Folder the audio file is written to.
+
+    Returns:
+        Path of the downloaded audio file.
+
+    Raises:
+        InvalidVideoError: If yt-dlp cannot load the video.
     """
     try:
         with yt_dlp.YoutubeDL(build_download_options(target_dir)) as ydl:

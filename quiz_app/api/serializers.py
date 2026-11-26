@@ -53,7 +53,17 @@ class QuizCreateSerializer(serializers.Serializer):
     url = serializers.CharField()
 
     def validate_url(self, value):
-        """Reject URLs that are not a supported YouTube video link."""
+        """Reject URLs that are not a supported YouTube video link.
+
+        Args:
+            value: The submitted URL.
+
+        Returns:
+            The unchanged URL.
+
+        Raises:
+            ValidationError: If the URL is not a supported YouTube link.
+        """
         try:
             extract_video_id(value)
         except InvalidVideoError as exc:

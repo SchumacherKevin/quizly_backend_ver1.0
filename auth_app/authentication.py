@@ -9,7 +9,18 @@ class CookieJWTAuthentication(JWTAuthentication):
     """Authenticate requests with the ``access_token`` cookie."""
 
     def authenticate(self, request):
-        """Return ``(user, token)`` or ``None`` without an access cookie."""
+        """Authenticate the request with the access token cookie.
+
+        Args:
+            request: The incoming DRF request.
+
+        Returns:
+            A ``(user, validated_token)`` tuple, or None if the request
+            has no access token cookie.
+
+        Raises:
+            InvalidToken: If the cookie holds an invalid or expired token.
+        """
         raw_token = request.COOKIES.get(ACCESS_COOKIE)
         if raw_token is None:
             return None

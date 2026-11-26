@@ -22,7 +22,7 @@ Das Backend liefert eine REST-API unter `http://127.0.0.1:8000/api/`.
 | Videolänge | `MAX_VIDEO_MINUTES` (Default 15), darüber 400 |
 | Fehler | 400 (URL ungültig / nicht ladbar / zu lang); 500 `{"detail": ...}` (Whisper/Gemini); Temp-Dateien immer löschen; atomar speichern |
 | Config | python-dotenv, `.env` (ignoriert) + `.env.template` (committet) |
-| Qualität | black + isort + flake8 (PEP8, Zeilenlänge 79); Funktionen ≤ 14 Zeilen; Docstrings; `views.py` nur Views |
+| Qualität | black + isort + flake8 (PEP8, Zeilenlänge 79); Funktionen ≤ 14 Zeilen (**Docstring zählt nicht mit**); Docstrings im **Google-Format** (`Args:`, `Returns:`, `Raises:`, sobald es Parameter, Rückgabewert bzw. Exceptions gibt); `views.py` nur Views |
 | Tests | **TDD**; pytest + pytest-django + pytest-cov; Netz und KI immer gemockt; Ziel ≥ 90 % Coverage |
 | Commits | **1 Commit pro abgeschlossenem Red-Green-Refactor-Zyklus** |
 

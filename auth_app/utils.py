@@ -14,7 +14,14 @@ REFRESH_COOKIE = "refresh_token"
 
 
 def _cookie_options(lifetime):
-    """Return the shared cookie options for a token ``lifetime``."""
+    """Build the shared options for an auth cookie.
+
+    Args:
+        lifetime: Token lifetime as ``timedelta``; used as ``max_age``.
+
+    Returns:
+        Keyword arguments for ``HttpResponse.set_cookie``.
+    """
     return {
         "httponly": True,
         "secure": settings.AUTH_COOKIE_SECURE,
@@ -25,13 +32,23 @@ def _cookie_options(lifetime):
 
 
 def set_access_cookie(response, token):
-    """Store the access ``token`` in an HttpOnly cookie."""
+    """Store the access token in an HttpOnly cookie.
+
+    Args:
+        response: The response that receives the cookie.
+        token: The access token (object or string).
+    """
     lifetime = settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"]
     response.set_cookie(ACCESS_COOKIE, str(token), **_cookie_options(lifetime))
 
 
 def set_refresh_cookie(response, token):
-    """Store the refresh ``token`` in an HttpOnly cookie."""
+    """Store the refresh token in an HttpOnly cookie.
+
+    Args:
+        response: The response that receives the cookie.
+        token: The refresh token (object or string).
+    """
     lifetime = settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"]
     response.set_cookie(
         REFRESH_COOKIE, str(token), **_cookie_options(lifetime)
@@ -39,23 +56,49 @@ def set_refresh_cookie(response, token):
 
 
 def set_auth_cookies(response, refresh):
-    """Store the ``refresh`` token and its access token as cookies."""
+    """Store a refresh token and its access token as cookies.
+
+    Args:
+        response: The response that receives the cookies.
+        refresh: The ``RefreshToken`` of the user.
+    """
     set_access_cookie(response, refresh.access_token)
     set_refresh_cookie(response, refresh)
 
 
 def authenticate_credentials(data):
-    """Return the user for ``username`` and ``password`` or ``None``."""
+    """Check username and password against Django's auth backends.
+
+    Args:
+        data: Validated data with ``username`` and ``password``.
+
+    Returns:
+        The matching user, or None if the credentials are invalid.
+    """
     return authenticate(username=data["username"], password=data["password"])
 
 
 def unauthorized_response(detail):
-    """Return a 401 response with the message ``detail``."""
+    """Build a 401 response.
+
+    Args:
+        detail: Message for the ``detail`` key.
+
+    Returns:
+        A DRF response with status 401.
+    """
     return Response({"detail": detail}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 def build_login_response(user):
-    """Return the login response for ``user`` with fresh JWT cookies."""
+    """Build the login response with fresh JWT cookies.
+
+    Args:
+        user: The authenticated user.
+
+    Returns:
+        A 200 response with the user data and both auth cookies set.
+    """
     response = Response(
         {"detail": "Login successfully!", "user": UserSerializer(user).data}
     )
@@ -64,10 +107,13 @@ def build_login_response(user):
 
 
 def blacklist_refresh_token(raw_token):
-    """Blacklist ``raw_token``; missing or invalid tokens are ignored.
+    """Blacklist a refresh token; missing or invalid tokens are ignored.
 
     ``RefreshToken(None)`` would create a brand new token, so ``None``
     has to be handled explicitly.
+
+    Args:
+        raw_token: The refresh token string from the cookie, or None.
     """
     if raw_token is None:
         return
@@ -78,12 +124,27 @@ def blacklist_refresh_token(raw_token):
 
 
 def refresh_access_token(raw_token):
-    """Return a new access token string for the refresh ``raw_token``."""
+    """Create a new access token from a refresh token.
+
+    Args:
+        raw_token: The refresh token string from the cookie.
+
+    Returns:
+        The new access token as string.
+
+    Raises:
+        TokenError: If the refresh token is invalid, expired or
+            blacklisted.
+    """
     return str(RefreshToken(raw_token).access_token)
 
 
 def delete_auth_cookies(response):
-    """Expire both JWT cookies on the client."""
+    """Expire both JWT cookies on the client.
+
+    Args:
+        response: The response that deletes the cookies.
+    """
     for name in (ACCESS_COOKIE, REFRESH_COOKIE):
         response.delete_cookie(
             name, path="/", samesite=settings.AUTH_COOKIE_SAMESITE

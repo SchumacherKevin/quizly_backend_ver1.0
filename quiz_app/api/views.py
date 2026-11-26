@@ -27,13 +27,27 @@ class QuizListCreateView(ListCreateAPIView):
     serializer_class = QuizSerializer
 
     def get_queryset(self):
-        """Return only the quizzes owned by the current user."""
+        """Select the quizzes of the current user.
+
+        Returns:
+            Queryset of the user's quizzes with prefetched questions.
+        """
         return Quiz.objects.filter(owner=self.request.user).prefetch_related(
             "questions"
         )
 
     def create(self, request, *args, **kwargs):
-        """Generate a quiz from the posted YouTube URL (synchronous)."""
+        """Generate a quiz from the posted YouTube URL (synchronous).
+
+        Args:
+            request: Request with the ``url`` of the video.
+            *args: Positional arguments passed by DRF (unused).
+            **kwargs: Keyword arguments passed by DRF (unused).
+
+        Returns:
+            201 with the full quiz incl. question timestamps, 400 for an
+            invalid or unsupported video, 500 if the generation fails.
+        """
         serializer = QuizCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         try:
@@ -61,7 +75,16 @@ class QuizDetailView(RetrieveUpdateDestroyAPIView):
     http_method_names = ["get", "patch", "delete"]
 
     def update(self, request, *args, **kwargs):
-        """Patch title and description, then return the full quiz."""
+        """Patch title and description, then return the full quiz.
+
+        Args:
+            request: Request with ``title`` and/or ``description``.
+            *args: Positional arguments passed by DRF (unused).
+            **kwargs: URL keyword arguments, e.g. ``pk``.
+
+        Returns:
+            200 with the updated quiz, or 400 for invalid input.
+        """
         quiz = self.get_object()
         serializer = QuizUpdateSerializer(
             quiz, data=request.data, partial=True

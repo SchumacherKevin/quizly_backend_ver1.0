@@ -32,13 +32,28 @@ Transcript:
 
 
 def _require_text(value, field: str) -> None:
-    """Raise if ``value`` is not a non-blank string."""
+    """Ensure a value is a non-blank string.
+
+    Args:
+        value: The value to check.
+        field: Field name used in the error message.
+
+    Raises:
+        QuizGenerationError: If ``value`` is not a non-blank string.
+    """
     if not isinstance(value, str) or not value.strip():
         raise QuizGenerationError(f"Generated quiz has an empty {field}.")
 
 
 def _validate_title(data: dict) -> None:
-    """Ensure the quiz title is present and fits the model field."""
+    """Ensure the quiz title is present and fits the model field.
+
+    Args:
+        data: The generated quiz dict.
+
+    Raises:
+        QuizGenerationError: If the title is empty or too long.
+    """
     title = data.get("title")
     _require_text(title, "title")
     if len(title) > MAX_TITLE_LENGTH:
@@ -46,7 +61,14 @@ def _validate_title(data: dict) -> None:
 
 
 def _validate_question_count(data: dict) -> None:
-    """Ensure the quiz contains exactly ``QUESTION_COUNT`` questions."""
+    """Ensure the quiz contains exactly ``QUESTION_COUNT`` questions.
+
+    Args:
+        data: The generated quiz dict.
+
+    Raises:
+        QuizGenerationError: If ``questions`` is no list of that length.
+    """
     questions = data.get("questions")
     if not isinstance(questions, list) or len(questions) != QUESTION_COUNT:
         raise QuizGenerationError(
@@ -55,7 +77,14 @@ def _validate_question_count(data: dict) -> None:
 
 
 def _validate_question(question: dict) -> None:
-    """Ensure title, four distinct non-empty options and a valid answer."""
+    """Ensure title, four distinct non-empty options and a valid answer.
+
+    Args:
+        question: One generated question dict.
+
+    Raises:
+        QuizGenerationError: If any of these rules is violated.
+    """
     _require_text(question.get("question_title"), "question title")
     options = question.get("question_options")
     try:
@@ -70,7 +99,11 @@ def _validate_question(question: dict) -> None:
 def validate_quiz_data(data: dict) -> None:
     """Ensure the generated quiz matches the expected structure.
 
-    Raises ``QuizGenerationError`` for any violated rule.
+    Args:
+        data: The parsed quiz dict from Gemini.
+
+    Raises:
+        QuizGenerationError: For any violated rule.
     """
     _validate_title(data)
     _validate_question_count(data)
@@ -79,7 +112,16 @@ def validate_quiz_data(data: dict) -> None:
 
 
 def build_prompt(transcript: str, video_title: str) -> str:
-    """Return the Gemini prompt; long transcripts are truncated."""
+    """Build the Gemini prompt; long transcripts are truncated.
+
+    Args:
+        transcript: The Whisper transcript.
+        video_title: The YouTube video title as extra context.
+
+    Returns:
+        The prompt with the quiz rules and at most
+        ``MAX_TRANSCRIPT_CHARS`` characters of the transcript.
+    """
     return PROMPT_TEMPLATE.format(
         question_count=QUESTION_COUNT,
         option_count=OPTION_COUNT,
@@ -92,7 +134,14 @@ def build_prompt(transcript: str, video_title: str) -> str:
 def parse_quiz(raw: str) -> dict:
     """Parse the Gemini JSON answer into a dict.
 
-    Raises ``QuizGenerationError`` for malformed JSON or a non-object.
+    Args:
+        raw: The JSON text returned by Gemini (may be None).
+
+    Returns:
+        The parsed quiz dict.
+
+    Raises:
+        QuizGenerationError: For malformed JSON or a non-object.
     """
     try:
         data = json.loads(raw)
@@ -126,15 +175,27 @@ GENERATION_CONFIG = {
 
 
 def _ensure_api_key() -> None:
-    """Fail early if no Gemini API key is configured."""
+    """Fail early if no Gemini API key is configured.
+
+    Raises:
+        QuizGenerationError: If ``settings.GEMINI_API_KEY`` is empty.
+    """
     if not settings.GEMINI_API_KEY:
         raise QuizGenerationError("Gemini API key is not configured.")
 
 
 def request_quiz(prompt: str) -> str:
-    """Send ``prompt`` to Gemini once and return the raw JSON text.
+    """Send the prompt to Gemini once (no retries).
 
-    Any API error becomes a ``QuizGenerationError`` without the key.
+    Args:
+        prompt: The complete prompt from ``build_prompt``.
+
+    Returns:
+        The raw JSON text of the response.
+
+    Raises:
+        QuizGenerationError: If the key is missing or the API call fails;
+            the message never contains the API key.
     """
     _ensure_api_key()
     try:
@@ -150,9 +211,17 @@ def request_quiz(prompt: str) -> str:
 
 
 def generate_quiz(transcript: str, video_title: str) -> dict:
-    """Create a validated quiz dict from a transcript with one Gemini call.
+    """Create a validated quiz from a transcript with one Gemini call.
 
-    Raises ``QuizGenerationError`` if any stage fails.
+    Args:
+        transcript: The Whisper transcript.
+        video_title: The YouTube video title.
+
+    Returns:
+        Quiz dict with ``title``, ``description`` and 10 questions.
+
+    Raises:
+        QuizGenerationError: If any stage fails.
     """
     raw = request_quiz(build_prompt(transcript, video_title))
     data = parse_quiz(raw)

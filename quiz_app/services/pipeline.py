@@ -17,7 +17,15 @@ from quiz_app.services.youtube import (
 
 
 def _build_questions(quiz: Quiz, items: list) -> list:
-    """Return unsaved ``Question`` objects for the generated items."""
+    """Build unsaved questions for the generated items.
+
+    Args:
+        quiz: The quiz the questions belong to.
+        items: Generated question dicts.
+
+    Returns:
+        Unsaved ``Question`` instances for ``bulk_create``.
+    """
     return [
         Question(
             quiz=quiz,
@@ -31,7 +39,16 @@ def _build_questions(quiz: Quiz, items: list) -> list:
 
 @transaction.atomic
 def save_quiz(user, video_url: str, data: dict) -> Quiz:
-    """Store the generated quiz and its questions in one transaction."""
+    """Store the generated quiz and its questions in one transaction.
+
+    Args:
+        user: Owner of the new quiz.
+        video_url: Normalized YouTube watch URL.
+        data: Validated quiz dict from Gemini.
+
+    Returns:
+        The saved quiz.
+    """
     quiz = Quiz.objects.create(
         owner=user,
         title=data["title"],
@@ -43,9 +60,15 @@ def save_quiz(user, video_url: str, data: dict) -> Quiz:
 
 
 def _transcribe_video(url: str) -> str:
-    """Download the audio into a temp dir and return its transcript.
+    """Download the audio into a temp dir and transcribe it.
 
     The temporary directory is always removed, even on errors.
+
+    Args:
+        url: Normalized YouTube watch URL.
+
+    Returns:
+        The transcript text.
     """
     with TemporaryDirectory(prefix="quizly_") as target_dir:
         audio_path = download_audio(url, target_dir)
@@ -53,9 +76,19 @@ def _transcribe_video(url: str) -> str:
 
 
 def create_quiz_from_url(user, url: str) -> Quiz:
-    """Run the full pipeline for ``url`` and return the saved quiz.
+    """Run the full pipeline and save the resulting quiz.
 
-    Raises ``InvalidVideoError`` (400) or ``QuizGenerationError`` (500).
+    Args:
+        user: Owner of the new quiz.
+        url: YouTube URL in any supported format.
+
+    Returns:
+        The saved quiz with its questions.
+
+    Raises:
+        InvalidVideoError: If the URL or video is invalid (HTTP 400).
+        QuizGenerationError: If transcription or generation fails
+            (HTTP 500).
     """
     video_url = normalize_url(extract_video_id(url))
     info = fetch_video_info(video_url)
