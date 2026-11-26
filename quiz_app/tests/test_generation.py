@@ -1,6 +1,7 @@
 """Tests for the Gemini quiz generation service (no real API calls)."""
 
 import copy
+import json
 
 import pytest
 
@@ -8,6 +9,7 @@ from quiz_app.services.exceptions import QuizGenerationError
 from quiz_app.services.generation import (
     MAX_TRANSCRIPT_CHARS,
     build_prompt,
+    parse_quiz,
     validate_quiz_data,
 )
 
@@ -112,3 +114,20 @@ def test_build_prompt_truncates_long_transcript():
 
     assert head in prompt
     assert "#TAIL#" not in prompt
+
+
+def test_parse_quiz_returns_dict(gemini_quiz_data):
+    """A JSON object string is parsed into the equivalent dict."""
+    assert parse_quiz(json.dumps(gemini_quiz_data)) == gemini_quiz_data
+
+
+def test_parse_quiz_rejects_invalid_json():
+    """Malformed JSON raises ``QuizGenerationError``."""
+    with pytest.raises(QuizGenerationError):
+        parse_quiz("not json")
+
+
+def test_parse_quiz_rejects_non_object():
+    """Valid JSON that is not an object raises ``QuizGenerationError``."""
+    with pytest.raises(QuizGenerationError):
+        parse_quiz("[]")

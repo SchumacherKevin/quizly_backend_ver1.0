@@ -1,5 +1,7 @@
 """Quiz generation from a transcript with Google Gemini."""
 
+import json
+
 from django.core.exceptions import ValidationError
 
 from quiz_app.services.exceptions import QuizGenerationError
@@ -82,3 +84,17 @@ def build_prompt(transcript: str, video_title: str) -> str:
         video_title=video_title,
         transcript=transcript[:MAX_TRANSCRIPT_CHARS],
     )
+
+
+def parse_quiz(raw: str) -> dict:
+    """Parse the Gemini JSON answer into a dict.
+
+    Raises ``QuizGenerationError`` for malformed JSON or a non-object.
+    """
+    try:
+        data = json.loads(raw)
+    except (json.JSONDecodeError, TypeError) as exc:
+        raise QuizGenerationError("Gemini returned invalid JSON.") from exc
+    if not isinstance(data, dict):
+        raise QuizGenerationError("Gemini returned no quiz object.")
+    return data

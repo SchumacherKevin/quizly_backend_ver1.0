@@ -69,7 +69,7 @@
 - **Erwartetes Rot:** `ImportError`
 - **Green:** `parse_quiz(raw: str) -> dict`
 - **Commit:** `feat(quiz): parse gemini json response`
-- [ ] erledigt
+- [x] erledigt (fängt zusätzlich `TypeError` ab, weil `response.text` bei blockierten Antworten `None` sein kann)
 
 ### Zyklus 5: Gemini aufrufen
 - **Test:** `test_request_quiz_calls_configured_model` (`settings.GEMINI_API_KEY = "key"`, `settings.GEMINI_MODEL = "gemini-test"`)
