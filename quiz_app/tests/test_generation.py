@@ -232,3 +232,70 @@ def test_request_quiz_rejects_unknown_provider(client_cls, settings):
     with pytest.raises(QuizGenerationError, match="Unknown AI provider: foo."):
         request_quiz("prompt")
     client_cls.assert_not_called()
+
+
+OPENAI_PATH = "quiz_app.services.generation.OpenAI"
+LOCAL_BASE_URL = "http://localhost:11434/v1"
+
+
+@pytest.fixture
+def openai_cls(settings):
+    """Patch ``OpenAI`` and configure an OpenAI-compatible provider."""
+    settings.AI_PROVIDER = "openai"
+    settings.OPENAI_API_KEY = FAKE_KEY
+    settings.OPENAI_MODEL = "model-test"
+    settings.OPENAI_BASE_URL = LOCAL_BASE_URL
+    with patch(OPENAI_PATH) as mock_cls:
+        yield mock_cls
+
+
+def _completions(openai_cls):
+    """Return the mocked ``client.chat.completions.create``."""
+    return openai_cls.return_value.chat.completions.create
+
+
+def test_request_quiz_calls_openai_compatible_api(openai_cls):
+    """Key, base URL, model, prompt and JSON mode are passed on."""
+    response = _completions(openai_cls).return_value
+    response.choices[0].message.content = '{"a": 1}'
+
+    raw = request_quiz("prompt")
+
+    assert raw == '{"a": 1}'
+    openai_cls.assert_called_once_with(
+        api_key=FAKE_KEY, base_url=LOCAL_BASE_URL
+    )
+    kwargs = _completions(openai_cls).call_args.kwargs
+    assert kwargs["model"] == "model-test"
+    assert kwargs["messages"] == [{"role": "user", "content": "prompt"}]
+    assert kwargs["response_format"] == {"type": "json_object"}
+
+
+def test_request_quiz_openai_allows_missing_key(openai_cls, settings):
+    """Local servers (e.g. Ollama) need no key; a placeholder is sent."""
+    settings.OPENAI_API_KEY = ""
+
+    request_quiz("prompt")
+
+    assert openai_cls.call_args.kwargs["api_key"]
+
+
+def test_request_quiz_openai_without_model_raises(openai_cls, settings):
+    """Without ``OPENAI_MODEL`` the request fails before any API call."""
+    settings.OPENAI_MODEL = ""
+
+    with pytest.raises(
+        QuizGenerationError, match="OPENAI_MODEL is not configured."
+    ):
+        request_quiz("prompt")
+    openai_cls.assert_not_called()
+
+
+def test_request_quiz_openai_wraps_api_errors(openai_cls):
+    """API errors are wrapped and never leak the API key."""
+    error = Exception(f"invalid key {FAKE_KEY}")
+    _completions(openai_cls).side_effect = error
+
+    with pytest.raises(QuizGenerationError) as exc_info:
+        request_quiz("prompt")
+    assert FAKE_KEY not in str(exc_info.value)

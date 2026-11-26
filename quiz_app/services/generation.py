@@ -5,6 +5,7 @@ import json
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from google import genai
+from openai import OpenAI
 from pydantic import BaseModel
 
 from quiz_app.services.exceptions import QuizGenerationError
@@ -210,7 +211,59 @@ def _request_gemini(prompt: str) -> str:
     return response.text
 
 
-PROVIDERS = {"gemini": _request_gemini}
+LOCAL_API_KEY = "not-needed"
+JSON_MODE = {"type": "json_object"}
+
+
+def _ensure_openai_model() -> None:
+    """Fail early if no model is configured for the OpenAI provider.
+
+    Raises:
+        QuizGenerationError: If ``settings.OPENAI_MODEL`` is empty.
+    """
+    if not settings.OPENAI_MODEL:
+        raise QuizGenerationError("OPENAI_MODEL is not configured.")
+
+
+def _openai_client() -> OpenAI:
+    """Create a client for the configured OpenAI-compatible API.
+
+    Returns:
+        An ``OpenAI`` client for ``OPENAI_BASE_URL``; local servers get a
+        placeholder key because they need none.
+    """
+    return OpenAI(
+        api_key=settings.OPENAI_API_KEY or LOCAL_API_KEY,
+        base_url=settings.OPENAI_BASE_URL,
+    )
+
+
+def _request_openai(prompt: str) -> str:
+    """Send the prompt once to an OpenAI-compatible chat API.
+
+    Args:
+        prompt: The complete prompt from ``build_prompt``.
+
+    Returns:
+        The raw JSON text of the response.
+
+    Raises:
+        QuizGenerationError: If the model is missing or the API call
+            fails; the message never contains the API key.
+    """
+    _ensure_openai_model()
+    try:
+        response = _openai_client().chat.completions.create(
+            model=settings.OPENAI_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            response_format=JSON_MODE,
+        )
+    except Exception as exc:
+        raise QuizGenerationError("AI request failed.") from exc
+    return response.choices[0].message.content
+
+
+PROVIDERS = {"gemini": _request_gemini, "openai": _request_openai}
 
 
 def request_quiz(prompt: str) -> str:

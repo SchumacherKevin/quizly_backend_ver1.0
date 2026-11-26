@@ -36,7 +36,7 @@ Gemini bleibt der Standard. Wer eine andere KI-API nutzt, stellt sie per `.env` 
 - **Test:** `test_request_quiz_openai_wraps_api_errors`: Ein API-Fehler führt zu `QuizGenerationError` ohne Key in der Meldung
 - **Green:** Paket `openai` in `requirements.txt`, Settings, `_request_openai`
 - **Commit:** `feat(quiz): support openai compatible ai providers`
-- [ ] erledigt
+- [x] erledigt (zusätzlicher Test `test_request_quiz_openai_allows_missing_key`: Ohne Key wird der Platzhalter `"not-needed"` gesendet, weil Ollama und LM Studio keinen brauchen. Refactor: Helper `_openai_client`, sonst hätte `_request_openai` 15 Zeilen. `openai==3.60.0` installiert und in `requirements.txt`)
 
 ### Zyklus 3: Prompt beschreibt das JSON-Format
 - **Test:** `test_build_prompt_describes_json_format`: Der Prompt enthält `"JSON"` und die Keys `title`, `description`, `questions`, `question_title`, `question_options`, `answer`

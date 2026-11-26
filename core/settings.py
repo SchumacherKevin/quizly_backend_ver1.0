@@ -164,6 +164,14 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 
+# Only used with AI_PROVIDER=openai. Local servers (Ollama, LM Studio) do
+# not need a key.
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "")
+
+OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
+
 WHISPER_MODEL = os.getenv("WHISPER_MODEL", "base")
 
 MAX_VIDEO_MINUTES = get_int("MAX_VIDEO_MINUTES", 15)
