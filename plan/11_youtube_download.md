@@ -80,10 +80,10 @@
 - **Erwartetes Rot:** `ImportError`
 - **Green:** `build_download_options(target_dir) -> dict` und `download_audio(url, target_dir) -> Path` mit `extract_info(url, download=True)` und `prepare_filename(info)`
 - **Commit:** `feat(quiz): download youtube audio with yt-dlp`
-- [ ] erledigt
+- [x] erledigt (`outtmpl` = `<target_dir>/audio.%(ext)s`; Fehlermeldung als Konstante `LOAD_ERROR` mit `fetch_video_info` geteilt)
 
 ## Abschluss-Check
-- [ ] Kein Test greift auf das Netz zu (z. B. ohne Internet ausführen bzw. jeden Test auf den Patch prüfen)
-- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
-- [ ] Status von Schritt 11 auf `[x]` gesetzt (Commit `docs: mark step 11 done`)
-- [ ] Stopp → Review
+- [x] Kein Test greift auf das Netz zu (geprüft: `test_youtube.py` mit gesperrtem `socket.connect`/`getaddrinfo` → 22 passed)
+- [x] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
+- [x] Status von Schritt 11 auf `[x]` gesetzt (Commit `docs: mark step 11 done`)
+- [x] Stopp → Review

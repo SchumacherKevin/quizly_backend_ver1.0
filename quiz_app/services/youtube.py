@@ -1,6 +1,7 @@
 """YouTube helpers: URL parsing, metadata and audio download."""
 
 import re
+from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 import yt_dlp
@@ -13,6 +14,8 @@ SHORT_HOSTS = {"youtu.be"}
 VIDEO_ID_PATTERN = re.compile(r"^[A-Za-z0-9_-]{11}$")
 WATCH_URL = "https://www.youtube.com/watch?v={video_id}"
 INFO_OPTIONS = {"quiet": True, "noplaylist": True}
+AUDIO_TEMPLATE = "audio.%(ext)s"
+LOAD_ERROR = "Video could not be loaded."
 
 
 def _query_id(parsed):
@@ -61,7 +64,7 @@ def fetch_video_info(url: str) -> dict:
         with yt_dlp.YoutubeDL(INFO_OPTIONS) as ydl:
             return ydl.extract_info(url, download=False)
     except yt_dlp.utils.DownloadError as error:
-        raise InvalidVideoError("Video could not be loaded.") from error
+        raise InvalidVideoError(LOAD_ERROR) from error
 
 
 def check_duration(info: dict) -> None:
@@ -75,3 +78,26 @@ def check_duration(info: dict) -> None:
     limit = settings.MAX_VIDEO_MINUTES
     if duration > limit * 60:
         raise InvalidVideoError(f"Video is longer than {limit} minutes.")
+
+
+def build_download_options(target_dir) -> dict:
+    """Return the yt-dlp options for an audio download into a folder."""
+    return {
+        "format": "bestaudio/best",
+        "outtmpl": str(Path(target_dir) / AUDIO_TEMPLATE),
+        "quiet": True,
+        "noplaylist": True,
+    }
+
+
+def download_audio(url: str, target_dir) -> Path:
+    """Download the audio track into ``target_dir`` and return its path.
+
+    Raises ``InvalidVideoError`` if yt-dlp cannot load the video.
+    """
+    try:
+        with yt_dlp.YoutubeDL(build_download_options(target_dir)) as ydl:
+            info = ydl.extract_info(url, download=True)
+            return Path(ydl.prepare_filename(info))
+    except yt_dlp.utils.DownloadError as error:
+        raise InvalidVideoError(LOAD_ERROR) from error

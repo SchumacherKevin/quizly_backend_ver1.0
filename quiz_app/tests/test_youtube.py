@@ -8,6 +8,7 @@ import yt_dlp
 from quiz_app.services.exceptions import InvalidVideoError
 from quiz_app.services.youtube import (
     check_duration,
+    download_audio,
     extract_video_id,
     fetch_video_info,
     normalize_url,
@@ -114,3 +115,29 @@ def test_check_duration_rejects_missing_duration(settings):
 
     with pytest.raises(InvalidVideoError):
         check_duration({})
+
+
+def test_download_audio_uses_expected_options(ydl_cls, tmp_path):
+    """Audio is downloaded with the agreed options into ``tmp_path``."""
+    ydl = _ydl(ydl_cls)
+    ydl.extract_info.return_value = {"id": "x"}
+    ydl.prepare_filename.return_value = str(tmp_path / "audio.webm")
+
+    path = download_audio(VIDEO_URL, tmp_path)
+
+    options = ydl_cls.call_args.args[0]
+    assert options["format"] == "bestaudio/best"
+    assert options["quiet"] is True
+    assert options["noplaylist"] is True
+    assert options["outtmpl"].startswith(str(tmp_path))
+    ydl.extract_info.assert_called_once_with(VIDEO_URL, download=True)
+    assert path == tmp_path / "audio.webm"
+
+
+def test_download_audio_raises_invalid_video_on_error(ydl_cls, tmp_path):
+    """A yt-dlp ``DownloadError`` during download is translated."""
+    error = yt_dlp.utils.DownloadError("x")
+    _ydl(ydl_cls).extract_info.side_effect = error
+
+    with pytest.raises(InvalidVideoError):
+        download_audio(VIDEO_URL, tmp_path)
