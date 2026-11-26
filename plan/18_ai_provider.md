@@ -45,12 +45,12 @@ Gemini bleibt der Standard. Wer eine andere KI-API nutzt, stellt sie per `.env` 
 - [x] erledigt (Beispiel-Objekt im Template mit verdoppelten `{{ }}` wegen `.format()`; geprüft, dass das Beispiel gültiges JSON ist)
 
 ### Zyklus 4: Dokumentation
-- [ ] `.env.template` um die neuen Variablen ergänzen (auskommentiert bzw. leer, Gemini aktiv)
-- [ ] README: Abschnitt „Using another AI provider“ mit Beispielen (OpenAI, Ollama), Tabelle der Env-Variablen
+- [x] `.env.template` um die neuen Variablen ergänzen (auskommentiert bzw. leer, Gemini aktiv)
+- [x] README: Abschnitt „Using another AI provider“ mit Beispielen (OpenAI, Ollama), Tabelle der Env-Variablen (zusätzlich: Hinweis zum Wechsel nur des Gemini-Modells, Fehlerverhalten bei Formatverstößen, Erweiterung um native SDKs über `PROVIDERS`; Features, Tech-Stack und Requirements angepasst)
 - **Commit:** `docs: explain how to switch the ai provider`
 
 ## Abschluss-Check
-- [ ] Kein Test ruft eine echte KI-API auf
-- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün, Coverage ≥ 90 %, das DoD-Skript aus 16 findet 0 Funde
-- [ ] Status von Schritt 18 auf `[x]` gesetzt (Commit `docs: mark step 18 done`)
-- [ ] Stopp → Review
+- [x] Kein Test ruft eine echte KI-API auf (gesamte Suite mit gesperrtem Netz: 179 passed)
+- [x] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün, Coverage ≥ 90 %, das DoD-Skript aus 16 findet 0 Funde (100 %, 0 Funde)
+- [x] Status von Schritt 18 auf `[x]` gesetzt (Commit `docs: mark step 18 done`)
+- [x] Stopp → Review

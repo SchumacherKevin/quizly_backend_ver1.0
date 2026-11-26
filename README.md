@@ -15,6 +15,9 @@ project.
 - Create a quiz from a YouTube URL (`watch?v=`, `youtu.be/`, `shorts/`, mobile links)
 - Pipeline: **yt-dlp** (audio) → **Whisper** (local transcription) → **Gemini Flash**
   (one request per quiz) → database (atomic)
+- Gemini is the default; any OpenAI-compatible AI API (OpenAI, Mistral, Groq,
+  OpenRouter, local Ollama/LM Studio) can be used instead via `.env`
+  ([details](#using-another-ai-provider))
 - List, view, edit (title/description) and delete your own quizzes;
   other users' quizzes are protected (403)
 - Django admin to edit quizzes and single questions
@@ -30,7 +33,7 @@ project.
 | CORS | django-cors-headers |
 | Video / audio | yt-dlp, FFmpeg |
 | Transcription | openai-whisper (runs locally, CPU is fine) |
-| Quiz generation | google-genai (Gemini Flash) |
+| Quiz generation | google-genai (Gemini Flash, default), openai (any OpenAI-compatible API) |
 | Database | SQLite |
 | Quality | pytest, pytest-django, pytest-cov, black, isort, flake8 |
 
@@ -44,7 +47,8 @@ project.
   - macOS: `brew install ffmpeg`
   - Linux (Debian/Ubuntu): `sudo apt install ffmpeg`
   - Check: `ffmpeg -version` must print a version in a **new** terminal
-- A Google Gemini API key: <https://ai.google.dev/> (Google AI Studio)
+- A Google Gemini API key: <https://ai.google.dev/> (Google AI Studio), or access
+  to another AI API, see [Using another AI provider](#using-another-ai-provider)
 
 ## Installation (Windows PowerShell)
 
@@ -87,8 +91,12 @@ All settings are read from `.env` (never commit it). `.env.template` lists every
 | `DEBUG` | no | `False` | **Keep `True` for local development over HTTP.** With `False` the auth cookies are `Secure` and the browser only sends them over HTTPS |
 | `ALLOWED_HOSTS` | no | `127.0.0.1,localhost` | Comma separated hosts |
 | `CORS_ORIGINS` | no | `http://127.0.0.1:5500,http://localhost:5500` | Comma separated frontend origins |
-| `GEMINI_API_KEY` | yes | – | API key from Google AI Studio |
+| `AI_PROVIDER` | no | `gemini` | `gemini` or `openai` (any OpenAI-compatible API) |
+| `GEMINI_API_KEY` | with `gemini` | – | API key from Google AI Studio |
 | `GEMINI_MODEL` | no | `gemini-3.8-flash` | Gemini model used for quiz generation |
+| `OPENAI_API_KEY` | with `openai`* | – | Key of the OpenAI-compatible provider (*not needed for local servers) |
+| `OPENAI_MODEL` | with `openai` | – | Model name at that provider |
+| `OPENAI_BASE_URL` | no | `https://api.openai.com/v1` | API endpoint of that provider |
 | `WHISPER_MODEL` | no | `base` | Whisper model size (`tiny`, `base`, `small`, ...) |
 | `MAX_VIDEO_MINUTES` | no | `15` | Longer videos are rejected with 400 |
 
@@ -97,6 +105,43 @@ Generate a secret key with:
 ```powershell
 python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
+
+## Using another AI provider
+
+Gemini is the default and needs no extra configuration. To change only the
+**Gemini model**, set `GEMINI_MODEL` (e.g. `gemini-3.7-flash`).
+
+To use **another AI API**, set `AI_PROVIDER=openai`. This works with every provider
+that offers the OpenAI-compatible *Chat Completions* API with JSON mode. Then
+restart the server. Examples for `.env`:
+
+```dotenv
+# OpenAI
+AI_PROVIDER=openai
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=<model name, e.g. a current GPT mini model>
+
+# Local model with Ollama (no key needed, runs on your machine)
+AI_PROVIDER=openai
+OPENAI_BASE_URL=http://localhost:11434/v1
+OPENAI_MODEL=llama3.1
+
+# Any other OpenAI-compatible provider (Mistral, Groq, OpenRouter, ...)
+AI_PROVIDER=openai
+OPENAI_BASE_URL=<the provider's OpenAI-compatible endpoint>
+OPENAI_API_KEY=<your key>
+OPENAI_MODEL=<model name at that provider>
+```
+
+Notes:
+
+- The prompt, the JSON parsing and the validation (10 questions, 4 unique options,
+  answer must be one of the options) are the same for every provider. If a model
+  breaks the format, the API answers 500 with the reason, e.g.
+  `{"detail": "Generated question is invalid."}`, and nothing is saved.
+- Smaller local models often break these rules; use a capable model.
+- Providers other than Gemini/OpenAI-compatible (e.g. a native SDK) need a new
+  request function in `quiz_app/services/generation.py`, registered in `PROVIDERS`.
 
 ## Frontend
 
@@ -182,7 +227,8 @@ pytest                      # runs all tests with coverage report
 black . ; isort . ; flake8  # format and lint (line length 79)
 ```
 
-- Tests never touch the network: yt-dlp, Whisper and Gemini are always mocked.
+- Tests never touch the network: yt-dlp, Whisper and the AI providers are always
+  mocked.
 - The project was built test-first (Red → Green → Refactor, one commit per cycle).
   The step-by-step plan and conventions live in [`plan/00_overview.md`](plan/00_overview.md).
 - Conventions: functions max. 14 lines (docstring not counted), Google style
