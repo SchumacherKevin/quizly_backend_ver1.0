@@ -169,7 +169,21 @@ with `localhost` the requests become cross-site and the browser does not send th
   store** (`compat_opts: no-certifi`). This keeps quiz creation working behind
   antivirus HTTPS scanners (e.g. Norton Web/Mail Shield) that re-sign traffic with
   their own root certificate.
-- The maximum video length is set with `MAX_VIDEO_MINUTES`.
+- Videos may be at most **15 minutes** long (`MAX_VIDEO_MINUTES`). Longer videos,
+  livestreams and invalid links are rejected with 400.
+- The frontend shows the same message ("Error generating quiz") for every failed
+  quiz creation. The actual reason is in the response body and in the server log:
+
+  | Status | Body | Meaning |
+  |---|---|---|
+  | 400 | `{"url": ["This field may not be blank."]}` | URL field was empty |
+  | 400 | `{"url": ["Invalid YouTube URL."]}` | Not a supported YouTube link |
+  | 400 | `{"detail": "Video is longer than 15 minutes."}` | Above `MAX_VIDEO_MINUTES` |
+  | 400 | `{"detail": "Video duration is unknown."}` | e.g. livestreams |
+  | 400 | `{"detail": "Video could not be loaded."}` | Private, removed or blocked video |
+  | 500 | `{"detail": "Transcription failed."}` | Whisper/FFmpeg problem |
+  | 500 | `{"detail": "Gemini request failed."}` | Gemini error, e.g. overloaded (503) |
+  | 500 | `{"detail": "Generated question is invalid."}` (or similar) | AI answer broke the quiz rules |
 - After logout the cookies are deleted and the refresh token is blacklisted. An
   already issued access token stays technically valid until it expires (max.
   5 minutes), but the browser no longer has it.

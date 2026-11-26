@@ -62,6 +62,8 @@ Inhalt:
 - [ ] Nach mehr als 5 Minuten Inaktivität funktioniert der automatische Refresh (keine Weiterleitung zum Login)
 - [ ] Nach dem Logout leitet der Aufruf von `library.html` zum Login weiter
 - Gefundene Bugs: je ein TDD-Zyklus (zuerst ein Test, der den Bug reproduziert) und Commit `fix(<scope>): ...`
+- **Lauf 26.11.2026 (Kevin, Browser; Frontend statisch über `127.0.0.1:5500`):** Registrierung, Login (falsches Passwort 401, richtiges 200), Library und Logout ok. Quiz erstellen scheiterte: dreimal leeres URL-Feld und dreimal ein Video über 15 Minuten (beides korrekt 400), danach mit kurzem Video Gemini 503. Das Frontend zeigt bei jedem Fehler nur „Error generating quiz“. Deshalb steht in der README jetzt eine Tabelle aller Fehlerantworten. Kein Backend-Bug.
+- Für die quizabhängigen Schritte wurde ein Beispiel-Quiz (id 1, 10 Fragen, `watch?v=dQw4w9WgXcQ`) manuell für den Nutzer `Kevin` angelegt, über `validate_quiz_data` und `save_quiz`
 
 ## Abnahme Checkliste (DoD)
 | Regel | Umgesetzt in | ✓ |
