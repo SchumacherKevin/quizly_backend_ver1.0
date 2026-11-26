@@ -44,7 +44,7 @@ Aus einer YouTube-URL entsteht synchron ein gespeichertes Quiz; die Antwort ist 
 - **Test:** `test_save_quiz_rolls_back_on_error`: Mit `patch("quiz_app.services.pipeline.Question.objects.bulk_create", side_effect=IntegrityError)` gilt nach `pytest.raises(IntegrityError)`: `Quiz.objects.count() == 0`
 - **Erwartetes Rot:** `Quiz.objects.count() == 1`, falls `atomic` fehlt; sonst schon grün und als Absicherung committen
 - **Commit:** `test(quiz): ensure quiz persistence is atomic`
-- [ ] erledigt
+- [x] erledigt (sofort grün durch `@transaction.atomic` aus Zyklus 1; Gegenprobe: ohne `atomic` schlägt der Test mit `assert 1 == 0` fehl)
 
 ### Zyklus 3: Orchestrierung `create_quiz_from_url`
 - **Test:** `test_create_quiz_from_url_runs_pipeline`
