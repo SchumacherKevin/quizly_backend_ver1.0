@@ -115,4 +115,4 @@ Ein Zyklus wird nie mit roten Tests committet.
 | 15 | Admin | [15_admin.md](15_admin.md) | [x] |
 | 16 | Coverage- und Quality-Gate | [16_coverage_quality_gate.md](16_coverage_quality_gate.md) | [x] |
 | 17 | README und Endabnahme | [17_readme_final_check.md](17_readme_final_check.md) | [ ] |
-| 18 | Wählbarer KI-Anbieter (Gemini Standard) | [18_ai_provider.md](18_ai_provider.md) | [ ] |
+| 18 | Wählbarer KI-Anbieter (Gemini Standard) | [18_ai_provider.md](18_ai_provider.md) | [x] |
