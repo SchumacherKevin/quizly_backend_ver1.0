@@ -156,6 +156,10 @@ AUTH_COOKIE_SECURE = not DEBUG
 
 
 # Quizly
+# AI provider for quiz generation: "gemini" (default) or "openai"
+# (any OpenAI-compatible API, e.g. OpenAI, Mistral, Groq, Ollama).
+AI_PROVIDER = os.getenv("AI_PROVIDER", "gemini").strip().lower()
+
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")

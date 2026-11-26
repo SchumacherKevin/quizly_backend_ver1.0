@@ -184,7 +184,7 @@ def _ensure_api_key() -> None:
         raise QuizGenerationError("Gemini API key is not configured.")
 
 
-def request_quiz(prompt: str) -> str:
+def _request_gemini(prompt: str) -> str:
     """Send the prompt to Gemini once (no retries).
 
     Args:
@@ -208,6 +208,29 @@ def request_quiz(prompt: str) -> str:
     except Exception as exc:
         raise QuizGenerationError("Gemini request failed.") from exc
     return response.text
+
+
+PROVIDERS = {"gemini": _request_gemini}
+
+
+def request_quiz(prompt: str) -> str:
+    """Send the prompt to the AI provider set in ``AI_PROVIDER``.
+
+    Args:
+        prompt: The complete prompt from ``build_prompt``.
+
+    Returns:
+        The raw JSON text of the response.
+
+    Raises:
+        QuizGenerationError: If the provider is unknown or its request
+            fails.
+    """
+    provider = settings.AI_PROVIDER
+    send = PROVIDERS.get(provider)
+    if send is None:
+        raise QuizGenerationError(f"Unknown AI provider: {provider}.")
+    return send(prompt)
 
 
 def generate_quiz(transcript: str, video_title: str) -> dict:

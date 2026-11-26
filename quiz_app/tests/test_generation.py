@@ -143,6 +143,7 @@ FAKE_KEY = "test-secret-key"
 @pytest.fixture
 def client_cls(settings):
     """Patch ``genai.Client`` and configure a fake key and model."""
+    settings.AI_PROVIDER = "gemini"
     settings.GEMINI_API_KEY = FAKE_KEY
     settings.GEMINI_MODEL = "gemini-test"
     with patch(CLIENT_PATH) as mock_cls:
@@ -213,3 +214,21 @@ def test_generate_quiz_calls_gemini_once(client_cls, gemini_quiz_data):
     generate_quiz("transcript", "title")
 
     assert _generate(client_cls).call_count == 1
+
+
+def test_request_quiz_uses_gemini_provider(client_cls, settings):
+    """With ``AI_PROVIDER = "gemini"`` the Gemini client is used."""
+    settings.AI_PROVIDER = "gemini"
+    _generate(client_cls).return_value.text = "{}"
+
+    assert request_quiz("prompt") == "{}"
+    client_cls.assert_called_once()
+
+
+def test_request_quiz_rejects_unknown_provider(client_cls, settings):
+    """An unknown provider fails clearly without calling any API."""
+    settings.AI_PROVIDER = "foo"
+
+    with pytest.raises(QuizGenerationError, match="Unknown AI provider: foo."):
+        request_quiz("prompt")
+    client_cls.assert_not_called()
