@@ -111,7 +111,7 @@ Ein Zyklus wird nie mit roten Tests committet.
 | 11 | YouTube-Service | [11_youtube_download.md](11_youtube_download.md) | [x] |
 | 12 | Whisper-Service | [12_whisper_transcription.md](12_whisper_transcription.md) | [x] |
 | 13 | Gemini-Service | [13_gemini_quiz_generation.md](13_gemini_quiz_generation.md) | [x] |
-| 14 | Quiz-Create-Endpoint (Pipeline) | [14_quiz_create_endpoint.md](14_quiz_create_endpoint.md) | [ ] |
+| 14 | Quiz-Create-Endpoint (Pipeline) | [14_quiz_create_endpoint.md](14_quiz_create_endpoint.md) | [x] |
 | 15 | Admin | [15_admin.md](15_admin.md) | [ ] |
 | 16 | Coverage- und Quality-Gate | [16_coverage_quality_gate.md](16_coverage_quality_gate.md) | [ ] |
 | 17 | README und Endabnahme | [17_readme_final_check.md](17_readme_final_check.md) | [ ] |
