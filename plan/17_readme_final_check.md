@@ -49,8 +49,8 @@ Inhalt:
 
 ### Zyklus 3: API-Test mit der Postman CLI
 - [x] Collection mit den 9 Endpoints anlegen; der Cookie-Jar überträgt die Cookies vom Login in die folgenden Requests (`postman/quizly.postman_collection.json`, 12 Requests: zusätzlich GET nach DELETE → 404 und GET nach Logout → 401; prüft u. a. HttpOnly-Cookies, keine Tokens im Body, 10 × 4 Optionen, Antwort in den Optionen)
-- [ ] Ablauf: register → login → list → create (echtes kurzes Video) → detail → patch → refresh → delete → logout → refresh (erwartet 401)
-- [ ] `postman collection run postman/quizly.postman_collection.json` ist grün
+- [x] Ablauf: register → login → list → create (echtes kurzes Video) → detail → patch → refresh → delete → logout → refresh (erwartet 401)
+- [ ] `postman collection run postman/quizly.postman_collection.json` ist grün (**offen:** bisher in allen Läufen nur Create rot und die davon abhängigen Requests, wegen Gemini 503. Alle anderen Requests sind grün. Von Kevin am 26.11.2026 als Restpunkt akzeptiert)
 - **Commit:** `test: add postman collection for end-to-end api checks`
 - **Befund 1 (behoben, eigener TDD-Zyklus):** Norton Web/Mail Shield signiert HTTPS mit eigener Root-CA neu. yt-dlp prüft mit `certifi`, das diese Root nicht kennt → `CERTIFICATE_VERIFY_FAILED` → 400. Fix: `compat_opts: {"no-certifi"}` in den yt-dlp-Optionen (Prüfung gegen den Windows-Zertifikatsspeicher, weiterhin verifiziert). Tests `test_fetch_video_info_prefers_system_certificates` und `test_download_options_prefer_system_certificates`. Commit: `fix(quiz): verify youtube tls against os certificate store`
 - **Befund 2:** yt-dlp warnt, dass keine JS-Runtime (Deno) gefunden wurde; der Download funktioniert trotzdem. In der README dokumentiert
@@ -58,40 +58,42 @@ Inhalt:
 - Stand der Läufe: alle Requests außer Create und den davon abhängigen (Detail, Patch, Delete) sind grün
 
 ### Zyklus 4: E2E mit dem Frontend
-- [ ] Registrieren → Login → Quiz aus einem kurzen Video erstellen → Übersicht (Video-Embed sichtbar) → Titel und Beschreibung bearbeiten (bleibt nach dem Reload erhalten) → Quiz spielen und auswerten → „See all“ → Quiz löschen → Logout
-- [ ] Nach mehr als 5 Minuten Inaktivität funktioniert der automatische Refresh (keine Weiterleitung zum Login)
-- [ ] Nach dem Logout leitet der Aufruf von `library.html` zum Login weiter
+- [x] Registrieren → Login → Quiz aus einem kurzen Video erstellen → Übersicht (Video-Embed sichtbar) → Titel und Beschreibung bearbeiten (bleibt nach dem Reload erhalten) → Quiz spielen und auswerten → „See all“ → Quiz löschen → Logout (Quiz erstellen scheiterte an Gemini 503; alle übrigen Schritte mit manuell angelegtem Beispiel-Quiz geprüft und im Serverlog belegt: 3× `PATCH` 200 und Titel in der DB geändert, `DELETE` 204 und danach 404)
+- [x] Nach mehr als 5 Minuten Inaktivität funktioniert der automatische Refresh (keine Weiterleitung zum Login) (Log 13:51:00: `GET` 401 → `token/refresh` 200 → `GET` 200)
+- [x] Nach dem Logout leitet der Aufruf von `library.html` zum Login weiter (Log 13:57:01: `GET` 401 → `token/refresh` 401 → Redirect)
 - Gefundene Bugs: je ein TDD-Zyklus (zuerst ein Test, der den Bug reproduziert) und Commit `fix(<scope>): ...`
 - **Lauf 26.11.2026 (Kevin, Browser; Frontend statisch über `127.0.0.1:5500`):** Registrierung, Login (falsches Passwort 401, richtiges 200), Library und Logout ok. Quiz erstellen scheiterte: dreimal leeres URL-Feld und dreimal ein Video über 15 Minuten (beides korrekt 400), danach mit kurzem Video Gemini 503. Das Frontend zeigt bei jedem Fehler nur „Error generating quiz“. Deshalb steht in der README jetzt eine Tabelle aller Fehlerantworten. Kein Backend-Bug.
 - Für die quizabhängigen Schritte wurde ein Beispiel-Quiz (id 1, 10 Fragen, `watch?v=dQw4w9WgXcQ`) manuell für den Nutzer `Kevin` angelegt, über `validate_quiz_data` und `save_quiz`
+- **Bug gefunden (behoben, TDD):** Echte Downloads landeten mit yt-dlp-Standardnamen (`Titel [ID].webm`) im Arbeitsverzeichnis des Servers statt im Temp-Verzeichnis und wurden nie gelöscht. Ursache: yt-dlp schreibt Defaults (u. a. `outtmpl`) in das übergebene Options-Dict. `fetch_video_info` übergab die Modulkonstante `INFO_OPTIONS`, und `build_download_options` übernahm sie per `**INFO_OPTIONS` nach `outtmpl`. Eingeführt im Refactor von `08ef188`; die Unit-Tests haben es nicht bemerkt, weil `YoutubeDL` gemockt ist. Fix: `base_options()` liefert bei jedem Aufruf ein frisches Dict, und `outtmpl` steht nach den Basisoptionen. Regressionstest `test_fetch_video_info_does_not_leak_into_download_options` mit einem Mock, der wie yt-dlp das Dict verändert. Echte Gegenprobe: `audio.webm` im Temp-Verzeichnis, Arbeitsverzeichnis leer. Commit: `fix(quiz): keep yt-dlp downloads inside the temp directory`
+- Aufgeräumt: drei durch den Bug entstandene `.webm`-Dateien im Projektordner (ignoriert, nie committet), Testnutzer und Beispiel-Quizze aus der DB, Hilfsskripte im Scratchpad
 
 ## Abnahme Checkliste (DoD)
 | Regel | Umgesetzt in | ✓ |
 |---|---|---|
-| Funktionen ≤ 14 Zeilen, eine Aufgabe | alle, geprüft in 16 | [ ] |
-| snake_case, sprechende Namen | alle, 16 | [ ] |
-| keine ungenutzten Variablen, kein auskommentierter Code | flake8, 16 | [ ] |
-| Docstrings | alle, 16 | [ ] |
-| README mit FFmpeg-Hinweis | 17 | [ ] |
-| `views.py` nur Views, Helper in `utils.py`/`services/` | 06–14, 16 | [ ] |
-| Admin: Quizze und Fragen bearbeitbar | 15 | [ ] |
-| PEP8 | 03 (black, isort, flake8) | [ ] |
-| Django-Backend, REST-API, Frontend getrennt | 02–14 | [ ] |
-| JWT mit HttpOnly-Cookies | 07–09 | [ ] |
-| FFmpeg global | 02, 17 | [ ] |
-| nur YouTube, yt_dlp | 11 | [ ] |
-| Whisper lokal | 12 | [ ] |
-| Gemini Flash | 13 | [ ] |
-| US1 Registrierung | 06 | [ ] |
-| US2 Login | 08 | [ ] |
-| US3 Logout + Blacklist | 09 | [ ] |
-| US4 Quiz erstellen (10 × 4) | 11–14 | [ ] |
-| US5–US7 Quizze anzeigen, bearbeiten, löschen | 10 | [ ] |
-| US8/US9 Quiz spielen, Auswertung | Frontend (E2E in 17) | [ ] |
-| US10 Datenschutz/Impressum | Frontend | [ ] |
+| Funktionen ≤ 14 Zeilen, eine Aufgabe | alle, geprüft in 16 | [x] |
+| snake_case, sprechende Namen | alle, 16 | [x] |
+| keine ungenutzten Variablen, kein auskommentierter Code | flake8, 16 | [x] |
+| Docstrings | alle, 16 | [x] |
+| README mit FFmpeg-Hinweis | 17 | [x] |
+| `views.py` nur Views, Helper in `utils.py`/`services/` | 06–14, 16 | [x] |
+| Admin: Quizze und Fragen bearbeitbar | 15 | [x] |
+| PEP8 | 03 (black, isort, flake8) | [x] |
+| Django-Backend, REST-API, Frontend getrennt | 02–14 | [x] |
+| JWT mit HttpOnly-Cookies | 07–09 | [x] |
+| FFmpeg global | 02, 17 | [x] |
+| nur YouTube, yt_dlp | 11 | [x] |
+| Whisper lokal | 12 | [x] |
+| Gemini Flash | 13 | [x] |
+| US1 Registrierung | 06 | [x] |
+| US2 Login | 08 | [x] |
+| US3 Logout + Blacklist | 09 | [x] |
+| US4 Quiz erstellen (10 × 4) | 11–14 | [x] |
+| US5–US7 Quizze anzeigen, bearbeiten, löschen | 10 | [x] |
+| US8/US9 Quiz spielen, Auswertung | Frontend (E2E in 17) | [x] |
+| US10 Datenschutz/Impressum | Frontend | [x] |
 
 ## Abschluss-Check
-- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
-- [ ] Alle DoD-Zeilen abgehakt
-- [ ] Status von Schritt 17 auf `[x]` gesetzt (Commit `docs: mark step 17 done`)
-- [ ] Stopp → finales Review mit Kevin
+- [x] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün (180 passed, 100 %)
+- [x] Alle DoD-Zeilen abgehakt
+- [x] Status von Schritt 17 auf `[x]` gesetzt (Commit `docs: mark step 17 done`)
+- [x] Stopp → finales Review mit Kevin (Projekt von Kevin am 26.11.2026 als abgeschlossen erklärt; offen bleibt nur der grüne Postman-Lauf mit echtem Gemini)
