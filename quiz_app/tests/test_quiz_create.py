@@ -105,3 +105,15 @@ def test_create_quiz_returns_500_on_transcription_error(auth_client, services):
     assert response.status_code == 500
     assert response.json() == {"detail": "Transcription failed."}
     assert Quiz.objects.count() == 0
+
+
+def test_create_quiz_requires_auth(api_client, services):
+    """Anonymous users get 401 and no service is called."""
+    response = _post(api_client, {"url": TEST_VIDEO_URL})
+
+    assert response.status_code == 401
+    services.fetch.assert_not_called()
+    services.download.assert_not_called()
+    services.transcribe.assert_not_called()
+    services.generate.assert_not_called()
+    assert Quiz.objects.count() == 0

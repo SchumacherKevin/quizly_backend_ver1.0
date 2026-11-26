@@ -101,12 +101,12 @@ Aus einer YouTube-URL entsteht synchron ein gespeichertes Quiz; die Antwort ist 
 - **Test:** `test_create_quiz_requires_auth`: `api_client.post(...)` ergibt 401, und keine Service-Funktion wurde aufgerufen
 - **Erwartetes Rot:** vermutlich grün; als Absicherung committen
 - **Commit:** `test(quiz): require authentication for quiz creation`
-- [ ] erledigt
+- [x] erledigt (wie erwartet sofort grün durch die Default-Permission `IsAuthenticated`)
 
 ## Manueller Test (nach dem Abschluss-Check, zählt gegen das Gemini-Kontingent)
 - [ ] `python manage.py runserver`; Frontend auf `http://127.0.0.1:5500`; Login; ein kurzes Video (1–3 min) eingeben; das Quiz erscheint in der Übersicht
 
 ## Abschluss-Check
-- [ ] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün
-- [ ] Status von Schritt 14 auf `[x]` gesetzt (Commit `docs: mark step 14 done`)
-- [ ] Stopp → Review
+- [x] `black --check . ; isort --check-only . ; flake8 ; pytest` sind alle grün (zusätzlich die gesamte Suite mit gesperrtem Netz: 166 passed)
+- [x] Status von Schritt 14 auf `[x]` gesetzt (Commit `docs: mark step 14 done`)
+- [x] Stopp → Review
